@@ -29,6 +29,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
+import dev.dragonstb.trpgnarrator.client.ingame.IngameCamControl;
 
 /**
  *
@@ -39,6 +40,8 @@ public class TRPGNarratorApplication extends SimpleApplication{
 
     @Override
     public void simpleInitApp() {
+        flyCam.setEnabled(false);
+
 	    Box b = new Box(1, 1, 1);
 	    Geometry geom = new Geometry("Box", b);
 
@@ -50,7 +53,14 @@ public class TRPGNarratorApplication extends SimpleApplication{
 	    geom.setMaterial(mat);
 
 	    rootNode.attachChild(geom);
+
+        IngameCamControl camControl = new IngameCamControl(cam);
+        geom.addControl(camControl);
+
+        inputManager.addRawInputListener(camControl);
+
     }
+
 
 
 }
