@@ -1,0 +1,5 @@
+plugins {
+    id 'java-common-conventions'
+}
+
+description = 'TRPGNarrator Virtual Host'

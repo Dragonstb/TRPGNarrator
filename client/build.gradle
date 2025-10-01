@@ -1,0 +1,14 @@
+plugins {
+    id 'java-common-conventions'
+}
+
+version = '0.0.1'
+description = 'TRPGNarrator Client'
+
+ext.jmeVersion = '3.8.1-stable'
+
+dependencies {
+    implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
+    implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
+    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion
+}

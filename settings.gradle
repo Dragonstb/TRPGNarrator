@@ -1,0 +1,6 @@
+rootProject.name = 'TRPGNarrator'
+
+include ':client'
+include ':virtualhost'
+include ':server'
+
