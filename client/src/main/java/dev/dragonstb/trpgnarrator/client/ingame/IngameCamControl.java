@@ -34,7 +34,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import dev.dragonstb.trpgnarrator.client.Globals;
-import dev.dragonstb.trpgnarrator.client.input.CameraZoom;
+import dev.dragonstb.trpgnarrator.client.camera.CameraZoom;
 import lombok.NonNull;
 
 /**
@@ -66,7 +66,6 @@ public class IngameCamControl extends AbstractControl implements RawInputListene
      * @author Dragonstb
      * @param cam Camera controlled by this control.
      * @param zoom Control element for zooming.
-     * @throws IllegalArgumentException I
      */
     public IngameCamControl(@NonNull Camera cam, @NonNull CameraZoom zoom) {
         this.cam = cam;

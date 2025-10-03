@@ -23,7 +23,7 @@ import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import dev.dragonstb.trpgnarrator.client.input.CameraZoom;
+import dev.dragonstb.trpgnarrator.client.camera.CameraZoom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;

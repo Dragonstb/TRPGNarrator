@@ -19,6 +19,7 @@
  */
 package dev.dragonstb.trpgnarrator.client.input;
 
+import dev.dragonstb.trpgnarrator.client.camera.CameraZoom;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
