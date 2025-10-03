@@ -17,7 +17,7 @@
  *
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
-package dev.dragonstb.trpgnarrator.client.input;
+package dev.dragonstb.trpgnarrator.client.camera;
 
 import dev.dragonstb.trpgnarrator.client.camera.CameraZoom;
 import org.junit.jupiter.api.AfterAll;

@@ -23,6 +23,7 @@ import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import dev.dragonstb.trpgnarrator.client.camera.CameraRotate;
 import dev.dragonstb.trpgnarrator.client.camera.CameraZoom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -75,7 +76,7 @@ public class IngameCamControlIT {
         float minDist = 5;
         byte steps = 10;
         CameraZoom zoom = new CameraZoom(minDist, minDist*5, steps);
-        control = new IngameCamControl(cam, zoom);
+        control = new IngameCamControl(cam, zoom, new CameraRotate());
         target.addControl(control);
 
         // one tick of the mouse wheel increases deltaWheel by STEPSIZE. This has to be simulated here.
@@ -93,7 +94,7 @@ public class IngameCamControlIT {
         float maxDist = 50;
         byte steps = 10;
         CameraZoom zoom = new CameraZoom(maxDist/5f, maxDist, steps);
-        control = new IngameCamControl(cam, zoom);
+        control = new IngameCamControl(cam, zoom, new CameraRotate());
         target.addControl(control);
 
         // one tick of the mouse wheel increases deltaWheel by STEPSIZE. This has to be simulated here.

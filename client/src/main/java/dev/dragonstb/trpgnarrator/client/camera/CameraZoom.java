@@ -88,7 +88,6 @@ public final class CameraZoom {
      * @param steps Number of steps.
      */
     public void changeNextZoomDistanceBy(int steps) {
-        // TODO: mouse mapping that stores the sign (a.k.k. which direction of the wheel means "closer")
         nextIdx -= (byte)(steps/STEPSIZE);
         // TODO: a utilty math class offering clamp(byte, byte, byte)
         if(nextIdx < 0){

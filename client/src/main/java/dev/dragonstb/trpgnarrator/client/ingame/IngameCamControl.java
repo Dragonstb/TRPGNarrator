@@ -27,6 +27,7 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -34,6 +35,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import dev.dragonstb.trpgnarrator.client.Globals;
+import dev.dragonstb.trpgnarrator.client.camera.CameraRotate;
 import dev.dragonstb.trpgnarrator.client.camera.CameraZoom;
 import lombok.NonNull;
 
@@ -51,6 +53,8 @@ public class IngameCamControl extends AbstractControl implements RawInputListene
     private final Vector3f shift = Vector3f.UNIT_XYZ.mult(10f);
     /** Camera zoom status and capabilities. */
     private final CameraZoom zoom;
+    /** Camera rotation status and capabilities. */
+    private final CameraRotate rotate;
 
     /** Generates with default values {@code camMinDist = 0, camMaxDist = 50, steps = 20} for the zoom.
      * @since 0.0.1
@@ -58,7 +62,10 @@ public class IngameCamControl extends AbstractControl implements RawInputListene
      * @param cam Camera controlled by this control.
      */
     public IngameCamControl(@NonNull Camera cam) {
-        this(cam, new CameraZoom(2, 50, (byte)20));
+        this(cam,
+                new CameraZoom(2, 50, (byte)20),
+                new CameraRotate(.1f*FastMath.QUARTER_PI, CameraRotate.MAX_LAT)
+        );
     }
 
     /** Generates
@@ -66,11 +73,14 @@ public class IngameCamControl extends AbstractControl implements RawInputListene
      * @author Dragonstb
      * @param cam Camera controlled by this control.
      * @param zoom Control element for zooming.
+     * @param rotate Control element for rotating the cam.
      */
-    public IngameCamControl(@NonNull Camera cam, @NonNull CameraZoom zoom) {
+    public IngameCamControl(@NonNull Camera cam, @NonNull CameraZoom zoom, @NonNull CameraRotate rotate) {
         this.cam = cam;
         this.zoom = zoom;
-        shift.normalizeLocal().multLocal(zoom.getCurrentDist());
+        this.rotate = rotate;
+
+        shift.set( rotate.getCurrentDirection() ).multLocal( zoom.getCurrentDist() );
         updateCamLocation();
     }
 
@@ -91,9 +101,9 @@ public class IngameCamControl extends AbstractControl implements RawInputListene
     }
 
     private void updateCamLocation() {
-        if(zoom.hasChanges()) {
+        if(zoom.hasChanges() || rotate.hasChanges()) {
             float dist = zoom.updateDist();
-            shift.normalizeLocal().multLocal(dist);
+            shift.set( rotate.updateDirection() ).multLocal(dist);
         }
 
         if(getSpatial() != null ){
@@ -126,14 +136,26 @@ public class IngameCamControl extends AbstractControl implements RawInputListene
 
     @Override
     public void onMouseMotionEvent(MouseMotionEvent evt) {
-        if (evt.getDeltaWheel() != 0) {
+        if(evt.getDX() != 0 || evt.getDY() != 0) {
+            // TODO: setting for camera rotation sensitivity and axis inversion
+            float rotateSpeed = 1*FastMath.DEG_TO_RAD;
+            float dLong = -evt.getDX() * rotateSpeed;
+            float dLat = -evt.getDY() * rotateSpeed;
+            rotate.rotateBy(dLong, dLat);
+        }
+
+        if(evt.getDeltaWheel() != 0) {
             zoom.changeNextZoomDistanceBy(evt.getDeltaWheel());
         }
     }
 
     @Override
     public void onMouseButtonEvent(MouseButtonEvent evt) {
-
+        // TODO: mapping of mouse buttons
+        if(evt.getButtonIndex()==2) {
+            // button that allows for cam rotation while pressed
+            rotate.setRotate(evt.isPressed());
+        }
     }
 
     @Override
