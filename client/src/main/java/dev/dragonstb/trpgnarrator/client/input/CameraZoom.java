@@ -31,6 +31,12 @@ import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
  */
 public final class CameraZoom {
 
+    /** When moving the mouse wheel by one step, the deltaWheel of a mouse motion event ticks by this number. */
+    public static final int STEPSIZE = 120;
+    /** Minimum distance for the closest camera distance, in WU. The camera shall not go too close to the target.
+     * This is simply for avoiding arithmetical probems. */
+    public static final float MINDIST = .001f;
+
     /** Possible distances of the camera from the camera target, in WU. */
     private final float[] dists;
     /** Index of current camera distance in {@code dists}. */
@@ -52,7 +58,7 @@ public final class CameraZoom {
             String codedMsg = ClientErrorCodes.assembleCodedMsg(msg, errCode);
             throw new IllegalArgumentException(codedMsg);
         }
-        if (minDist < .001f) {
+        if (minDist < MINDIST) {
             String msg = "Minimum distance of mouse zoom needs to be well positive (above .001), but is "+minDist+".";
             String codedMsg = ClientErrorCodes.assembleCodedMsg(msg, errCode);
             throw new IllegalArgumentException(codedMsg);
@@ -81,8 +87,9 @@ public final class CameraZoom {
      * @author Dragonstb
      * @param steps Number of steps.
      */
-    public void changeZoomDistanceBy(int steps) {
-        nextIdx -= (byte)(steps/120);
+    public void changeNextZoomDistanceBy(int steps) {
+        // TODO: mouse mapping that stores the sign (a.k.k. which direction of the wheel means "closer")
+        nextIdx -= (byte)(steps/STEPSIZE);
         // TODO: a utilty math class offering clamp(byte, byte, byte)
         if(nextIdx < 0){
             nextIdx = 0;

@@ -52,14 +52,25 @@ public class IngameCamControl extends AbstractControl implements RawInputListene
     /** Camera zoom status and capabilities. */
     private final CameraZoom zoom;
 
-    /** Generates.
+    /** Generates with default values {@code camMinDist = 0, camMaxDist = 50, steps = 20} for the zoom.
      * @since 0.0.1
      * @author Dragonstb
      * @param cam Camera controlled by this control.
      */
     public IngameCamControl(@NonNull Camera cam) {
+        this(cam, new CameraZoom(2, 50, (byte)20));
+    }
+
+    /** Generates
+     * @since 0.0.1
+     * @author Dragonstb
+     * @param cam Camera controlled by this control.
+     * @param zoom Control element for zooming.
+     * @throws IllegalArgumentException I
+     */
+    public IngameCamControl(@NonNull Camera cam, @NonNull CameraZoom zoom) {
         this.cam = cam;
-        zoom = new CameraZoom(2, 50, (byte)20);
+        this.zoom = zoom;
         shift.normalizeLocal().multLocal(zoom.getCurrentDist());
         updateCamLocation();
     }
@@ -117,7 +128,7 @@ public class IngameCamControl extends AbstractControl implements RawInputListene
     @Override
     public void onMouseMotionEvent(MouseMotionEvent evt) {
         if (evt.getDeltaWheel() != 0) {
-            zoom.changeZoomDistanceBy(evt.getDeltaWheel());
+            zoom.changeNextZoomDistanceBy(evt.getDeltaWheel());
         }
     }
 
