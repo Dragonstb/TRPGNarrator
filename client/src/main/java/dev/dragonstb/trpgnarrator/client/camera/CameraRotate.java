@@ -23,9 +23,6 @@ package dev.dragonstb.trpgnarrator.client.camera;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /** Manages the rotation of the camera around a target. This management is based on two spherical angles. By limiting
  * the latitude (avoiding the poles) the orientation keeps obvious all the time.
@@ -34,7 +31,7 @@ import lombok.Setter;
  * @author Dragonstb
  * @since 0.0.1;
  */
-public class CameraRotate {
+public final class CameraRotate {
 
     /** Maximum altitude allowed globally. */
     public static final float MAX_LAT = .99f * FastMath.HALF_PI;

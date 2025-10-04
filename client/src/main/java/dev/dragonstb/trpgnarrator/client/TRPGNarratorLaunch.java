@@ -26,7 +26,7 @@ import com.jme3.system.AppSettings;
  * @author Dragonstb
  * @since 0.0.1
  */
-public class TRPGNarratorLaunch {
+public final class TRPGNarratorLaunch {
 
     public static void main(String[] args) {
 	        TRPGNarratorApplication app = new TRPGNarratorApplication();

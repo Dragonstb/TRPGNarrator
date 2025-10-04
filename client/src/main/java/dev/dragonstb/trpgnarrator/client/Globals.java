@@ -27,7 +27,7 @@ import com.jme3.math.Vector3f;
  * @author Dragonstb
  * @since 0.0.1
  */
-public class Globals {
+public final class Globals {
 
     public static final Vector3f WORLD_UP = Vector3f.UNIT_Y;
 }

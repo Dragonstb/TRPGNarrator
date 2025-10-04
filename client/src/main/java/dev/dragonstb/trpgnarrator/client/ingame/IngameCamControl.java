@@ -44,7 +44,7 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since
  */
-public class IngameCamControl extends AbstractControl implements RawInputListener{
+public final class IngameCamControl extends AbstractControl implements RawInputListener{
 
     /** The camera controlled by this control. */
     @NonNull private final Camera cam;
