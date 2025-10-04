@@ -23,12 +23,15 @@ package dev.dragonstb.trpgnarrator.client.error;
 /** List of error codes and error message assembly. The idea is that each code is used in exactly one place in the
  * code of the client. Thus, when an error occurs, you can easily find the code line by searching for the code.
  *
+ * This class lists the error codes, so that you can easily check if a code is already in use when you need a new one.
+ *
  * @author Dragonstb
  * @since 0.0.1
  */
 public final class ClientErrorCodes {
 
     public static final String C04278 = "C04278";
+    public static final String C17679 = "C17679";
     public static final String C28331 = "C28331";
 
     /** Assembles the given message and the code to a single message that includes the code.

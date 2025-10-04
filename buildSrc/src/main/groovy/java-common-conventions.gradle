@@ -12,8 +12,14 @@ java {
     }
 }
 
+ext.lombokVersion = '1.18.42'
+
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.42'
+    compileOnly 'org.projectlombok:lombok:'+lombokVersion
+    annotationProcessor 'org.projectlombok:lombok:'+lombokVersion
+    testCompileOnly 'org.projectlombok:lombok:'+lombokVersion
+    testAnnotationProcessor 'org.projectlombok:lombok:'+lombokVersion
+
     testImplementation 'org.junit.jupiter:junit-jupiter:6.0.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
