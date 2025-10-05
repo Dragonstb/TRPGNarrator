@@ -18,24 +18,34 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.client;
+package dev.dragonstb.trpgnarrator.client.ingame.board;
 
-import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import dev.dragonstb.trpgnarrator.client.AMAccessor;
+import dev.dragonstb.trpgnarrator.client.Globals;
+import java.util.Map;
+import lombok.NonNull;
 
-/** Holds some constants on a global scope.
+/** The root node of the visual representation of the game board
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-public final class Globals {
+final class BoardNode extends Node{
 
-    public static final Vector3f WORLD_UP = Vector3f.UNIT_Y;
+    BoardNode(@NonNull BoardData data) {
+        super(Globals.BOARD_NODE_NAME);
+        init(data);
+    }
 
-    // board-related constants
-    /* Radius of a hex field, in WU. Two oppsing corners of a hex field will be twice this distance apart. */
-    public static final float FIELD_RADIUS = .5f;
-    /** Name of the node that is the board. */
-    public static final String BOARD_NODE_NAME = "boardNode";
-    /** Base name of the board field geometries. Become appended by their field ids. */
-    public static final String FIELD_GEOM_NAME = "fieldGeometry_";
+    private void init(BoardData data) {
+        Map<Integer, FieldData> map = data.getFields();
+        map.values().forEach(field -> {
+            Geometry geom = FieldGeometryFactory.makeFieldGeometry(field, AMAccessor.get());
+            geom.setLocalTranslation(field.getLocation());
+            this.attachChild(geom);
+        });
+    }
+
 }

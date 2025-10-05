@@ -30,6 +30,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameCamControl;
+import dev.dragonstb.trpgnarrator.client.ingame.board.GameBoard;
 
 /**
  *
@@ -41,6 +42,7 @@ public class TRPGNarratorApplication extends SimpleApplication{
     @Override
     public void simpleInitApp() {
         flyCam.setEnabled(false);
+        AMAccessor.setAssetManager(assetManager);
 
 	    Box b = new Box(1, 1, 1);
 	    Geometry geom = new Geometry("Box", b);
@@ -51,8 +53,10 @@ public class TRPGNarratorApplication extends SimpleApplication{
         rootNode.addLight(new AmbientLight(ColorRGBA.DarkGray));
         mat.setTexture("DiffuseMap", tex);
 	    geom.setMaterial(mat);
-
 	    rootNode.attachChild(geom);
+
+        GameBoard board = new GameBoard();
+        rootNode.attachChild(board.getNode());
 
         IngameCamControl camControl = new IngameCamControl(cam);
         geom.addControl(camControl);

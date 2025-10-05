@@ -20,22 +20,25 @@
 
 package dev.dragonstb.trpgnarrator.client;
 
-import com.jme3.math.Vector3f;
+import com.jme3.asset.AssetManager;
+import lombok.NonNull;
 
-/** Holds some constants on a global scope.
+/** Provides global access to the asset manage.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-public final class Globals {
+public final class AMAccessor {
 
-    public static final Vector3f WORLD_UP = Vector3f.UNIT_Y;
+    private static AssetManager am = null;
 
-    // board-related constants
-    /* Radius of a hex field, in WU. Two oppsing corners of a hex field will be twice this distance apart. */
-    public static final float FIELD_RADIUS = .5f;
-    /** Name of the node that is the board. */
-    public static final String BOARD_NODE_NAME = "boardNode";
-    /** Base name of the board field geometries. Become appended by their field ids. */
-    public static final String FIELD_GEOM_NAME = "fieldGeometry_";
+    public static void setAssetManager(@NonNull AssetManager am) {
+        if( AMAccessor.am == null ) {
+            AMAccessor.am = am;
+        }
+    }
+
+    public static AssetManager get() {
+        return am;
+    }
 }

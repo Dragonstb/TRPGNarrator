@@ -20,11 +20,21 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
+import com.jme3.scene.Node;
+
 /** Possible interactions with the {@link GameBoard GameBoard}.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
 public interface Board {
+
+    /** Gets the internal {@link BoardNode BoardNode}, but as its superclass Node.
+     *
+     * @since 0.0.1
+     * @author Dragonstb
+     * @return The node with the visuals of the board.
+     */
+    public Node getNode();
 
 }

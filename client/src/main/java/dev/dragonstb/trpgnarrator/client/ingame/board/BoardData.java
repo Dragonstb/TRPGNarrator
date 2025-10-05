@@ -21,8 +21,11 @@
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
 import com.jme3.math.Vector3f;
+import dev.dragonstb.trpgnarrator.client.Globals;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /** Collection of all {@link FieldData FieldData} and some stuff for dealing with them.
  *
@@ -32,7 +35,7 @@ import java.util.Map;
 final class BoardData {
 
     /** All fields of the board. */
-    private final Map<Integer, FieldData> fields = new HashMap<>();
+    @Getter(AccessLevel.PACKAGE) private final Map<Integer, FieldData> fields = new HashMap<>();
 
     BoardData() {
         init();
@@ -43,9 +46,9 @@ final class BoardData {
      */
     private void init() {
         // TODO: stop using this simple, stupid initialization and derive the objects from some sort of data
-        float d = .5f;
-        float dz = d * (float)Math.sqrt(2); // this is also the distanc between the centers of two adjacent fields
-        float dx = 1.5f * d;
+        float d = Globals.FIELD_RADIUS;
+        float dx = d * (float)Math.sqrt(3); // this is also the distanc between the centers of two adjacent fields
+        float dz = 1.5f * d;
 
         int rangeZ = 5;
         int rangeX = 5;
@@ -57,6 +60,10 @@ final class BoardData {
             for (int tileX = -rangeX; tileX < rangeX; tileX++) {
                 x = tileX * dx;
                 z = tileZ * dz;
+                if(tileZ%2==0) {
+                    // every second row the hex fields are shifted a bit
+                    x -= dx*.5f;
+                }
                 Vector3f location = new Vector3f(x, y, z);
                 FieldData data = new FieldData(nextId++, location);
                 fields.put(data.getId(), data); // TODO: In real-use methods, check if id is unique and throw exception if it is not
@@ -67,7 +74,7 @@ final class BoardData {
             fields.values().stream().filter(otherField -> otherField.getId() < field.getId()).forEach(otherField -> {
                 // for each pair of adjacent fields, create a link once
                 float dist = field.getLocation().subtract( otherField.getLocation() ).length();
-                if( Math.abs(dist-dz) < .01f ) {
+                if( Math.abs(dist-dx) < .01f ) {
                     FieldLink link = new FieldLink(field, otherField);
                     field.addLink(link);
                     otherField.addLink(link);

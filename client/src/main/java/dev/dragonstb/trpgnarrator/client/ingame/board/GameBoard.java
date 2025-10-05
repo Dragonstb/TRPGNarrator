@@ -20,11 +20,29 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
+import com.jme3.scene.Node;
+
 /** The board with all the {@link FieldData data} and the visuals of its fields, the figurines, and the objects.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
 public final class GameBoard implements Board {
+
+    /** The data of the fields. */
+    private final BoardData data;
+    /** The node of the fields. */
+    private final BoardNode node;
+
+    public GameBoard() {
+        // TODO: parametrize constructor with a data model
+        data = new BoardData();
+        node = new BoardNode(data);
+    }
+
+    @Override
+    public Node getNode() {
+        return node;
+    }
 
 }
