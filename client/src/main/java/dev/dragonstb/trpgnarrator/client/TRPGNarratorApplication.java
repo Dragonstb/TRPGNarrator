@@ -32,6 +32,8 @@ import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameAppState;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameCamControl;
+import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import dev.dragonstb.trpgnarrator.client.ingame.figurine.FigurineBuilder;
 
 /**
  *
@@ -45,23 +47,17 @@ public class TRPGNarratorApplication extends SimpleApplication{
         flyCam.setEnabled(false);
         AMAccessor.setAssetManager(assetManager);
 
-	    Box b = new Box(1, 1, 1);
-	    Geometry geom = new Geometry("Box", b);
-
-	    Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md" );
-        Texture tex = this.getAssetManager().loadTexture("Textures/testTex.png");
-        mat.setTexture("DiffuseMap", tex);
-	    geom.setMaterial(mat);
-	    rootNode.attachChild(geom);
-
         IngameAppState ingameAppState = new IngameAppState();
         Node ingameRoot = ingameAppState.getIngameRoot();
         ingameRoot.addLight(new DirectionalLight(Vector3f.UNIT_XYZ.negate(), ColorRGBA.White));
         ingameRoot.addLight(new AmbientLight(ColorRGBA.DarkGray));
         rootNode.attachChild(ingameRoot);
 
+        Figurine fig = FigurineBuilder.ofId("Figurine").setColor(ColorRGBA.Blue.mult(.33f)).build();
+        ingameRoot.attachChild(fig.getNode());
+
         IngameCamControl camControl = new IngameCamControl(cam);
-        geom.addControl(camControl);
+        fig.getNode().addControl(camControl);
 
         inputManager.addRawInputListener(camControl);
 

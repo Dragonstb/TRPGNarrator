@@ -36,6 +36,8 @@ public final class Globals {
     /** Name of the root node of the {@link dev.dragonstb.trpgnarrator.client.ingame.IngameAppState IngameAppState}. */
     public static final String INGAME_ROOTNODE_NAME = "ingameRootNode";
 
+
+
     // board-related constants
 
     /* Radius of a hex field, in WU. Two oppsing corners of a hex field will be twice this distance apart. */
@@ -44,4 +46,11 @@ public final class Globals {
     public static final String BOARD_NODE_NAME = "boardNode";
     /** Base name of the board field geometries. Become appended by their field ids. */
     public static final String FIELD_GEOM_NAME = "fieldGeometry_";
+
+
+
+    // figurine-related constants
+
+    /** Base name of the root node of a figurine. Usually becomes appended by the figurine's id in an actual instance. */
+    public static final String FIGURINE_NODE_NAME = "figurineNode_";
 }
