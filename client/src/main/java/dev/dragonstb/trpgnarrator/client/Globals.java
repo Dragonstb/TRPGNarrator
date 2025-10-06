@@ -31,7 +31,13 @@ public final class Globals {
 
     public static final Vector3f WORLD_UP = Vector3f.UNIT_Y;
 
+    // ingame-relayed contstants
+
+    /** Name of the root node of the {@link dev.dragonstb.trpgnarrator.client.ingame.IngameAppState IngameAppState}. */
+    public static final String INGAME_ROOTNODE_NAME = "ingameRootNode";
+
     // board-related constants
+
     /* Radius of a hex field, in WU. Two oppsing corners of a hex field will be twice this distance apart. */
     public static final float FIELD_RADIUS = .5f;
     /** Name of the node that is the board. */

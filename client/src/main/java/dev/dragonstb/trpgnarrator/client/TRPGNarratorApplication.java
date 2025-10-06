@@ -27,10 +27,11 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
+import dev.dragonstb.trpgnarrator.client.ingame.IngameAppState;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameCamControl;
-import dev.dragonstb.trpgnarrator.client.ingame.board.GameBoard;
 
 /**
  *
@@ -49,14 +50,15 @@ public class TRPGNarratorApplication extends SimpleApplication{
 
 	    Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md" );
         Texture tex = this.getAssetManager().loadTexture("Textures/testTex.png");
-        rootNode.addLight(new DirectionalLight(Vector3f.UNIT_XYZ.negate(), ColorRGBA.White));
-        rootNode.addLight(new AmbientLight(ColorRGBA.DarkGray));
         mat.setTexture("DiffuseMap", tex);
 	    geom.setMaterial(mat);
 	    rootNode.attachChild(geom);
 
-        GameBoard board = new GameBoard();
-        rootNode.attachChild(board.getNode());
+        IngameAppState ingameAppState = new IngameAppState();
+        Node ingameRoot = ingameAppState.getIngameRoot();
+        ingameRoot.addLight(new DirectionalLight(Vector3f.UNIT_XYZ.negate(), ColorRGBA.White));
+        ingameRoot.addLight(new AmbientLight(ColorRGBA.DarkGray));
+        rootNode.attachChild(ingameRoot);
 
         IngameCamControl camControl = new IngameCamControl(cam);
         geom.addControl(camControl);

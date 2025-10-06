@@ -17,37 +17,51 @@
  *
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
-
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
-import com.jme3.scene.Node;
+import dev.dragonstb.trpgnarrator.testslices.WithAssetManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-/** The board with all the {@link FieldData data} and the visuals of its fields, the figurines, and the objects.
+/**
  *
  * @author Dragonstb
- * @since 0.0.1
  */
-final class GameBoard implements Board {
+public class BoardFactoryTest {
 
-    /** The data of the fields. */
-    private final BoardData data;
-    /** The node of the fields. */
-    private final BoardNode node;
-
-    /** Generates
-     *
-     * @since 0.0.1
-     * @author Dragonstb
-     */
-    public GameBoard() {
-        // TODO: parametrize constructor with a data model
-        data = new BoardData();
-        node = new BoardNode(data);
+    public BoardFactoryTest() {
     }
 
-    @Override
-    public Node getNode() {
-        return node;
+    @BeforeAll
+    public static void setUpClass() {
+        WithAssetManager.initAssetManager();
+    }
+
+    @AfterAll
+    public static void tearDownClass() {
+    }
+
+    @BeforeEach
+    public void setUp() {
+    }
+
+    @AfterEach
+    public void tearDown() {
+    }
+
+    @Test
+    public void testNoExceptions() {
+        assertDoesNotThrow(()-> BoardFactory.makeBoard());
+    }
+
+    @Test
+    public void testMakeBoard() {
+        Board board = BoardFactory.makeBoard();
+        assertNotNull(board);
     }
 
 }

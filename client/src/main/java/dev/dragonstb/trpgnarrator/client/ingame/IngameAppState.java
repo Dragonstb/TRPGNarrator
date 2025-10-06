@@ -18,36 +18,35 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.client.ingame.board;
+package dev.dragonstb.trpgnarrator.client.ingame;
 
+import com.jme3.app.state.AbstractAppState;
 import com.jme3.scene.Node;
+import dev.dragonstb.trpgnarrator.client.Globals;
+import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
+import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
+import lombok.Getter;
 
-/** The board with all the {@link FieldData data} and the visuals of its fields, the figurines, and the objects.
+/** App state active while actuallz in game.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-final class GameBoard implements Board {
+public final class IngameAppState extends AbstractAppState{
 
-    /** The data of the fields. */
-    private final BoardData data;
-    /** The node of the fields. */
-    private final BoardNode node;
+    /** Root node of the app state. */
+    @Getter private final Node ingameRoot = new Node(Globals.INGAME_ROOTNODE_NAME);
+    private Board board;
 
-    /** Generates
-     *
-     * @since 0.0.1
-     * @author Dragonstb
-     */
-    public GameBoard() {
-        // TODO: parametrize constructor with a data model
-        data = new BoardData();
-        node = new BoardNode(data);
+    public IngameAppState() {
+        setEnabled(false);
+        board = BoardFactory.makeBoard(); // TODO: set on demand with data model
+        ingameRoot.attachChild(board.getNode()); // TODO: attach (detach) on demand
     }
 
     @Override
-    public Node getNode() {
-        return node;
+    public void update(float tpf) {
+        super.update(tpf);
     }
 
 }
