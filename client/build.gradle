@@ -5,6 +5,14 @@ plugins {
 version = '0.0.1'
 description = 'TRPGNarrator Client'
 
+sourceSets {
+    test {
+        java {
+            srcDirs = ['src/test/java', 'src/testUtils/java']
+        }
+    }
+}
+
 ext.jmeVersion = '3.8.1-stable'
 
 dependencies {

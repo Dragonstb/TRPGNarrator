@@ -18,36 +18,24 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.client.ingame.board;
+package dev.dragonstb.trpgnarrator.testslices;
 
-import com.jme3.scene.Node;
+import com.jme3.asset.AssetManager;
+import com.jme3.system.JmeSystem;
+import dev.dragonstb.trpgnarrator.client.AMAccessor;
+import java.net.URL;
 
-/** The board with all the {@link FieldData data} and the visuals of its fields, the figurines, and the objects.
+/** Initializes an asset manager for use in tests.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-public final class GameBoard implements Board {
+public class WithAssetManager {
 
-    /** The data of the fields. */
-    private final BoardData data;
-    /** The node of the fields. */
-    private final BoardNode node;
+    public static void initAssetManager() {
+        URL assetCfgUrl = JmeSystem.getPlatformAssetConfigURL();
+        AssetManager assetManager = JmeSystem.newAssetManager(assetCfgUrl);
 
-    /** Generates
-     *
-     * @since 0.0.1
-     * @author Dragonstb
-     */
-    public GameBoard() {
-        // TODO: parametrize constructor with a data model
-        data = new BoardData();
-        node = new BoardNode(data);
+        AMAccessor.setAssetManager(assetManager);
     }
-
-    @Override
-    public Node getNode() {
-        return node;
-    }
-
 }

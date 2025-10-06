@@ -22,6 +22,10 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:6.0.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api' // leads to version given at org.junit.jupiter:junit-jupiter
+
+    // testImplementation 'org.mockito:mockito-core:5.20.0'
+    // testImplementation 'org.mockito:mockito-junit-jupiter:5.20.0' // demands org.junit.jupiter:junit-jupiter-api:5.13.4
 }
 
 tasks.named('test') {
