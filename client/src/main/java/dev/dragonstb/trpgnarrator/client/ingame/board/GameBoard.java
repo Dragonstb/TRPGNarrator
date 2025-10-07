@@ -20,7 +20,13 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
+import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
+import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import java.util.Optional;
+import lombok.NonNull;
 
 /** The board with all the {@link FieldData data} and the visuals of its fields, the figurines, and the objects.
  *
@@ -48,6 +54,21 @@ final class GameBoard implements Board {
     @Override
     public Node getNode() {
         return node;
+    }
+
+    @Override
+    public void placeFigurineOnField(@NonNull Figurine fig, int fieldId) throws BoardFieldNotFoundException {
+        // TODO: check for occuation
+        Optional<Vector3f> opt = data.getLocationOfField(fieldId);
+        if(opt.isEmpty()) {
+            String errCode = ClientErrorCodes.C38587;
+            String msg = "Requesting location of a field that does not exist.";
+            String use = ClientErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new BoardFieldNotFoundException(use);
+        }
+
+        Vector3f loc = opt.get();
+        fig.setLocalTranslation(loc);
     }
 
 }

@@ -19,11 +19,13 @@
  */
 package dev.dragonstb.trpgnarrator.client.ingame;
 
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import dev.dragonstb.trpgnarrator.client.Globals;
 import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
 import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
+import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -35,6 +37,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -85,6 +89,32 @@ public class IngameAppStateTest {
             assertEquals(1, children.size());
 
             assertEquals(boardNode, children.get(0));
+        }
+    }
+
+    @Test
+    public void testUpdate() {
+    }
+
+    @Test
+    public void testAddFigurine() {
+        Node boardNode = new Node();
+        Node figNode = new Node();
+        Figurine fig = mock(Figurine.class);
+        when(fig.getNode()).thenReturn(figNode);
+        int id = -15;
+
+        try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
+            boardFactory.when(BoardFactory::makeBoard).thenReturn(board);
+            when(board.getNode()).thenReturn(boardNode);
+
+            IngameAppState appState = new IngameAppState();
+            Node ingameRoot = appState.getIngameRoot();
+
+            appState.addFigurine(fig, id);
+            assertEquals(ingameRoot, figNode.getParent(), "Ingame root is not the parent of the figurine.");
+
+            verify(board).placeFigurineOnField(fig, id);
         }
     }
 

@@ -23,9 +23,12 @@ package dev.dragonstb.trpgnarrator.client.ingame;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.Globals;
+import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
 import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
+import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
 import lombok.Getter;
+import lombok.NonNull;
 
 /** App state active while actuallz in game.
  *
@@ -47,6 +50,21 @@ public final class IngameAppState extends AbstractAppState{
     @Override
     public void update(float tpf) {
         super.update(tpf);
+    }
+
+    /** Adds a figurine and places it on the given field.
+     * 
+     * @author Dragonstb
+     * @since 0.0.1
+     * @param fig Figurine to be added to the scene.
+     * @param fieldId Id of the field the figurine is placed on.
+     * @throws BoardFieldNotFoundException When ther eis no field with the gievn id.
+     */
+    public void addFigurine(@NonNull Figurine fig, int fieldId) throws BoardFieldNotFoundException {
+        // TODO: place by story data model
+        // TODO: check if figurine already in scene
+        ingameRoot.attachChild(fig.getNode());
+        board.placeFigurineOnField(fig, fieldId);
     }
 
 }

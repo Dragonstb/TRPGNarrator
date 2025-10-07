@@ -37,7 +37,7 @@ final class FieldData {
     /** An unique field id. */
     @Getter private final int id;
     /** Location of the center of the field. */
-    @Getter private final Vector3f location;
+    @Getter @NonNull private final Vector3f location;
     /** All links to linked other fields. These other field are usually the adjacent neighbours, but there might be reasons for linking
      * other fields. For example, when jumping over a gap is possible, this field at the edge of the gap can be linked to fields on the
      * other side. The links then may contain infos about the skills and the difficulties required for succeeding the leap. */

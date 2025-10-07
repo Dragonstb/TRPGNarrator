@@ -19,8 +19,14 @@
  */
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.Globals;
+import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
+import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
+import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import dev.dragonstb.trpgnarrator.client.ingame.figurine.FigurineBuilder;
 import dev.dragonstb.trpgnarrator.testslices.WithAssetManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -65,4 +71,30 @@ public class GameBoardTest {
         assertEquals(Globals.BOARD_NODE_NAME, node.getName());
     }
 
+    @Test
+    public void testPlaceFigurineOnField_Ok() {
+        Figurine fig = FigurineBuilder.ofId("doesntmatterhere").setColor(ColorRGBA.Blue).build();
+        Vector3f oldPos = new Vector3f(1, 2, 3);
+        fig.setLocalTranslation(oldPos);
+        int id = 15;
+
+        board.placeFigurineOnField(fig, id);
+        Vector3f newPos = fig.getNode().getLocalTranslation();
+        float diff = oldPos.distance(newPos);
+        assertTrue(diff > 1);
+
+        // TODO: check actual position once the game board is build based on model data rather than hardcoded in the init.
+    }
+
+    @Test
+    public void testPlaceFigurineOnField_NoFieldWithThatId() {
+        Figurine fig = FigurineBuilder.ofId("doesntmatterhere").setColor(ColorRGBA.Blue).build();
+        Vector3f oldPos = new Vector3f(1, 2, 3);
+        fig.setLocalTranslation(oldPos);
+        int id = -15;
+
+        BoardFieldNotFoundException exc = assertThrows(BoardFieldNotFoundException.class, () -> board.placeFigurineOnField(fig, id));
+
+        assertTrue( exc.getMessage().contains( ClientErrorCodes.C38587 ) );
+    }
 }

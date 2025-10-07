@@ -18,29 +18,21 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.client.ingame.figurine;
+package dev.dragonstb.trpgnarrator.client.error;
 
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import lombok.NonNull;
-
-/**
+/** Thrown when requesting a non-existing field of an existing board.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-public interface Figurine {
+public final class BoardFieldNotFoundException extends RuntimeException {
 
-    /** Returns the root node of the figurine.
-     * @since 0.0.1
-     * @author Dragonstb
-     * @return The root node of the figurine.
-     */
-    public Node getNode();
+    public BoardFieldNotFoundException() {
+        super();
+    }
 
-    /** Sets the local translation of the root node of the figurine. This effectively puts the figurine in the given position.
-     *
-     * @param pos New position, in WU.
-     */
-    public void setLocalTranslation(@NonNull Vector3f pos);
+    public BoardFieldNotFoundException(String message) {
+        super(message);
+    }
+
 }

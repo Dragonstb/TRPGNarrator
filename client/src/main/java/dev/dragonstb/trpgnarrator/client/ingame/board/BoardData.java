@@ -24,6 +24,7 @@ import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.client.Globals;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -83,4 +84,22 @@ final class BoardData {
         });
 
     }
+
+    /** Fetches the location of a board field.
+     *
+     * @author Dragonstb
+     * @since 0.0.1
+     * @param fieldId Id of the field of interest.
+     * @return An optional containing the location of the field of interest. The optinal is empty if no field has the given id.
+     */
+    Optional<Vector3f> getLocationOfField(int fieldId) {
+        FieldData field = fields.get(fieldId);
+        if(field != null) {
+            return Optional.of(field.getLocation());
+        }
+        else {
+            return Optional.empty();
+        }
+    }
+
 }

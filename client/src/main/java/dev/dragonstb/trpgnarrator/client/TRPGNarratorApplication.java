@@ -23,13 +23,9 @@ package dev.dragonstb.trpgnarrator.client;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
-import com.jme3.texture.Texture;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameAppState;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameCamControl;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
@@ -54,7 +50,8 @@ public class TRPGNarratorApplication extends SimpleApplication{
         rootNode.attachChild(ingameRoot);
 
         Figurine fig = FigurineBuilder.ofId("Figurine").setColor(ColorRGBA.Blue.mult(.33f)).build();
-        ingameRoot.attachChild(fig.getNode());
+        ingameAppState.addFigurine(fig, 35);
+
 
         IngameCamControl camControl = new IngameCamControl(cam);
         fig.getNode().addControl(camControl);
@@ -62,7 +59,5 @@ public class TRPGNarratorApplication extends SimpleApplication{
         inputManager.addRawInputListener(camControl);
 
     }
-
-
 
 }

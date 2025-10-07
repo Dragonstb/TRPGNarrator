@@ -80,5 +80,10 @@ final class SimpleFigurine implements Figurine {
         return node;
     }
 
+    @Override
+    public void setLocalTranslation(Vector3f pos) {
+        node.setLocalTranslation(pos);
+    }
+
 
 }

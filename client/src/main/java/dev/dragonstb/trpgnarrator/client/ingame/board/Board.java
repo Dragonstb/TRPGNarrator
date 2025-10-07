@@ -21,6 +21,9 @@
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
 import com.jme3.scene.Node;
+import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
+import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import lombok.NonNull;
 
 /** Possible interactions with the {@link GameBoard GameBoard}.
  *
@@ -37,4 +40,11 @@ public interface Board {
      */
     public Node getNode();
 
+    /** Places the givern figurine on the given field.
+     *
+     * @param fig Figurine to be placed.
+     * @param fieldId Id of the field the figurine is place on.
+     * @throws BoardFieldNotFoundException When there is no field with the giben id.
+     */
+    public void placeFigurineOnField(@NonNull Figurine fig, int fieldId) throws BoardFieldNotFoundException;
 }

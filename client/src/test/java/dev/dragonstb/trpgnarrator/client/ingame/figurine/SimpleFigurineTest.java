@@ -22,6 +22,7 @@ package dev.dragonstb.trpgnarrator.client.ingame.figurine;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.Globals;
@@ -78,4 +79,20 @@ public class SimpleFigurineTest {
         assertEquals(expected, expectedParam.toString());
     }
 
+    @Test
+    public void testSetLocalTranslation() {
+        ColorRGBA col = new ColorRGBA(.5f, .5f, .5f, 1f);
+        String id = "oops";
+        SimpleFigurine fig = new SimpleFigurine(id, col);
+        Node node = fig.getNode();
+
+        Vector3f newPos = new Vector3f(1, 2, 3);
+        fig.setLocalTranslation(newPos);
+        assertEquals(newPos, node.getLocalTranslation(), "First translation check has failed");
+
+        newPos = new Vector3f(-3, -2, -1);
+        fig.setLocalTranslation(newPos);
+        assertEquals(newPos, node.getLocalTranslation(), "Second translation check has failed");
+
+    }
 }
