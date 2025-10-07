@@ -18,3 +18,7 @@ Start a new adventure by loading the adventure file and generating your heroes.
 
 - Support for various input devices.
 - Multiplayer with split screen and/or network (also at the same time)
+
+## About
+
+This game uses the [JMonkeyEngine](https://github.com/jMonkeyEngine/jmonkeyengine).
