@@ -46,6 +46,8 @@ public final class Globals {
     public static final String BOARD_NODE_NAME = "boardNode";
     /** Base name of the board field geometries. Become appended by their field ids. */
     public static final String FIELD_GEOM_NAME = "fieldGeometry_";
+    /** User data key relating the field id on field geometries. */
+    public static final String FIELD_ID = "fieldID";
 
 
 

@@ -21,12 +21,17 @@
 package dev.dragonstb.trpgnarrator.client.ingame;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.math.Ray;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.Globals;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
 import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -35,11 +40,12 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since 0.0.1
  */
-public final class IngameAppState extends AbstractAppState{
+public final class IngameAppState extends AbstractAppState {
 
     /** Root node of the app state. */
     @Getter private final Node ingameRoot = new Node(Globals.INGAME_ROOTNODE_NAME);
     private Board board;
+    private Future<Optional<Integer>> fieldPick;
 
     public IngameAppState() {
         setEnabled(false);
@@ -50,10 +56,27 @@ public final class IngameAppState extends AbstractAppState{
     @Override
     public void update(float tpf) {
         super.update(tpf);
+
+        if(fieldPick != null && fieldPick.isDone()) {
+            try {
+                Optional<Integer> opt = fieldPick.get();
+                if(opt.isPresent()) {
+                    board.highlightJustField(opt.get());
+                }
+                else {
+                    board.unhighlightAllFields();
+                }
+            } catch (InterruptedException | ExecutionException ex) {
+                // TODO: possibly log and go on
+            }
+            finally {
+                fieldPick = null;
+            }
+        }
     }
 
     /** Adds a figurine and places it on the given field.
-     * 
+     *
      * @author Dragonstb
      * @since 0.0.1
      * @param fig Figurine to be added to the scene.
@@ -65,6 +88,13 @@ public final class IngameAppState extends AbstractAppState{
         // TODO: check if figurine already in scene
         ingameRoot.attachChild(fig.getNode());
         board.placeFigurineOnField(fig, fieldId);
+    }
+
+    public void pickField(@NonNull Ray ray, @NonNull ScheduledThreadPoolExecutor executor) {
+        if(fieldPick != null) {
+            fieldPick.cancel(true);
+        }
+        fieldPick = executor.submit(new MouseFieldPicker(board.getNode(), ray));
     }
 
 }

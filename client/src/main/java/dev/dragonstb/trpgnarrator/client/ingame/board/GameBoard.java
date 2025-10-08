@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
@@ -69,6 +70,20 @@ final class GameBoard implements Board {
 
         Vector3f loc = opt.get();
         fig.setLocalTranslation(loc);
+    }
+
+    @Override
+    public void highlightJustField(int fieldId) {
+        // TODO: optimize finding
+        Optional<Geometry> child = node.getFieldGeometry(fieldId);
+
+        Geometry geom = child.orElse(null);
+        node.highlightField(geom);
+    }
+
+    @Override
+    public void unhighlightAllFields() {
+        node.highlightField(null);
     }
 
 }

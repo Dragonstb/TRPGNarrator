@@ -47,4 +47,15 @@ public interface Board {
      * @throws BoardFieldNotFoundException When there is no field with the giben id.
      */
     public void placeFigurineOnField(@NonNull Figurine fig, int fieldId) throws BoardFieldNotFoundException;
+
+    /** Highlights the field with the given id and unhighlights all fields that had been highlighted so far.
+     *
+     * @param fieldId Id of field.
+     */
+    public void highlightJustField(int fieldId);
+
+    /** Unhighlights all highlighted fields.
+     *
+     */
+    public void unhighlightAllFields();
 }

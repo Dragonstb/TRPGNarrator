@@ -21,29 +21,45 @@
 package dev.dragonstb.trpgnarrator.client;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.input.RawInputListener;
+import com.jme3.input.event.JoyAxisEvent;
+import com.jme3.input.event.JoyButtonEvent;
+import com.jme3.input.event.KeyInputEvent;
+import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.input.event.MouseMotionEvent;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameAppState;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameCamControl;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.FigurineBuilder;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-public class TRPGNarratorApplication extends SimpleApplication{
+public class TRPGNarratorApplication extends SimpleApplication implements RawInputListener{
+
+    private IngameAppState ingameAppState;
+    private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4); // TODO: configurable pool size
+    private int currentPickX;
+    private int currentPickY;
+
 
     @Override
     public void simpleInitApp() {
         flyCam.setEnabled(false);
         AMAccessor.setAssetManager(assetManager);
 
-        IngameAppState ingameAppState = new IngameAppState();
+        ingameAppState = new IngameAppState();
         Node ingameRoot = ingameAppState.getIngameRoot();
         ingameRoot.addLight(new DirectionalLight(Vector3f.UNIT_XYZ.negate(), ColorRGBA.White));
         ingameRoot.addLight(new AmbientLight(ColorRGBA.DarkGray));
@@ -56,8 +72,55 @@ public class TRPGNarratorApplication extends SimpleApplication{
         IngameCamControl camControl = new IngameCamControl(cam);
         fig.getNode().addControl(camControl);
 
+        stateManager.attach(ingameAppState);
+        ingameAppState.setEnabled(true);
+
+        // TODO: just one raw input listener that delegates inputs to the currently active targets
         inputManager.addRawInputListener(camControl);
+        inputManager.addRawInputListener(this);
 
     }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        executor.shutdownNow();
+    }
+
+    // _____  raw input listener  __________________________________________________________________________________________________________
+
+    @Override
+    public void beginInput() {}
+
+    @Override
+    public void endInput() {}
+
+    @Override
+    public void onJoyAxisEvent(JoyAxisEvent evt) {}
+
+    @Override
+    public void onJoyButtonEvent(JoyButtonEvent evt) {}
+
+    @Override
+    public void onMouseMotionEvent(MouseMotionEvent evt) {
+        if(evt.getX() != currentPickX || evt.getY() != currentPickY) {
+            currentPickX = evt.getX();
+            currentPickY = evt.getY();
+            Vector2f clickCoord=new Vector2f(currentPickX, currentPickY);
+            Vector3f origin = cam.getWorldCoordinates(clickCoord, 0);
+            Vector3f direction = cam.getWorldCoordinates(clickCoord, 1f).subtract(origin).normalizeLocal();
+            Ray ray = new Ray(origin, direction);
+            ingameAppState.pickField(ray, executor);
+        }
+    }
+
+    @Override
+    public void onMouseButtonEvent(MouseButtonEvent evt) {}
+
+    @Override
+    public void onKeyEvent(KeyInputEvent evt) {}
+
+    @Override
+    public void onTouchEvent(TouchEvent evt) {}
 
 }

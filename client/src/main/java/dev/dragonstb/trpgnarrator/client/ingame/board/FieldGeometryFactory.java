@@ -52,6 +52,7 @@ final class FieldGeometryFactory {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Green.mult(.5f));
         geom.setMaterial(mat);
+        geom.updateModelBound();
         return geom;
     }
 
