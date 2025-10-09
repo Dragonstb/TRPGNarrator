@@ -26,7 +26,10 @@ import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import lombok.NonNull;
 
 /** The board with all the {@link FieldData data} and the visuals of its fields, the figurines, and the objects.
@@ -90,6 +93,26 @@ final class GameBoard implements Board {
     @Override
     public Optional<Integer> getCurrentlyHighlightedFieldId() {
         return node.getCurrentlyHighlightedFieldId();
+    }
+
+    @Override
+    public Future<Optional<List<Integer>>> findPath(int fromField, int toField, @NonNull ScheduledThreadPoolExecutor executor)
+            throws BoardFieldNotFoundException {
+        String errCode = ClientErrorCodes.C63749;
+        if(!data.getFields().containsKey(fromField)) {
+            String msg = "Possible starting field with id "+fromField+" does not exists.";
+            String use = ClientErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new BoardFieldNotFoundException(use);
+        }
+        if(!data.getFields().containsKey(toField)) {
+            String msg = "Possible goal field with id "+toField+" does not exists.";
+            String use = ClientErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new BoardFieldNotFoundException(use);
+        }
+
+        Pathfinder finder = new Pathfinder(fromField, toField, data);
+        Future<Optional<List<Integer>>> future = executor.submit(finder);
+        return future;
     }
 
 

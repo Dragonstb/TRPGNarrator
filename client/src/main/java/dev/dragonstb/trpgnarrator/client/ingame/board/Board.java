@@ -23,7 +23,10 @@ package dev.dragonstb.trpgnarrator.client.ingame.board;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import lombok.NonNull;
 
 /** Possible interactions with the {@link GameBoard GameBoard}.
@@ -73,4 +76,16 @@ public interface Board {
      */
     @NonNull
     public Optional<Integer> getCurrentlyHighlightedFieldId();
+
+    /** The board start a thread for finding a path from the field with id {@code fromField} to the field with the id {@code toField}.
+     *
+     * @param fromField Id of the field where the path starts.
+     * @param toField Id of the field where the path ends.
+     * @param executor The thread pool where the callable that does the pathfinding is submitted to.
+     * @return Future with an optional with the list of the fields along the path if such path exists. Otherwise, the optional is empty().
+     * @throws BoardFieldNotFoundException One of the two ids does not lead to an existing field.
+     */
+    @NonNull
+    public Future<Optional<List<Integer>>> findPath(int fromField, int toField, @NonNull ScheduledThreadPoolExecutor executor)
+            throws BoardFieldNotFoundException;
 }

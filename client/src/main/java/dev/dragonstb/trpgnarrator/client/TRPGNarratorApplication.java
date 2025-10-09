@@ -52,6 +52,7 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
     private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4); // TODO: configurable pool size
     private int currentPickX;
     private int currentPickY;
+    private Figurine fig;
 
 
     @Override
@@ -65,7 +66,7 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
         ingameRoot.addLight(new AmbientLight(ColorRGBA.DarkGray));
         rootNode.attachChild(ingameRoot);
 
-        Figurine fig = FigurineBuilder.ofId("Figurine").setColor(ColorRGBA.Blue.mult(.33f)).build();
+        fig = FigurineBuilder.ofId("Figurine").setColor(ColorRGBA.Blue.mult(.33f)).build();
         ingameAppState.addFigurine(fig, 35);
 
 
@@ -115,7 +116,12 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
     }
 
     @Override
-    public void onMouseButtonEvent(MouseButtonEvent evt) {}
+    public void onMouseButtonEvent(MouseButtonEvent evt) {
+        // TODO: map mouse buttons to actions
+        if(evt.getButtonIndex() == 0 && evt.isReleased()) {
+            ingameAppState.setIntoMovementTo(fig, executor);
+        }
+    }
 
     @Override
     public void onKeyEvent(KeyInputEvent evt) {}
