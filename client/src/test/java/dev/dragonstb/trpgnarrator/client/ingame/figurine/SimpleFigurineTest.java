@@ -27,6 +27,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.Globals;
 import dev.dragonstb.trpgnarrator.testslices.WithAssetManager;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,9 +40,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Dragonstb
  */
 public class SimpleFigurineTest {
-
-    public SimpleFigurineTest() {
-    }
 
     @BeforeAll
     public static void setUpClass() {
@@ -94,5 +92,32 @@ public class SimpleFigurineTest {
         fig.setLocalTranslation(newPos);
         assertEquals(newPos, node.getLocalTranslation(), "Second translation check has failed");
 
+    }
+
+    @Test
+    public void testGetCurrentFieldId_onboard() {
+        Node node = new Node();
+        SimpleFigurine fig = new SimpleFigurine("test", ColorRGBA.Blue);
+        node.attachChild(fig.getNode());
+        int fieldId = 123;
+
+        fig.setCurrentFieldId(fieldId);
+        Optional<Integer> opt = fig.getCurrentFieldId();
+
+        assertNotNull(opt, "no optional at all");
+        assertTrue(opt.isPresent(), "no value present");
+        assertEquals(fieldId, opt.get(), "wrong value");
+    }
+
+    @Test
+    public void testGetCurrentFieldId_offboard() {
+        SimpleFigurine fig = new SimpleFigurine("test", ColorRGBA.Blue);
+        int fieldId = 123;
+
+        fig.setCurrentFieldId(fieldId);
+        Optional<Integer> opt = fig.getCurrentFieldId();
+
+        assertNotNull(opt, "no optional at all");
+        assertTrue(opt.isEmpty(), "not empty");
     }
 }

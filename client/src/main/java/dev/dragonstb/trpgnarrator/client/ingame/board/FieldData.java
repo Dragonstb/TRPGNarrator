@@ -24,6 +24,7 @@ import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -32,12 +33,13 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since 0.0.1
  */
+@Getter(AccessLevel.PACKAGE)
 final class FieldData {
 
     /** An unique field id. */
-    @Getter private final int id;
+    private final int id;
     /** Location of the center of the field. */
-    @Getter @NonNull private final Vector3f location;
+    @NonNull private final Vector3f location;
     /** All links to linked other fields. These other field are usually the adjacent neighbours, but there might be reasons for linking
      * other fields. For example, when jumping over a gap is possible, this field at the edge of the gap can be linked to fields on the
      * other side. The links then may contain infos about the skills and the difficulties required for succeeding the leap. */

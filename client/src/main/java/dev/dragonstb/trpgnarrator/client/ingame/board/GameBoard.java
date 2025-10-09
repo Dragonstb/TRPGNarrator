@@ -70,6 +70,7 @@ final class GameBoard implements Board {
 
         Vector3f loc = opt.get();
         fig.setLocalTranslation(loc);
+        fig.setCurrentFieldId(fieldId);
     }
 
     @Override
@@ -85,5 +86,11 @@ final class GameBoard implements Board {
     public void unhighlightAllFields() {
         node.highlightField(null);
     }
+
+    @Override
+    public Optional<Integer> getCurrentlyHighlightedFieldId() {
+        return node.getCurrentlyHighlightedFieldId();
+    }
+
 
 }

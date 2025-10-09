@@ -42,6 +42,8 @@ public final class Globals {
 
     /* Radius of a hex field, in WU. Two oppsing corners of a hex field will be twice this distance apart. */
     public static final float FIELD_RADIUS = .5f;
+    /** Diameter of a field, in WU. */
+    public static final float FIELD_DIAMETER = 2 * FIELD_RADIUS;
     /** Name of the node that is the board. */
     public static final String BOARD_NODE_NAME = "boardNode";
     /** Base name of the board field geometries. Become appended by their field ids. */

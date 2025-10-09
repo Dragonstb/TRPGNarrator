@@ -30,7 +30,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Cylinder;
 import dev.dragonstb.trpgnarrator.client.AMAccessor;
 import dev.dragonstb.trpgnarrator.client.Globals;
+import java.util.Optional;
 import lombok.NonNull;
+import lombok.Setter;
 
 /** A simple figurine
  *
@@ -41,6 +43,7 @@ final class SimpleFigurine implements Figurine {
 
     private final String id;
     private final Node node;
+    @Setter private int currentFieldId = 0;
 
     /**
      * @author Dragonstb
@@ -85,5 +88,9 @@ final class SimpleFigurine implements Figurine {
         node.setLocalTranslation(pos);
     }
 
+    @Override
+    public Optional<Integer> getCurrentFieldId() {
+        return node.getParent()!=null ? Optional.of(currentFieldId) : Optional.empty();
+    }
 
 }

@@ -78,12 +78,35 @@ final class BoardNode extends Node{
      * @param geom Field to be highlighted. Pass {@code null} and no field becomes highlighted.
      */
     void highlightField(Geometry geom) {
+        // TODO: does ot make sense to inject a (any) geometry here. The board node alone is responsible for its geometry. So better pass
+        // an id here
         if(currentlyHighlighted!=null) {
             currentlyHighlighted.getMaterial().setColor("Color", ColorRGBA.Green.mult(.5f));
         }
         currentlyHighlighted = geom;
         if(currentlyHighlighted!=null) {
             currentlyHighlighted.getMaterial().setColor("Color", ColorRGBA.Green.mult(1.5f));
+        }
+    }
+
+    /** Gets the id of the currently highlighted field if present.
+     *
+     * @author Dragonstb
+     * @since 0.0.1
+     * @return If a field is highlighted, the id of this field will be in this optional. If no field is highlighted, the optional will be
+     * empty.
+     */
+    @NonNull
+    Optional<Integer> getCurrentlyHighlightedFieldId() {
+        // TODO: sync as 'currentlyHighlighted' is accessed in from the main thread and from the field-picking threads.
+        // so for now we use a local reference in this method
+        Geometry geom = currentlyHighlighted;
+        if(geom != null) {
+            int id = geom.getUserData(Globals.FIELD_ID);
+            return Optional.of(id);
+        }
+        else {
+            return Optional.empty();
         }
     }
 

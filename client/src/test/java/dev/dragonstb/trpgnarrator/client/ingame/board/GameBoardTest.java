@@ -28,6 +28,7 @@ import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.FigurineBuilder;
 import dev.dragonstb.trpgnarrator.testslices.WithAssetManager;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.*;
@@ -74,6 +75,8 @@ public class GameBoardTest {
     @Test
     public void testPlaceFigurineOnField_Ok() {
         Figurine fig = FigurineBuilder.ofId("doesntmatterhere").setColor(ColorRGBA.Blue).build();
+        Node node = new Node();
+        node.attachChild(fig.getNode()); // figurine assumes now to be part of the scene
         Vector3f oldPos = new Vector3f(1, 2, 3);
         fig.setLocalTranslation(oldPos);
         int id = 15;
@@ -81,9 +84,18 @@ public class GameBoardTest {
         board.placeFigurineOnField(fig, id);
         Vector3f newPos = fig.getNode().getLocalTranslation();
         float diff = oldPos.distance(newPos);
-        assertTrue(diff > 1);
-
+        assertTrue(diff > 1, "figurine has not been moved");
         // TODO: check actual position once the game board is build based on model data rather than hardcoded in the init.
+
+        Optional<Integer> opt = fig.getCurrentFieldId();
+        assertEquals(id, opt.get(), "wrong value"); // if opt is empty or has a wrong value, then something could be wrong with the figurine
+
+        // field with other id, just in case the figurine's current field id was initialized with the same value as 'id'
+        int newId = 17;
+        board.placeFigurineOnField(fig, newId);
+        Optional<Integer> newOpt = fig.getCurrentFieldId();
+        // if opt is empty or has a wrong value, then something could be wrong with the figurine
+        assertEquals(newId, newOpt.get(), "wrong value again");
     }
 
     @Test

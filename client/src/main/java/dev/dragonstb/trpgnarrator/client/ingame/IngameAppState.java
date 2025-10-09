@@ -85,16 +85,41 @@ public final class IngameAppState extends AbstractAppState {
      */
     public void addFigurine(@NonNull Figurine fig, int fieldId) throws BoardFieldNotFoundException {
         // TODO: place by story data model
-        // TODO: check if figurine already in scene
+        // TODO: check if figurine is already in scene
         ingameRoot.attachChild(fig.getNode());
         board.placeFigurineOnField(fig, fieldId);
     }
 
+    /** Starts a callable that finds the (closest) field hit by the ray.
+     *
+     * @author Dragonstb
+     * @param ray Ray that picks the field.
+     * @param executor Executor for threads.
+     */
     public void pickField(@NonNull Ray ray, @NonNull ScheduledThreadPoolExecutor executor) {
         if(fieldPick != null) {
             fieldPick.cancel(true);
         }
         fieldPick = executor.submit(new MouseFieldPicker(board.getNode(), ray));
     }
+
+    public void setIntoMovementTo(@NonNull Figurine fig) {
+        Optional<Integer> opt = fig.getCurrentFieldId();
+        if(opt.isEmpty()) {
+            return;
+        }
+        int fromField = opt.get();
+
+        opt = board.getCurrentlyHighlightedFieldId();
+        if(opt.isEmpty()) {
+            return;
+        }
+        int toField = opt.get();
+
+        // TODO: once there, sent this path request to the virtual host who looks for the path and moves the figurine.
+
+        // TODO: start a callable for finding the path.
+    }
+
 
 }

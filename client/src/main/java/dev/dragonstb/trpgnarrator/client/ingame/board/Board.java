@@ -23,6 +23,7 @@ package dev.dragonstb.trpgnarrator.client.ingame.board;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import java.util.Optional;
 import lombok.NonNull;
 
 /** Possible interactions with the {@link GameBoard GameBoard}.
@@ -40,7 +41,11 @@ public interface Board {
      */
     public Node getNode();
 
-    /** Places the givern figurine on the given field.
+    /** Places the givern figurine on the given field. This includes the following steps:
+     * <ul>
+     *   <li> Setting the figurine's local translation
+     *   <li> Setting the figurine's current field
+     * </ul>
      *
      * @param fig Figurine to be placed.
      * @param fieldId Id of the field the figurine is place on.
@@ -58,4 +63,14 @@ public interface Board {
      *
      */
     public void unhighlightAllFields();
+
+    /** Gets the id of the currently highlighted field if present.
+     *
+     * @author Dragonstb
+     * @since 0.0.1
+     * @return If a field is highlighted, the id of this field will be in this optional. If no field is highlighted, the optional will be
+     * empty.
+     */
+    @NonNull
+    public Optional<Integer> getCurrentlyHighlightedFieldId();
 }
