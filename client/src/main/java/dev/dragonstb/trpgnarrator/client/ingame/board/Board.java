@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
@@ -82,10 +83,11 @@ public interface Board {
      * @param fromField Id of the field where the path starts.
      * @param toField Id of the field where the path ends.
      * @param executor The thread pool where the callable that does the pathfinding is submitted to.
-     * @return Future with an optional with the list of the fields along the path if such path exists. Otherwise, the optional is empty().
+     * @return Future with an optional with the list of the locations of the fields along the path if such a path exists. Otherwise, the
+     * optional is empty().
      * @throws BoardFieldNotFoundException One of the two ids does not lead to an existing field.
      */
     @NonNull
-    public Future<Optional<List<Integer>>> findPath(int fromField, int toField, @NonNull ScheduledThreadPoolExecutor executor)
+    public Future<Optional<List<Vector3f>>> findPath(int fromField, int toField, @NonNull ScheduledThreadPoolExecutor executor)
             throws BoardFieldNotFoundException;
 }

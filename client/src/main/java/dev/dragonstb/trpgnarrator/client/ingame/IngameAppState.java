@@ -22,12 +22,17 @@ package dev.dragonstb.trpgnarrator.client.ingame;
 
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.Ray;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.Globals;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
 import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import dev.dragonstb.trpgnarrator.client.tweens.ActionTween;
+import dev.dragonstb.trpgnarrator.client.tweens.SequenceTween;
+import dev.dragonstb.trpgnarrator.client.tweens.ShiftTween;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -47,7 +52,9 @@ public final class IngameAppState extends AbstractAppState {
     @Getter private final Node ingameRoot = new Node(Globals.INGAME_ROOTNODE_NAME);
     private Board board;
     private Future<Optional<Integer>> fieldPick;
-    private Future<Optional<List<Integer>>> pathfinder;
+    private Future<Optional<List<Vector3f>>> pathfinder;
+    private SequenceTween path; // TODO: at some point, this is done on the virtual host
+    private Figurine figurine;
 
     public IngameAppState() {
         setEnabled(false);
@@ -77,15 +84,29 @@ public final class IngameAppState extends AbstractAppState {
         }
 
         evaluatePathfinder();
+
+        // TODO: this will be done by the virtual host in future. The host will tell the path-ignorant client where to put the figurine
+        if(path != null) {
+            path.internalAction(tpf);
+            // TODO: typesafetiness
+            ShiftTween tween = (ShiftTween)path.getCurrentActionTween();
+            figurine.setLocalTranslation(tween.getCurrentPos());
+            // TODO: update figurine's current field
+            if(tween.isDone()) {
+                this.path = null;
+            }
+        }
     }
 
     private void evaluatePathfinder() {
+        // TODO: this evaluatin will be ddone by the virtual host in future
         if(pathfinder != null && pathfinder.isDone()) {
             try {
-                Optional<List<Integer>> opt = pathfinder.get();
+                Optional<List<Vector3f>> opt = pathfinder.get();
                 if(opt.isPresent()) {
-                    List<Integer> list = opt.get();
-                    // TODO: do the real stuff
+                    List<Vector3f> list = opt.get();
+                    // TODO: know which figurine this path is meant for
+                    this.path = getTweensFromPath(list);
                 }
             } catch (Exception e) {
                 // TODO: log and go on
@@ -94,6 +115,29 @@ public final class IngameAppState extends AbstractAppState {
             }
         }
     }
+
+    private SequenceTween getTweensFromPath(List<Vector3f> path) {
+        // TODO: at some point this is done on the virtual host
+
+        // TODO: derive from figurine
+        float timePerHex = .5f;
+
+
+        Vector3f from = path.get(0);
+        Vector3f to;
+        List<ActionTween> shifts = new ArrayList<>();
+        ShiftTween tween;
+        for (int idx = 1; idx < path.size(); idx++) {
+            to = path.get(idx);
+            tween = new ShiftTween(from, to, timePerHex);
+            shifts.add(tween);
+            from = to;
+        }
+
+        SequenceTween sequence = new SequenceTween(shifts);
+        return sequence;
+    }
+
 
     /** Adds a figurine and places it on the given field.
      *
@@ -108,6 +152,7 @@ public final class IngameAppState extends AbstractAppState {
         // TODO: check if figurine is already in scene
         ingameRoot.attachChild(fig.getNode());
         board.placeFigurineOnField(fig, fieldId);
+        this.figurine = fig;
     }
 
     /** Starts a callable that finds the (closest) field hit by the ray.
@@ -149,7 +194,7 @@ public final class IngameAppState extends AbstractAppState {
         }
         // TODO: once there, sent this path request to the virtual host who looks for the path and moves the figurine.
 
-        Future<Optional<List<Integer>>> future;
+        Future<Optional<List<Vector3f>>> future;
         try {
             future = board.findPath(fromField, toField, executor);
         } catch (BoardFieldNotFoundException e) {

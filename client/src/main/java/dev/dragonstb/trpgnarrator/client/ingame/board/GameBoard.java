@@ -96,7 +96,7 @@ final class GameBoard implements Board {
     }
 
     @Override
-    public Future<Optional<List<Integer>>> findPath(int fromField, int toField, @NonNull ScheduledThreadPoolExecutor executor)
+    public Future<Optional<List<Vector3f>>> findPath(int fromField, int toField, @NonNull ScheduledThreadPoolExecutor executor)
             throws BoardFieldNotFoundException {
         String errCode = ClientErrorCodes.C63749;
         if(!data.getFields().containsKey(fromField)) {
@@ -111,7 +111,7 @@ final class GameBoard implements Board {
         }
 
         Pathfinder finder = new Pathfinder(fromField, toField, data);
-        Future<Optional<List<Integer>>> future = executor.submit(finder);
+        Future<Optional<List<Vector3f>>> future = executor.submit(finder);
         return future;
     }
 

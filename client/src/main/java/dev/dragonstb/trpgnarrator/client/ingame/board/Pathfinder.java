@@ -36,7 +36,7 @@ import lombok.Setter;
  * @author Dragonstb
  * @since
  */
-final class Pathfinder implements Callable<Optional<List<Integer>>>{
+final class Pathfinder implements Callable<Optional<List<Vector3f>>>{
 
     /** Id of the field where the path starts. */
     private final int fromField;
@@ -59,7 +59,7 @@ final class Pathfinder implements Callable<Optional<List<Integer>>>{
     }
 
     @Override
-    public Optional<List<Integer>> call() throws Exception {
+    public Optional<List<Vector3f>> call() throws Exception {
         FieldWrapper field = new FieldWrapper(rawMap.get(toField), startField);
         map.put(toField, field);
 
@@ -90,10 +90,10 @@ final class Pathfinder implements Callable<Optional<List<Integer>>>{
         } while(!pool.isEmpty());
 
         if(success) {
-            List<Integer> path = new ArrayList<>();
+            List<Vector3f> path = new ArrayList<>();
             FieldWrapper next = field;
             do {
-                path.add(next.getId());
+                path.add(next.getField().getLocation());
                 next = next.getNext();
             } while(next != null);
             return Optional.of(path);

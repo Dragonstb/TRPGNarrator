@@ -22,6 +22,7 @@ package dev.dragonstb.trpgnarrator.client.ingame.figurine;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import dev.dragonstb.trpgnarrator.client.tweens.SequenceTween;
 import java.util.Optional;
 import lombok.NonNull;
 
@@ -61,4 +62,5 @@ public interface Figurine {
      */
     @NonNull
     public Optional<Integer> getCurrentFieldId();
+
 }
