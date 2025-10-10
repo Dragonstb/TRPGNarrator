@@ -46,7 +46,7 @@ final class Pathfinder implements Callable<Optional<List<Integer>>>{
     private final Map<Integer, FieldData> rawMap;
     /** The map of the decorated field data. */
     private final Map<Integer, FieldWrapper> map = new HashMap<>();
-    /** A data structure that easily sorts FieldWrappers by theire distance. TODO: please use such a data structure. */
+    /** A data structure that easily sorts FieldWrappers by their total path lengths. TODO: please use such a data structure. */
     private final List<FieldWrapper> pool = new ArrayList<>();
     /** The start field data. */
     private final FieldData startField;
@@ -154,14 +154,14 @@ final class Pathfinder implements Callable<Optional<List<Integer>>>{
 
         float newDist;
         for(FieldWrapper other: linked) {
-            // prelemeniray length of path to goal when walking from 'other' to 'field' (field has a known path length already)
+            // preleminary length of path to goal when walking from 'other' to 'field' (field has a known path length already)
             newDist = field.getKnownPathLengthToGoal()+ 1; // TODO: add real costs/distances rather than unity
             if(newDist < other.getKnownPathLengthToGoal()) {
                 // checking this field for the first time?
                 boolean newField = Float.isInfinite(other.getFullPathLength());
                 // append path
                 other.setNext(field);
-                // update nown path length from 'other' to goal
+                // update known path length from 'other' to goal
                 other.setKnownPathLengthToGoal(newDist);
                 // update heuristic total path length
                 other.setFullPathLength(newDist + other.getHeuristicDistToStart());
@@ -179,7 +179,7 @@ final class Pathfinder implements Callable<Optional<List<Integer>>>{
 
     /** Decreases the key of the field in the pool.
      * @since 0.0.1
-     * @param wrapper
+     * @param field
      */
     private void decreaseKey(FieldWrapper wrapper) {
         // TODO: use a proper data structure where this action makes sense, not a list that checks the keys of every entry every time
@@ -189,6 +189,8 @@ final class Pathfinder implements Callable<Optional<List<Integer>>>{
     @Getter
     @Setter
     private class FieldWrapper {
+
+        // TODO: make this its own first-level class, for easier unit testing
 
         /** The decorated field. */
         private final FieldData field;

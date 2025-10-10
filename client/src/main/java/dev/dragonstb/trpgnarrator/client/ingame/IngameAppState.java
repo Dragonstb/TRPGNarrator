@@ -33,11 +33,10 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 
-/** App state active while actuallz in game.
+/** App state active while actually in game.
  *
  * @author Dragonstb
  * @since 0.0.1
@@ -102,7 +101,7 @@ public final class IngameAppState extends AbstractAppState {
      * @since 0.0.1
      * @param fig Figurine to be added to the scene.
      * @param fieldId Id of the field the figurine is placed on.
-     * @throws BoardFieldNotFoundException When ther eis no field with the gievn id.
+     * @throws BoardFieldNotFoundException When there is no field with the given id.
      */
     public void addFigurine(@NonNull Figurine fig, int fieldId) throws BoardFieldNotFoundException {
         // TODO: place by story data model
@@ -124,6 +123,14 @@ public final class IngameAppState extends AbstractAppState {
         fieldPick = executor.submit(new MouseFieldPicker(board.getNode(), ray));
     }
 
+    /** Initializes a movement of the figurine to another field. The first step is finding the path, which is evaluated asynchronously. This
+     * is started in this method.
+     *
+     * @author Dragonstb
+     * @since 0.0.1
+     * @param fig Figurine to be moved.
+     * @param executor Thread pool executor the callable is submitted to,
+     */
     public void setIntoMovementTo(@NonNull Figurine fig, @NonNull ScheduledThreadPoolExecutor executor) {
         Optional<Integer> opt = fig.getCurrentFieldId();
         if(opt.isEmpty()) {
@@ -137,6 +144,9 @@ public final class IngameAppState extends AbstractAppState {
         }
         int toField = opt.get();
 
+        if(toField == fromField) {
+            return;
+        }
         // TODO: once there, sent this path request to the virtual host who looks for the path and moves the figurine.
 
         Future<Optional<List<Integer>>> future;

@@ -38,7 +38,7 @@ final class FieldData {
 
     /** An unique field id. */
     private final int id;
-    /** Location of the center of the field. */
+    /** Location of the centre of the field. */
     @NonNull private final Vector3f location;
     /** All links to linked other fields. These other field are usually the adjacent neighbours, but there might be reasons for linking
      * other fields. For example, when jumping over a gap is possible, this field at the edge of the gap can be linked to fields on the

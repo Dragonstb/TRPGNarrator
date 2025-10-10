@@ -44,7 +44,7 @@ public interface Board {
      */
     public Node getNode();
 
-    /** Places the givern figurine on the given field. This includes the following steps:
+    /** Places the given figurine on the given field. This includes the following steps:
      * <ul>
      *   <li> Setting the figurine's local translation
      *   <li> Setting the figurine's current field
@@ -52,7 +52,7 @@ public interface Board {
      *
      * @param fig Figurine to be placed.
      * @param fieldId Id of the field the figurine is place on.
-     * @throws BoardFieldNotFoundException When there is no field with the giben id.
+     * @throws BoardFieldNotFoundException When there is no field with the given id.
      */
     public void placeFigurineOnField(@NonNull Figurine fig, int fieldId) throws BoardFieldNotFoundException;
 
