@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
@@ -77,6 +78,15 @@ public interface Board {
      */
     @NonNull
     public Optional<Integer> getCurrentlyHighlightedFieldId();
+
+    /** Gets the id of the closest field hit by the ray.
+     *
+     * @param ray Ray for picking.
+     * @param executor The thread pool where the callable that does the pathfinding is submitted to.
+     * @return An optional containing the id of the field picked. The optional is empty if the ray misses all fields.
+     */
+    @NonNull
+    public Future<Optional<Integer>> pickField(@NonNull Ray ray, @NonNull ScheduledThreadPoolExecutor executor);
 
     /** The board start a thread for finding a path from the field with id {@code fromField} to the field with the id {@code toField}.
      *

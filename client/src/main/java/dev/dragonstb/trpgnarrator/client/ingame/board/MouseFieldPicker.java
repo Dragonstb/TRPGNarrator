@@ -18,7 +18,7 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.client.ingame;
+package dev.dragonstb.trpgnarrator.client.ingame.board;
 
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -26,7 +26,6 @@ import com.jme3.math.Ray;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import dev.dragonstb.trpgnarrator.client.Globals;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -39,12 +38,16 @@ import lombok.NonNull;
  */
 final class MouseFieldPicker implements Callable<Optional<Integer>>{
 
+    // TODO: take care of the fact that this called is called in an asynchonous context and concurrently accesses the board node
+    // together with other threads that even change the scene graph of the board node. Also, this method is called every time the mouse
+    // pointer moves, which is expected to happen very often.
+
     private final Node node;
     private final Ray ray;
 
     MouseFieldPicker(@NonNull Node node, @NonNull Ray ray) {
-        // TODO: possible optimization by not deep cloning the entire map
-        this.node = (Node)node.deepClone();
+        // TODO: optimize access when taking care of the concurrent operations
+        this.node = node;
         this.ray = ray;
     }
 
@@ -61,7 +64,7 @@ final class MouseFieldPicker implements Callable<Optional<Integer>>{
         for (Spatial child: children) {
             child.collideWith(ray, collisions);
             CollisionResult closest = collisions.getClosestCollision();
-            if(closest != null && closest.getDistance() < dist) {
+            if(closest != null && closest.getDistance() < dist && (closest.getGeometry() instanceof FieldGeometry)) {
                 geom = closest.getGeometry();
                 dist = closest.getDistance();
             }
@@ -71,11 +74,8 @@ final class MouseFieldPicker implements Callable<Optional<Integer>>{
             return Optional.empty();
         }
 
-        // TODO: log unexpected exceptions like 'no such key' or 'user data value is not an int' that points to coding errors in the
-        // construction of the fields
-        int id = geom.getUserData(Globals.FIELD_ID);
+        int id = ((FieldGeometry)geom).getId();
         return Optional.of(id);
     }
-
 
 }

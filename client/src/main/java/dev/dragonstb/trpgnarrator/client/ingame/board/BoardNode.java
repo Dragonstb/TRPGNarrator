@@ -20,8 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
-import com.jme3.math.ColorRGBA;
-import com.jme3.scene.Geometry;
+import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.AMAccessor;
 import dev.dragonstb.trpgnarrator.client.Globals;
@@ -37,8 +36,8 @@ import lombok.NonNull;
  */
 final class BoardNode extends Node{
 
-    private Geometry currentlyHighlighted;
-    private final Map<Integer, Geometry> geometries = new HashMap<>();
+    private FieldGeometry currentlyHighlighted;
+    private final Map<Integer, FieldGeometry> geometries = new HashMap<>();
 
     BoardNode(@NonNull BoardData data) {
         super(Globals.BOARD_NODE_NAME);
@@ -46,15 +45,12 @@ final class BoardNode extends Node{
     }
 
     private void init(BoardData data) {
+        AssetManager am = AMAccessor.get();
         Map<Integer, FieldData> map = data.getFields();
         map.values().forEach(field -> {
-            Geometry geom = FieldGeometryFactory.makeFieldGeometry(field, AMAccessor.get());
+            FieldGeometry geom = new FieldGeometry(field, am);
             geom.setLocalTranslation(field.getLocation());
-
-            // TODO: with the user data no in use, better write a class extending geometry that natively owns such a field 'id'
-            int id = field.getId();
-            geom.setUserData(Globals.FIELD_ID, id);
-            geometries.put(id, geom);
+            geometries.put(geom.getId(), geom);
             this.attachChild(geom);
         });
     }
@@ -67,7 +63,7 @@ final class BoardNode extends Node{
      * @param id Id of the field.
      * @return Optional with the field if the id exists or empty if the id does not exists.
      */
-    Optional<Geometry> getFieldGeometry(int id) {
+    Optional<FieldGeometry> getFieldGeometry(int id) {
         return Optional.ofNullable(geometries.get(id));
     }
 
@@ -77,15 +73,15 @@ final class BoardNode extends Node{
      * @since 0.0.1
      * @param geom Field to be highlighted. Pass {@code null} and no field becomes highlighted.
      */
-    void highlightField(Geometry geom) {
+    void highlightField(FieldGeometry geom) {
         // TODO: does ot make sense to inject a (any) geometry here. The board node alone is responsible for its geometry. So better pass
         // an id here
         if(currentlyHighlighted!=null) {
-            currentlyHighlighted.getMaterial().setColor("Color", ColorRGBA.Green.mult(.5f));
+            currentlyHighlighted.setHighlighted(false);
         }
         currentlyHighlighted = geom;
         if(currentlyHighlighted!=null) {
-            currentlyHighlighted.getMaterial().setColor("Color", ColorRGBA.Green.mult(1.5f));
+            currentlyHighlighted.setHighlighted(true);
         }
     }
 
@@ -100,9 +96,9 @@ final class BoardNode extends Node{
     Optional<Integer> getCurrentlyHighlightedFieldId() {
         // TODO: sync as 'currentlyHighlighted' is accessed in from the main thread and from the field-picking threads.
         // so for now we use a local reference in this method
-        Geometry geom = currentlyHighlighted;
+        FieldGeometry geom = currentlyHighlighted;
         if(geom != null) {
-            int id = geom.getUserData(Globals.FIELD_ID);
+            int id = geom.getId();
             return Optional.of(id);
         }
         else {

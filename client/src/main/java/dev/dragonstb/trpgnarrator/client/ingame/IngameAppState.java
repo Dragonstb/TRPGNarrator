@@ -165,7 +165,7 @@ public final class IngameAppState extends AbstractAppState {
         if(fieldPick != null) {
             fieldPick.cancel(true);
         }
-        fieldPick = executor.submit(new MouseFieldPicker(board.getNode(), ray));
+        fieldPick = board.pickField(ray, executor);
     }
 
     /** Initializes a movement of the figurine to another field. The first step is finding the path, which is evaluated asynchronously. This

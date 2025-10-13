@@ -20,15 +20,10 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import dev.dragonstb.trpgnarrator.client.Globals;
-import lombok.NonNull;
 
 /** Creates geometries of board fields from {@link FieldData FieldData}.
  *
@@ -36,25 +31,6 @@ import lombok.NonNull;
  * @since 0.0.1;
  */
 final class FieldGeometryFactory {
-
-    /** Makes the geometry of a field of the board. The name of the geometry is the
-     * {@link dev.dragonstb.trpgnarrator.client.Globals#FIELD_GEOM_NAME FIELD_GEOM_NAME} defined in Globals appended by the field id.
-     * @author Dragonstb
-     * @since 0.0.1
-     * @param data Data of the field.
-     * @param assetManager The asset manager of the game.
-     * @return The geometry of the field.
-     */
-    static Geometry makeFieldGeometry(@NonNull FieldData data, @NonNull AssetManager assetManager) {
-        Mesh mesh = makeFieldMesh();
-        String name = "fieldGeometry_"+String.valueOf(data.getId());
-        Geometry geom = new Geometry(name, mesh);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Green.mult(.5f));
-        geom.setMaterial(mat);
-        geom.updateModelBound();
-        return geom;
-    }
 
     /** Handicrafts the mesh of a field.
      * @author Dragonstb

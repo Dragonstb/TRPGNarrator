@@ -20,9 +20,14 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import dev.dragonstb.trpgnarrator.client.Globals;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
@@ -79,9 +84,9 @@ final class GameBoard implements Board {
     @Override
     public void highlightJustField(int fieldId) {
         // TODO: optimize finding
-        Optional<Geometry> child = node.getFieldGeometry(fieldId);
+        Optional<FieldGeometry> child = node.getFieldGeometry(fieldId);
 
-        Geometry geom = child.orElse(null);
+        FieldGeometry geom = child.orElse(null);
         node.highlightField(geom);
     }
 
@@ -93,6 +98,13 @@ final class GameBoard implements Board {
     @Override
     public Optional<Integer> getCurrentlyHighlightedFieldId() {
         return node.getCurrentlyHighlightedFieldId();
+    }
+
+    @Override
+    public Future<Optional<Integer>> pickField(Ray ray, @NonNull ScheduledThreadPoolExecutor executor) {
+        MouseFieldPicker picker = new MouseFieldPicker(node, ray);
+        Future<Optional<Integer>> future = executor.submit(picker);
+        return future;
     }
 
     @Override

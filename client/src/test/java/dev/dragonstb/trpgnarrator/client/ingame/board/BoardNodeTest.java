@@ -81,17 +81,17 @@ public class BoardNodeTest {
     @Test
     public void testGetFieldGeometry_ok() {
         int id = fieldA.getId();
-        Optional<Geometry> opt = boardNode.getFieldGeometry(id);
+        Optional<FieldGeometry> opt = boardNode.getFieldGeometry(id);
 
         assertNotNull(opt, "No optional in da house");
         assertTrue(opt.isPresent(), "No value present");
-        int actual = opt.get().getUserData(Globals.FIELD_ID);
+        int actual = opt.get().getId();
         assertEquals(id, actual, "Wrong id");
     }
 
     @Test
     public void testGetFieldGeometry_not_ok() {
-        Optional<Geometry> opt = boardNode.getFieldGeometry(-3); // any invalid id
+        Optional<FieldGeometry> opt = boardNode.getFieldGeometry(-3); // any invalid id
 
         assertNotNull(opt, "No optional in da house");
         assertTrue(opt.isEmpty(), "Unexpected value");
@@ -100,20 +100,20 @@ public class BoardNodeTest {
     @Test
     public void testGetCurrentlyHighlightedFieldId_ok() {
         int id = fieldA.getId();
-        Optional<Geometry> opt = boardNode.getFieldGeometry(id);
+        Optional<FieldGeometry> opt = boardNode.getFieldGeometry(id);
         if(opt.isEmpty()) {
             fail("no geometry");
             return;
         }
 
-        Geometry geom = opt.get();
+        FieldGeometry geom = opt.get();
         boardNode.highlightField(geom);
 
         Optional<Integer> idOpt = boardNode.getCurrentlyHighlightedFieldId();
 
         assertNotNull(idOpt);
         assertTrue(idOpt.isPresent());
-        int actual = opt.get().getUserData(Globals.FIELD_ID);
+        int actual = opt.get().getId();
         assertEquals(id, actual, "Wrong id");
     }
 
