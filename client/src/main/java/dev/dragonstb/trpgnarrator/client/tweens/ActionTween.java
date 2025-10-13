@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.client.tweens;
 
+import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import lombok.Getter;
 
 /** A tween transits something from one state into another.
@@ -40,8 +41,16 @@ public abstract class ActionTween {
     @Getter private boolean done = false;
 
     public ActionTween(float length) {
-        this.length = length;
-        time = 0;
+        if(Float.isFinite(length) && length > 0) {
+            this.length = length;
+            time = 0;
+        }
+        else {
+            String code = "?????"; // TODO: set error code once the tweens have been shifted to the virtual host
+            String msg = "The length of the an action tween must be a finite, positive number but got "+String.valueOf(length);
+            String use = ClientErrorCodes.assembleCodedMsg(msg, code);
+            throw new IllegalArgumentException(use);
+        }
     }
 
     /** Progresses the tween by the given amount of time. Reports if the tween completes after this step.
@@ -50,10 +59,18 @@ public abstract class ActionTween {
      * @return Done after this step?
      */
     public boolean progress(float dt){
-        time += dt;
-        done = time >= length;
-        internalAction(dt);
-        return done;
+        if(Float.isFinite(dt)) {
+            time += dt;
+            done = time >= length;
+            internalAction(dt);
+            return done;
+        }
+        else {
+            String code = "!!!!!"; // TODO: set error code once the tweens have been shifted to the virtual host
+            String msg = "Can progress an action tween only by a finite amount of time but got "+String.valueOf(length);
+            String use = ClientErrorCodes.assembleCodedMsg(msg, code);
+            throw new IllegalArgumentException(use);
+        }
     }
 
     public abstract void internalAction(float dt);

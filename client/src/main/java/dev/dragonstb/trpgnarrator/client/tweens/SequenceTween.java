@@ -25,6 +25,8 @@ import lombok.NonNull;
 
 /** An action tween that progresses a sequence of other action tweens one after another.
  *
+ * It is not possible for passing an empty list of action tweens, as this would result in an invalid tween length of 0.
+ *
  * @since 0.0.1
  * @author Dragonstb
  */

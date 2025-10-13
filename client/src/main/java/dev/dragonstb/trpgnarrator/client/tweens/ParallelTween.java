@@ -25,6 +25,8 @@ import lombok.NonNull;
 /** An action tween that progresses several tweens in parallel. Child tweens that end earlier than other child tweens are not longer
  * progressed once they are done.
  *
+ * It is not possible for passing an empty list of action tweens, as this would result in an invalid tween length of 0.
+ *
  * @since 0.0.1
  * @author Dragonstb
  */

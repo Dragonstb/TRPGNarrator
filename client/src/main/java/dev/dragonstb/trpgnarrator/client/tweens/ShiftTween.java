@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.client.tweens;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import lombok.Getter;
 import lombok.NonNull;
@@ -54,7 +55,8 @@ public final class ShiftTween extends ActionTween{
     public void internalAction(float dt) {
         if(!isDone()){
             currentPos.set(diff);
-            currentPos.multLocal( getTime() / getLength() );
+            float time = Math.max(0, getTime());
+            currentPos.multLocal( time / getLength() );
             currentPos.addLocal(start);
         }
         else{
