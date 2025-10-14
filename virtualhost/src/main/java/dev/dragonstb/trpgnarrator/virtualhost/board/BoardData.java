@@ -21,22 +21,27 @@
 package dev.dragonstb.trpgnarrator.virtualhost.board;
 
 import com.jme3.math.Vector3f;
+import dev.dragonstb.trpgnarrator.virtualhost.broker.Receiver;
+import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchonousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Globals;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import lombok.NonNull;
 
 /** Collection of all {@link FieldData FieldData} and some stuff for dealing with them.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-final class BoardData {
+final class BoardData implements Board, Receiver {
 
     /** All fields of the board. */
     private final Map<Integer, FieldData> fields = new HashMap<>();
+    /** The broker this instance connects to. */
+    private final SynchonousBroker broker;
 
-    BoardData() {
+    BoardData(@NonNull SynchonousBroker broker) {
+        this.broker = broker;
         init();
     }
 
@@ -83,21 +88,9 @@ final class BoardData {
 
     }
 
-    /** Fetches the location of a board field.
-     *
-     * @author Dragonstb
-     * @since 0.0.1
-     * @param fieldId Id of the field of interest.
-     * @return An optional containing the location of the field of interest. The optinal is empty if no field has the given id.
-     */
-    Optional<Vector3f> getLocationOfField(int fieldId) {
-        FieldData field = fields.get(fieldId);
-        if(field != null) {
-            return Optional.of(field.getLocation());
-        }
-        else {
-            return Optional.empty();
-        }
+    @Override
+    public void receive(Object obj) {
+        
     }
 
 }

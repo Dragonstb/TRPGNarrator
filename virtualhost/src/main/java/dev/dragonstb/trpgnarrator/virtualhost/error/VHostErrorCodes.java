@@ -22,14 +22,15 @@ package dev.dragonstb.trpgnarrator.virtualhost.error;
 
 import java.text.MessageFormat;
 
-/**
+/** Collection of error codes used by the virtual host.
  *
  * @author Dragonstb
- * @since
+ * @since 0.0.1
  */
 public final class VHostErrorCodes {
 
     public static final String V43108 = "V43108";
+    public static final String V48135 = "V48135";
 
     /** Assembles the given message and the code to a single message that includes the code.
      *
