@@ -3,3 +3,9 @@ plugins {
 }
 
 description = 'TRPGNarrator Virtual Host'
+
+ext.jmeVersion = '3.8.1-stable'
+
+dependencies {
+    implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
+}

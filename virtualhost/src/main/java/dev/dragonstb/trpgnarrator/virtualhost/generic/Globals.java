@@ -18,8 +18,20 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-module trpgnarrator.virtualhost {
+package dev.dragonstb.trpgnarrator.virtualhost.generic;
 
-    requires lombok;
-    requires jme3.core;
+/** Some global agreements made so that the components can work together.
+ *
+ * TODO: some constants are used by virtual host, client, and possibly even the server. These constant should be better defined once in
+ * a new "common" subproject and artefact, rather than defining them in each subproject over and over again.
+ *
+ * @author Dragonstb
+ * @since 0.0.1
+ */
+public final class Globals {
+
+    /* Radius of a hex field, in WU. Two oppsing corners of a hex field will be twice this distance apart. */
+    public static final float FIELD_RADIUS = .5f;
+    /** Diameter of a field, in WU. */
+    public static final float FIELD_DIAMETER = 2 * FIELD_RADIUS;
 }

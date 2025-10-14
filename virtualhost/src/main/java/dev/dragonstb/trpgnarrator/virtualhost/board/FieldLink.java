@@ -18,8 +18,30 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-module trpgnarrator.virtualhost {
+package dev.dragonstb.trpgnarrator.virtualhost.board;
 
-    requires lombok;
-    requires jme3.core;
+import lombok.Getter;
+import lombok.NonNull;
+
+/** A link from one {@link FieldData FieldData} to another.
+ *
+ * @author Dragonstb
+ * @since 0.0.1;
+ */
+@Getter
+final class FieldLink {
+
+    private final FieldData fieldA;
+    private final FieldData fieldB;
+
+    /** Generates.
+     *
+     * @param fieldA The one field.
+     * @param fieldB The other field.
+     */
+    FieldLink(@NonNull FieldData fieldA, @NonNull FieldData fieldB) {
+        this.fieldA = fieldA;
+        this.fieldB = fieldB;
+    }
+
 }
