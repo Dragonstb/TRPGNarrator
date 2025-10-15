@@ -22,6 +22,8 @@ package dev.dragonstb.trpgnarrator.virtualhost.board;
 
 import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldLinkDTO;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -66,6 +68,17 @@ final class FieldData {
         }
 
         links.add(link);
+    }
+
+    /** Creates an immutable data transfer object with the data of this field except for the links.
+     *
+     * @author Dragonstb
+     * @since 0.0.1
+     * @return An object for transferring the data of this field.
+     */
+    FieldDataDTO asDTO() {
+        FieldDataDTO dto = new FieldDataDTO(id, location);
+        return dto;
     }
 
 }

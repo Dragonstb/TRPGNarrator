@@ -18,42 +18,44 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.board;
+package dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos;
 
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldLinkDTO;
-import lombok.AccessLevel;
+import com.jme3.math.Vector3f;
 import lombok.Getter;
 import lombok.NonNull;
 
-/** A link from one {@link FieldData FieldData} to another.
+/** Immutable class that represents the data of a field on the board <i>except for the links to other fields</i>. These links follow from
+ * a list of {@link FieldLinkDTO field link DTOs}.
  *
  * @author Dragonstb
- * @since 0.0.1;
+ * @since 0.0.1
  */
-@Getter(AccessLevel.PACKAGE)
-final class FieldLink {
+@Getter
+public final class FieldDataDTO {
 
-    private final FieldData fieldA;
-    private final FieldData fieldB;
+    private final int id;
+    private final float x;
+    private final float y;
+    private final float z;
 
-    /** Generates.
-     *
-     * @param fieldA The one field.
-     * @param fieldB The other field.
-     */
-    FieldLink(@NonNull FieldData fieldA, @NonNull FieldData fieldB) {
-        this.fieldA = fieldA;
-        this.fieldB = fieldB;
+    public FieldDataDTO(int id, float x, float y, float z) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    /** Returns an immutable DTO with the data of this field.
+    public FieldDataDTO(int id, @NonNull Vector3f location) {
+        this(id, location.x, location.y, location.z);
+    }
+
+    /** Returns the location as a vector;
      *
      * @since 0.0.1
      * @author Dragonstb
-     * @return An immutable data object for transferring the data of this link.
+     * @return A new Vector3f.
      */
-    FieldLinkDTO asDTO() {
-        FieldLinkDTO dto = new FieldLinkDTO(fieldA.getId(), fieldB.getId());
-        return dto;
+    public Vector3f getLocationAsVector() {
+        return new Vector3f(x, y, z);
     }
 }
