@@ -38,4 +38,29 @@ public final class FieldLinkDTO {
         this.idFieldB = idFieldB;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || !(obj instanceof FieldLinkDTO)) {
+            return false;
+        }
+
+        FieldLinkDTO other = (FieldLinkDTO)obj;
+        if(idFieldA != other.getIdFieldA()) {
+            return false;
+        }
+        else if(idFieldB != other.getIdFieldB()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + this.idFieldA;
+        hash = 17 * hash + this.idFieldB;
+        return hash;
+    }
+
 }

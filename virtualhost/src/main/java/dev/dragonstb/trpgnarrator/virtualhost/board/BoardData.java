@@ -27,7 +27,14 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.NonNull;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldLinkDTO;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /** Collection of all {@link FieldData FieldData} and some stuff for dealing with them.
  *
@@ -94,9 +101,36 @@ final class BoardData implements Board, Receiver {
 
     }
 
+    /** Creates a new, immutable representation of the board model data.
+     *
+     * @since 0.0.1
+     * @author Dragonstb
+     * @return An object for transferring the board data.
+     */
+    BoardDataDTO asDTO() {
+        List<FieldDataDTO> fieldDtos = fields.values().stream().map(fld -> fld.asDTO()).collect(Collectors.toList());
+        Set<FieldLinkDTO> linkDtos = fields.values().stream()
+                .flatMap(fld -> fld.getLinks()
+                        .stream()
+                        .map(lnk -> lnk.asDTO()))
+                .collect(Collectors.toSet());
+
+        BoardDataDTO dto = new BoardDataDTO(fieldDtos, linkDtos);
+        return dto;
+    }
+
     @Override
     public Optional<Object> fetch(@NonNull String fetch) {
-        return Optional.empty();
+
+        Optional<Object> opt = switch(fetch) {
+            case FetchCodes.MAP -> {
+                BoardDataDTO dto = asDTO();
+                yield Optional.of(dto);
+            }
+            default -> {yield Optional.empty();}
+        };
+
+        return opt;
     }
 
 }

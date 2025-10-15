@@ -79,4 +79,5 @@ public class FieldLinkTest {
         assertThrows(NullPointerException.class, () -> new FieldLink(fieldA, null), "No exception when field B is null");
         assertThrows(NullPointerException.class, () -> new FieldLink(null, null), "No exception when bot fields are null");
     }
+
 }

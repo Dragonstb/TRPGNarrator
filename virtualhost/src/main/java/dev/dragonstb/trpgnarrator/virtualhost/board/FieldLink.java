@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.board;
 
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldLinkDTO;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -56,4 +57,5 @@ final class FieldLink {
         FieldLinkDTO dto = new FieldLinkDTO(fieldA.getId(), fieldB.getId());
         return dto;
     }
+
 }
