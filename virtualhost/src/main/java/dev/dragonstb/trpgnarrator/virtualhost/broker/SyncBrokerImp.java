@@ -44,6 +44,7 @@ final class SyncBrokerImp implements SynchonousBroker {
         else {
             BrokerChannel newChannel = new BrokerChannel(channel);
             channels.put(channel, newChannel);
+            newChannel.addReceiver(receiver);
         }
     }
 

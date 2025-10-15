@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.board;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -28,7 +29,7 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since 0.0.1;
  */
-@Getter
+@Getter(AccessLevel.PACKAGE)
 final class FieldLink {
 
     private final FieldData fieldA;
