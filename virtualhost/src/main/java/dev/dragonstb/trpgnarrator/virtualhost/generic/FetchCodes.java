@@ -18,30 +18,14 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.broker;
+package dev.dragonstb.trpgnarrator.virtualhost.generic;
 
-import java.util.Optional;
-import lombok.NonNull;
-
-/** Can receive messages from the {@link SynchonousBroker broker}.
+/** Some strings used in the receivers fetch-method as argument. This list mainly exists for preventing misspelling.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-public interface Receiver {
+public final class FetchCodes {
 
-    /** Delivers the object to the receiver. The receiver has to care about validation and interpretation of what it got. The broker is just
-     * a dump pipe.
-     *
-     * @since 0.0.1
-     * @param obj Object delivered. Might be {@code null}.
-     */
-    public void receive(Object obj);
-
-    /** The origin of the requests fetches an object from the receiver.
-     *
-     * @param fetch A string that specifies the requested object. The receiver must now how to interpret this.
-     * @return Requested object.
-     */
-    public Optional<Object> fetch(@NonNull String fetch);
+    public static final String MAP = "map";
 }

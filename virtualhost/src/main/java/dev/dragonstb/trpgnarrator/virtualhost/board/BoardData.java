@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.NonNull;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
+import java.util.Optional;
 
 /** Collection of all {@link FieldData FieldData} and some stuff for dealing with them.
  *
@@ -91,6 +92,11 @@ final class BoardData implements Board, Receiver {
     @Override
     public void receive(Object obj) {
 
+    }
+
+    @Override
+    public Optional<Object> fetch(@NonNull String fetch) {
+        return Optional.empty();
     }
 
 }
