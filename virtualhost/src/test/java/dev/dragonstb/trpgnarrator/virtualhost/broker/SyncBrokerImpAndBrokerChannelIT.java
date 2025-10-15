@@ -19,6 +19,7 @@
  */
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
+import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +42,9 @@ public class SyncBrokerImpAndBrokerChannelIT {
     private final String channel2 = "channel2";
 
     @Mock
+    private HostConnector connector;
+
+    @Mock
     private Receiver receiverA;
     @Mock
     private Receiver receiverB;
@@ -49,7 +53,7 @@ public class SyncBrokerImpAndBrokerChannelIT {
 
     @BeforeEach
     public void setUp() {
-        broker = new SyncBrokerImp();
+        broker = new SyncBrokerImp(connector);
     }
 
     @Test

@@ -52,4 +52,5 @@ public interface SynchronousBroker {
      * @param channelName Channel the object is send to. Must <i>not</i> be {@code null}.
      */
     public void send(Object obj, @NonNull String channelName);
+
 }

@@ -18,9 +18,9 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.broker;
+package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
-import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
+import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import lombok.NonNull;
 
 /**
@@ -28,9 +28,17 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since 0.0.1
  */
-public final class SyncBrokerFactory {
+abstract class AbstractHostConnector implements HostConnector {
 
-    public static SynchronousBroker createBroker(@NonNull HostConnector connector) {
-        return new SyncBrokerImp(connector);
+    /** The broker the connector speaks with. */
+    private SynchronousBroker broker = null;
+
+    @Override
+    public void linkBroker(@NonNull SynchronousBroker broker) {
+        if(this.broker == null) {
+            this.broker = broker;
+        }
     }
+
+
 }

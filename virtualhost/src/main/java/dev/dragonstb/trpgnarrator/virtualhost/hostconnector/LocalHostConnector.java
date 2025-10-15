@@ -18,19 +18,16 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.broker;
+package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
-import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
-import lombok.NonNull;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
 
-/**
+/** Host connector that runs on the same machine as the client, with this client being the only client connected to.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-public final class SyncBrokerFactory {
+final class LocalHostConnector extends AbstractHostConnector implements VirtualHost {
 
-    public static SynchronousBroker createBroker(@NonNull HostConnector connector) {
-        return new SyncBrokerImp(connector);
-    }
+
 }

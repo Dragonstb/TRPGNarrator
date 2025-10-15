@@ -17,20 +17,20 @@
  *
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
+package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
-package dev.dragonstb.trpgnarrator.virtualhost.broker;
-
-import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
-import lombok.NonNull;
-
-/**
+/** To specify the type of virtual host.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-public final class SyncBrokerFactory {
+public enum HostType {
 
-    public static SynchronousBroker createBroker(@NonNull HostConnector connector) {
-        return new SyncBrokerImp(connector);
-    }
+    /** A local virtual host for single player games. */
+    local,
+    /** A virtual host running on a web server. */
+    web,
+    /** A virtual host running locally on a machine that hosts a game, but also serves clients on other machines in a LAN. */
+    lan
+
 }

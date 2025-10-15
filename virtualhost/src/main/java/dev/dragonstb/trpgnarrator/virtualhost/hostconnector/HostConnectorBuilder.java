@@ -18,19 +18,25 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.broker;
+package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
-import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import lombok.NonNull;
 
 /**
  *
  * @author Dragonstb
- * @since 0.0.1
+ * @since
  */
-public final class SyncBrokerFactory {
+public final class HostConnectorBuilder {
 
-    public static SynchronousBroker createBroker(@NonNull HostConnector connector) {
-        return new SyncBrokerImp(connector);
+    @NonNull
+    public HostConnector build(@NonNull HostType type) {
+        HostConnector connector = switch(type) {
+            case local: yield new LocalHostConnectorBuilder().build();
+            case web: throw new UnsupportedOperationException("web host yet not supported");
+            case lan: throw new UnsupportedOperationException("lan host yet not supported");
+        };
+        return connector;
     }
+
 }

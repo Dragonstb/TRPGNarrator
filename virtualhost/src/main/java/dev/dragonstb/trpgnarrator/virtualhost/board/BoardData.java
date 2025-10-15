@@ -51,7 +51,7 @@ final class BoardData implements Board, Receiver {
     private void init() {
         // TODO: stop using this simple, stupid initialization and derive the objects from some sort of data
         float d = Globals.FIELD_RADIUS;
-        float dx = d * (float)Math.sqrt(3); // this is also the distanc between the centers of two adjacent fields
+        float dx = d * (float)Math.sqrt(3); // this is also the distance between the centers of two adjacent fields
         float dz = 1.5f * d;
 
         int rangeZ = 5;
@@ -90,7 +90,7 @@ final class BoardData implements Board, Receiver {
 
     @Override
     public void receive(Object obj) {
-        
+
     }
 
 }

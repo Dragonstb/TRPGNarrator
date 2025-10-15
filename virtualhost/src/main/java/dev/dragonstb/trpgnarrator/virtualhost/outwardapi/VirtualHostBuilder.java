@@ -25,6 +25,13 @@ import dev.dragonstb.trpgnarrator.virtualhost.board.BoardBuilder;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SyncBrokerFactory;
 import lombok.NoArgsConstructor;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
+import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
+import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnectorBuilder;
+import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostType;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /** Assembles and returns a virtual host.
  *
@@ -32,14 +39,43 @@ import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
  * @since 0.0.1
  */
 @NoArgsConstructor
+@Accessors(chain = true)
+@Setter
 public final class VirtualHostBuilder {
 
-    private SynchronousBroker broker;
-    private Board board;
+    /** Type of the virtual host. */
+    private HostType type = null;
 
-    public VirtualHost build() {
-        broker = SyncBrokerFactory.createBroker();
-        board = new BoardBuilder().setBroker(broker).build();
+    /** Generates with the given type already set.
+     *
+     * @since 0.0.1
+     * @param type
+     */
+    public VirtualHostBuilder(@NonNull HostType type) {
+        this.type = type;
+    }
+
+    public VirtualHost build() throws NullPointerException, UnsupportedOperationException {
+        String errCode = VHostErrorCodes.V46199;
+        if(type == null) {
+            String msg = "The type of the virtual host must be specified, but it is not.";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new NullPointerException(use);
+        }
+
+        HostConnector connector;
+        try {
+            connector = new HostConnectorBuilder().build(type);
+        } catch (UnsupportedOperationException e) {
+            // types web and lan yet unsupported
+            String use = VHostErrorCodes.assembleCodedMsg(e.getMessage(), errCode);
+            throw new UnsupportedOperationException(use);
+        }
+
+        SynchronousBroker broker = SyncBrokerFactory.createBroker(connector);
+        connector.linkBroker(broker);
+
+        Board board = new BoardBuilder().setBroker(broker).build();
         return null;
     }
 

@@ -21,9 +21,9 @@
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 
+import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import java.util.Map;
 import java.util.TreeMap;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 /**
@@ -31,10 +31,15 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since
  */
-@NoArgsConstructor
 final class SyncBrokerImp implements SynchronousBroker {
 
+    /** Connector to the outside world. */
+    private final HostConnector connector;
     private final Map<String, BrokerChannel> channels = new TreeMap<>();
+
+    SyncBrokerImp(@NonNull HostConnector connector) {
+        this.connector = connector;
+    }
 
     @Override
     public void registerToChannel(@NonNull Receiver receiver, @NonNull String channel) {

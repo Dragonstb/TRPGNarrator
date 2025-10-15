@@ -30,6 +30,7 @@ import java.text.MessageFormat;
 public final class VHostErrorCodes {
 
     public static final String V43108 = "V43108";
+    public static final String V46199 = "46199";
     public static final String V48135 = "V48135";
 
     /** Assembles the given message and the code to a single message that includes the code.
