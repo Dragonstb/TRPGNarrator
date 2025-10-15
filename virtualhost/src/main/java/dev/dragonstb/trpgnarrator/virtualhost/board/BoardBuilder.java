@@ -20,12 +20,12 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.board;
 
-import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchonousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 
 /**
  *
@@ -37,7 +37,7 @@ import lombok.experimental.Accessors;
 @Setter
 public final class BoardBuilder {
 
-    private SynchonousBroker broker = null;
+    private SynchronousBroker broker = null;
 
     @NonNull
     public Board build() {

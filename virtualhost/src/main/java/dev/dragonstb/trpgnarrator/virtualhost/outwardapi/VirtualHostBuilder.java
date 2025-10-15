@@ -23,8 +23,8 @@ package dev.dragonstb.trpgnarrator.virtualhost.outwardapi;
 import dev.dragonstb.trpgnarrator.virtualhost.board.Board;
 import dev.dragonstb.trpgnarrator.virtualhost.board.BoardBuilder;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SyncBrokerFactory;
-import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchonousBroker;
 import lombok.NoArgsConstructor;
+import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 
 /** Assembles and returns a virtual host.
  *
@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public final class VirtualHostBuilder {
 
-    private SynchonousBroker broker;
+    private SynchronousBroker broker;
     private Board board;
 
     public VirtualHost build() {

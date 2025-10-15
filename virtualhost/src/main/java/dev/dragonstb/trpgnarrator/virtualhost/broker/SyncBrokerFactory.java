@@ -27,7 +27,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.broker;
  */
 public final class SyncBrokerFactory {
 
-    public static SynchonousBroker createBroker() {
+    public static SynchronousBroker createBroker() {
         return new SyncBrokerImp();
     }
 }

@@ -27,7 +27,7 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since 0.0.1
  */
-public interface SynchonousBroker {
+public interface SynchronousBroker {
 
     /** Registers the receiver to the channel. As a consequence, the receiver will receive all messages sent to the channel from now on
      * until the receiver deregisters again. This method is idempotent.

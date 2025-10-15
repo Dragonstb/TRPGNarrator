@@ -22,11 +22,11 @@ package dev.dragonstb.trpgnarrator.virtualhost.board;
 
 import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.Receiver;
-import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchonousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Globals;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.NonNull;
+import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 
 /** Collection of all {@link FieldData FieldData} and some stuff for dealing with them.
  *
@@ -38,9 +38,9 @@ final class BoardData implements Board, Receiver {
     /** All fields of the board. */
     private final Map<Integer, FieldData> fields = new HashMap<>();
     /** The broker this instance connects to. */
-    private final SynchonousBroker broker;
+    private final SynchronousBroker broker;
 
-    BoardData(@NonNull SynchonousBroker broker) {
+    BoardData(@NonNull SynchronousBroker broker) {
         this.broker = broker;
         init();
     }

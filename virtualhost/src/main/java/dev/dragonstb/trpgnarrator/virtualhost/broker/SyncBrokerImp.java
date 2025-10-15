@@ -32,7 +32,7 @@ import lombok.NonNull;
  * @since
  */
 @NoArgsConstructor
-final class SyncBrokerImp implements SynchonousBroker {
+final class SyncBrokerImp implements SynchronousBroker {
 
     private final Map<String, BrokerChannel> channels = new TreeMap<>();
 
