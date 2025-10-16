@@ -27,5 +27,5 @@ package dev.dragonstb.trpgnarrator.virtualhost.generic;
  */
 public final class FetchCodes {
 
-    public static final String MAP = "map";
+    public static final String BOARD_DATA = "board data";
 }

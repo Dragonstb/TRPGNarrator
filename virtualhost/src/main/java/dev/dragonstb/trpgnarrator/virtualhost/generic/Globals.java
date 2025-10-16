@@ -30,6 +30,9 @@ package dev.dragonstb.trpgnarrator.virtualhost.generic;
  */
 public final class Globals {
 
+    /** The empty string "". */
+    public static final String EMPTY_STRING = "";
+
     /* Radius of a hex field, in WU. Two oppsing corners of a hex field will be twice this distance apart. */
     public static final float FIELD_RADIUS = .5f;
     /** Diameter of a field, in WU. */

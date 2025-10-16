@@ -20,14 +20,15 @@
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
+import java.util.List;
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Integration test of {@link SyncBrokerImp} and {@link BrokerChannel}
@@ -92,6 +93,61 @@ public class SyncBrokerImpAndBrokerChannelIT {
         broker.send(msg, channel1);
         verify(receiverA, never()).receive(any());
         verify(receiverB, never()).receive(any());
+    }
+
+    @Test
+    public void testRequest() {
+        String fetch = "hello";
+        String ret = "World";
+        when(receiverA.request(fetch)).thenReturn(Optional.of(ret));
+        broker.registerToChannel(receiverA, channel1);
+
+        List<Optional<Object>> list = broker.request(channel1, fetch, true);
+
+        verify(receiverA, times(1)).request(any());
+        verify(receiverB, never()).request(any());
+
+        assertEquals(1, list.size(), "wrong list size");
+        Optional<Object> opt = list.getFirst();
+        assertTrue(opt.isPresent(), "no object");
+        assertEquals(ret, opt.get(), "wrong object");
+    }
+
+    @Test
+    public void testRequest_skipEmpties() {
+        String fetch = "hello";
+        String ret = "World";
+        when(receiverA.request(any())).thenReturn(Optional.of(ret));
+        when(receiverB.request(any())).thenReturn(Optional.empty());
+        broker.registerToChannel(receiverA, channel1);
+        broker.registerToChannel(receiverB, channel1);
+
+        List<Optional<Object>> list = broker.request(channel1, fetch, true);
+
+        verify(receiverA, times(1)).request(any());
+        verify(receiverB, times(1)).request(any());
+
+        assertEquals(1, list.size(), "wrong list size");
+    }
+
+    @Test
+    public void testRequest_includeEmpties() {
+        String fetch = "hello";
+        String ret = "World";
+        when(receiverA.request(any())).thenReturn(Optional.of(ret));
+        when(receiverB.request(any())).thenReturn(Optional.empty());
+        broker.registerToChannel(receiverA, channel1);
+        broker.registerToChannel(receiverB, channel1);
+
+        List<Optional<Object>> list = broker.request(channel1, fetch, false);
+
+        verify(receiverA, times(1)).request(any());
+        verify(receiverB, times(1)).request(any());
+
+        assertEquals(2, list.size(), "wrong list size");
+        assertTrue(list.getLast().isEmpty() || list.getFirst().isEmpty(), "no empty optional");
+        assertTrue(list.getLast().isPresent() || list.getFirst().isPresent(), "no present optional");
+        assertTrue(list.getLast().isPresent() != list.getFirst().isPresent(), "not one present optional and one empty optional");
     }
 
 }

@@ -22,6 +22,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -70,6 +71,24 @@ final class BrokerChannel {
      */
     void send(Object obj) {
         receivers.forEach( receiver -> receiver.receive(obj) );
+    }
+
+    /** Fetches objects requested from the receivers of this channel.
+     *
+     * @param fetch Code for whatever the receivers are asked for. A receiver has to know by itself what a code means. This broker is just a
+     * dumb pipe.
+     * @param skipEmpties Shall empty optionals be excluded ({@code true}) or included ({@code false}) into the resulting list?
+     * @return List with whatever we got.
+     */
+    List<Optional<Object>> request(@NonNull String fetch, boolean skipEmpties) {
+        List<Optional<Object>> list = new ArrayList<>();
+        receivers.forEach( receiver -> {
+            Optional<Object> opt = receiver.request(fetch);
+            if(opt.isPresent() || !skipEmpties) {
+                list.add(opt);
+            }
+        });
+        return list;
     }
 
     /** tells if there are no receivers listed.

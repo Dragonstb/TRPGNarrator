@@ -43,5 +43,5 @@ public interface Receiver {
      * @param fetch A string that specifies the requested object. The receiver must now how to interpret this.
      * @return Requested object.
      */
-    public Optional<Object> fetch(@NonNull String fetch);
+    public Optional<Object> request(@NonNull String fetch);
 }

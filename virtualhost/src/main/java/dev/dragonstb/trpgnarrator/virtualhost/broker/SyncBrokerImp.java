@@ -22,7 +22,10 @@ package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import lombok.NonNull;
 
@@ -72,6 +75,12 @@ final class SyncBrokerImp implements SynchronousBroker {
         if(channel != null) {
             channel.send(obj);
         }
+    }
+
+    @Override
+    public List<Optional<Object>> request(@NonNull String channelName, @NonNull String fetch, boolean skipEmpties) {
+        BrokerChannel channel = channels.get(channelName);
+        return channel!=null ? channel.request(fetch, skipEmpties) : new ArrayList<>();
     }
 
 }

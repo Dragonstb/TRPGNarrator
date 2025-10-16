@@ -20,6 +20,8 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 
 /** A synchronous broker of messages and parcels.
@@ -52,5 +54,18 @@ public interface SynchronousBroker {
      * @param channelName Channel the object is send to. Must <i>not</i> be {@code null}.
      */
     public void send(Object obj, @NonNull String channelName);
+
+    /** Request an object from the receivers of a channel.
+     *
+     * @since 0.0.1
+     * @param channelName Name of the channel.
+     * @param fetch A code encoding whatever the receiver is asked for. The receiver has to know what it means. The broker is just a dumb
+     * pipe.
+     * @param If {@code true}, empty optionals <i>are not</i> included in the resulting list. If {@code false}, empty optionals <i>are</i>
+     * included in the resulting list.
+     * @return A list with whatever the registered receivers send back. Might be empty.
+     */
+    @NonNull
+    public List<Optional<Object>> request(@NonNull String channelName, @NonNull String fetch, boolean skipEmpties);
 
 }

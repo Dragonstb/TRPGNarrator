@@ -26,5 +26,6 @@ package dev.dragonstb.trpgnarrator.virtualhost.broker;
  */
 public final class ChannelNames {
 
-
+    /** Channel for components that provide board data. */
+    public static final String GET_BOARD_DATA = "get board data";
 }

@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.board;
 
 import com.jme3.math.Vector3f;
+import dev.dragonstb.trpgnarrator.virtualhost.broker.ChannelNames;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.Receiver;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Globals;
 import java.util.HashMap;
@@ -57,6 +58,7 @@ final class BoardData implements Board, Receiver {
      * @since 0.0.1
      */
     private void init() {
+        broker.registerToChannel(this, ChannelNames.GET_BOARD_DATA);
         // TODO: stop using this simple, stupid initialization and derive the objects from some sort of data
         float d = Globals.FIELD_RADIUS;
         float dx = d * (float)Math.sqrt(3); // this is also the distance between the centers of two adjacent fields
@@ -120,10 +122,10 @@ final class BoardData implements Board, Receiver {
     }
 
     @Override
-    public Optional<Object> fetch(@NonNull String fetch) {
+    public Optional<Object> request(@NonNull String fetch) {
 
         Optional<Object> opt = switch(fetch) {
-            case FetchCodes.MAP -> {
+            case FetchCodes.BOARD_DATA -> {
                 BoardDataDTO dto = asDTO();
                 yield Optional.of(dto);
             }
