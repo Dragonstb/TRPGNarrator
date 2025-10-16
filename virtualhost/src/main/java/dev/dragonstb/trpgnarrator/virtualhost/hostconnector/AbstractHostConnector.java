@@ -21,6 +21,9 @@
 package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
+import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 
 /**
@@ -28,7 +31,7 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since 0.0.1
  */
-abstract class AbstractHostConnector implements HostConnector {
+abstract class AbstractHostConnector implements HostConnector, VirtualHost {
 
     /** The broker the connector speaks with. */
     private SynchronousBroker broker = null;
@@ -40,5 +43,18 @@ abstract class AbstractHostConnector implements HostConnector {
         }
     }
 
+    /** Convenience method of calling the request method of the broker. So you don't have to use getBroker.request(..).
+     *
+     * @since 0.0.1
+     * @author Dragonstb
+     * @param channelName Broker channel the request is sent to.
+     * @param fetch A fetch code. Who ever receives the request has to know what it means.
+     * @param skipEmpties If true, empty optionals from receivers of the request are ignored not not included into the result.
+     * @return List with the answers from the receivers of the request. May be empty.
+     */
+    @NonNull
+    List<Optional<Object>> request(@NonNull String channelName, @NonNull String fetch, boolean skipEmpties) {
+        return broker.request(channelName, fetch, skipEmpties);
+    }
 
 }

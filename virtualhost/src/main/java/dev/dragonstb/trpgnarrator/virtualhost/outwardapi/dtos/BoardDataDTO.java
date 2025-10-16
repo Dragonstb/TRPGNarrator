@@ -22,6 +22,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
@@ -40,6 +41,28 @@ public final class BoardDataDTO {
     public BoardDataDTO(@NonNull Collection<FieldDataDTO> fields, @NonNull Collection<FieldLinkDTO> links) {
         this.fields = fields.stream().collect(Collectors.toUnmodifiableList());
         this.links = links.stream().collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(obj == null || !(obj instanceof BoardDataDTO)) {
+            return false;
+        }
+
+        BoardDataDTO other = (BoardDataDTO)obj;
+        // TODO: the order of entries should not matter, as long as this and other have equal entries. Please check and correct if needed.
+        return fields.equals(other.getFields()) && links.equals(other.getLinks());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.fields);
+        hash = 37 * hash + Objects.hashCode(this.links);
+        return hash;
     }
 
 }

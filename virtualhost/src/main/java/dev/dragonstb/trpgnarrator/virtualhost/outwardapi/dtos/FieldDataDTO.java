@@ -58,4 +58,28 @@ public final class FieldDataDTO {
     public Vector3f getLocationAsVector() {
         return new Vector3f(x, y, z);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || !(obj instanceof FieldDataDTO)) {
+            return false;
+        }
+
+        FieldDataDTO other = (FieldDataDTO)obj;
+        return id == other.getId() &&
+                x == other.getX() &&
+                y == other.getY() &&
+                z == other.getZ();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + this.id;
+        hash = 83 * hash + Float.floatToIntBits(this.x);
+        hash = 83 * hash + Float.floatToIntBits(this.y);
+        hash = 83 * hash + Float.floatToIntBits(this.z);
+        return hash;
+    }
+
 }
