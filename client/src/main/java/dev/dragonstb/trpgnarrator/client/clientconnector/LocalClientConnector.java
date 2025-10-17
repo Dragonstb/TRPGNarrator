@@ -20,6 +20,8 @@
 
 package dev.dragonstb.trpgnarrator.client.clientconnector;
 
+import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
+import dev.dragonstb.trpgnarrator.client.error.HostConnectionNotReadyException;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.LocalVirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import lombok.NonNull;
@@ -31,10 +33,17 @@ import lombok.NonNull;
  */
 final class LocalClientConnector implements LocalClientForApp {
 
+    /** The connected virtual host. */
     private LocalVirtualHost host = null;
 
     @Override
-    public BoardDataDTO getBoardData() throws RuntimeException, NullPointerException{
+    public BoardDataDTO getBoardData() throws RuntimeException, NullPointerException, HostConnectionNotReadyException{
+        if(host == null) {
+            String msg = "Cannot fetch board data: client connection has yet not been established.";
+            String code = ClientErrorCodes.C30737;
+            String use = ClientErrorCodes.assembleCodedMsg(msg, code);
+            throw new HostConnectionNotReadyException(use);
+        }
         BoardDataDTO dto = host.getBoardData();
         return dto;
     }
