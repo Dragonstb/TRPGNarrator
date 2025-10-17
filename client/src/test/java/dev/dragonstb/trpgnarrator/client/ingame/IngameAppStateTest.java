@@ -19,10 +19,11 @@
  */
 package dev.dragonstb.trpgnarrator.client.ingame;
 
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import dev.dragonstb.trpgnarrator.client.Globals;
+import dev.dragonstb.trpgnarrator.client.clientconnector.ClientForIngame;
+import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
 import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
@@ -52,6 +53,9 @@ public class IngameAppStateTest {
     @Mock
     private Board board;
 
+    @Mock
+    private ClientForIngame connector;
+
     public IngameAppStateTest() {
     }
 
@@ -80,6 +84,8 @@ public class IngameAppStateTest {
             when(board.getNode()).thenReturn(boardNode);
 
             IngameAppState appState = new IngameAppState();
+            appState.setConnector(connector);
+            appState.load();
 
             Node ingameRoot = appState.getIngameRoot();
             assertNotNull(ingameRoot);
@@ -92,9 +98,9 @@ public class IngameAppStateTest {
         }
     }
 
-    @Test
-    public void testUpdate() {
-    }
+//    @Test
+//    public void testUpdate() {
+//    }
 
     @Test
     public void testAddFigurine() {
@@ -109,6 +115,8 @@ public class IngameAppStateTest {
             when(board.getNode()).thenReturn(boardNode);
 
             IngameAppState appState = new IngameAppState();
+            appState.setConnector(connector);
+            appState.load();
             Node ingameRoot = appState.getIngameRoot();
 
             appState.addFigurine(fig, id);
@@ -116,6 +124,36 @@ public class IngameAppStateTest {
 
             verify(board).placeFigurineOnField(fig, id);
         }
+    }
+
+    @Test
+    public void testLoad_ok() {
+        Node boardNode = new Node();
+        Node pivot = new Node();
+
+        try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
+            boardFactory.when(BoardFactory::makeBoard).thenReturn(board);
+            when(board.getNode()).thenReturn(boardNode);
+
+            IngameAppState appState = new IngameAppState();
+            appState.setConnector(connector);
+            Node ingameRoot = appState.getIngameRoot();
+            ingameRoot.attachChild(pivot); // should become detached during "load()"
+
+            appState.load();
+
+            List<Spatial> children = ingameRoot.getChildren();
+            assertEquals(1, children.size(), "unexpected number of children attached to ingame root node");
+            assertEquals(boardNode, children.get(0), "board node not attached");
+            assertNull(pivot.getParent(), "pivot parent is not null");
+        }
+    }
+
+    @Test
+    public void testLoad_noConnector() {
+        IngameAppState appState = new IngameAppState();
+        NullPointerException exc = assertThrows(NullPointerException.class, () -> appState.load(), "No expected exception");
+        assertTrue(exc.getMessage().contains(ClientErrorCodes.C58856), "unexpected or missing error code");
     }
 
 }

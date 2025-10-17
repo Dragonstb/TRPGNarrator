@@ -25,7 +25,9 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import dev.dragonstb.trpgnarrator.client.Globals;
+import dev.dragonstb.trpgnarrator.client.clientconnector.ClientForIngame;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
+import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
 import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
@@ -40,6 +42,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 /** App state active while actually in game.
  *
@@ -48,6 +51,8 @@ import lombok.NonNull;
  */
 public final class IngameAppState extends AbstractAppState {
 
+    /** The client connector that has contact with the virtual host. */
+    @Setter private ClientForIngame connector;
     /** Root node of the app state. */
     @Getter private final Node ingameRoot = new Node(Globals.INGAME_ROOTNODE_NAME);
     private Board board;
@@ -58,8 +63,6 @@ public final class IngameAppState extends AbstractAppState {
 
     public IngameAppState() {
         setEnabled(false);
-        board = BoardFactory.makeBoard(); // TODO: set on demand with data model
-        ingameRoot.attachChild(board.getNode()); // TODO: attach (detach) on demand
     }
 
     @Override
@@ -138,7 +141,6 @@ public final class IngameAppState extends AbstractAppState {
         return sequence;
     }
 
-
     /** Adds a figurine and places it on the given field.
      *
      * @author Dragonstb
@@ -208,5 +210,21 @@ public final class IngameAppState extends AbstractAppState {
         pathfinder = future;
     }
 
+    /**
+     * @since 0.0.1
+     */
+    public void load() {
+        if(connector == null) {
+            String code = ClientErrorCodes.C58856;
+            String msg = "No client connector available.";
+            String use = ClientErrorCodes.assembleCodedMsg(msg, code);
+            throw new NullPointerException(use);
+        }
 
+        ingameRoot.detachAllChildren();
+        board = BoardFactory.makeBoard();
+        ingameRoot.attachChild(board.getNode());
+    }
+
+    // TODO: The attempt of enabling an improperly configured IngameAPppState shall throw an exception
 }

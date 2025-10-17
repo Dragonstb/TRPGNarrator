@@ -69,16 +69,26 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
         flyCam.setEnabled(false);
         AMAccessor.setAssetManager(assetManager);
 
+        // ingame app state
         ingameAppState = new IngameAppState();
         Node ingameRoot = ingameAppState.getIngameRoot();
         ingameRoot.addLight(new DirectionalLight(Vector3f.UNIT_XYZ.negate(), ColorRGBA.White));
         ingameRoot.addLight(new AmbientLight(ColorRGBA.DarkGray));
         rootNode.attachChild(ingameRoot);
 
+        // virtual host and connection to client (may throw exceptions when something is wrong)
+        HostType hostType = HostType.local;
+        LocalVirtualHost host = (LocalVirtualHost)(new VirtualHostBuilder(hostType).build());
+        LocalClientForApp client = (LocalClientForApp)(new ClientConnectorBuilder(hostType).build());
+        client.connectToVirtualHost(host);
+        ingameAppState.setConnector(client);
+        ingameAppState.load();
+
+        // a figurine
         fig = FigurineBuilder.ofId("Figurine").setColor(ColorRGBA.Blue.mult(.33f)).build();
         ingameAppState.addFigurine(fig, 35);
 
-
+        // controls
         IngameCamControl camControl = new IngameCamControl(cam);
         fig.getNode().addControl(camControl);
 
@@ -88,18 +98,6 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
         // TODO: just one raw input listener that delegates inputs to the currently active targets
         inputManager.addRawInputListener(camControl);
         inputManager.addRawInputListener(this);
-
-        // TODO: inject client connecor to the ingame app state
-        HostType hostType = HostType.local;
-        LocalVirtualHost host;
-        LocalClientForApp client;
-        try {
-            host = (LocalVirtualHost)(new VirtualHostBuilder(hostType).build());
-            client = (LocalClientForApp)(new ClientConnectorBuilder(hostType).build());
-            client.connectToVirtualHost(host);
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Caugth {0}: {1}", new Object[]{e.getClass().getSimpleName(), e.getMessage()});
-        }
 
     }
 
