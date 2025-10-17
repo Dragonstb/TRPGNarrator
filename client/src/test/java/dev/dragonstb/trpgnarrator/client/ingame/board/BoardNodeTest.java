@@ -20,14 +20,10 @@
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import dev.dragonstb.trpgnarrator.client.Globals;
 import dev.dragonstb.trpgnarrator.testslices.WithAssetManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -58,10 +54,6 @@ public class BoardNodeTest {
         WithAssetManager.initAssetManager();
     }
 
-    @AfterAll
-    public static void tearDownClass() {
-    }
-
     @BeforeEach
     public void setUp() {
         fieldA = new FieldData(1, new Vector3f(1, 2, 3));
@@ -72,10 +64,6 @@ public class BoardNodeTest {
         when(boardData.getFields()).thenReturn(map);
 
         boardNode = new BoardNode(boardData);
-    }
-
-    @AfterEach
-    public void tearDown() {
     }
 
     @Test

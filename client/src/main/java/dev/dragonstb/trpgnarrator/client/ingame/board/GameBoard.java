@@ -20,17 +20,13 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import dev.dragonstb.trpgnarrator.client.Globals;
 import dev.dragonstb.trpgnarrator.client.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
@@ -49,14 +45,14 @@ final class GameBoard implements Board {
     /** The node of the fields. */
     private final BoardNode node;
 
-    /** Generates
+    /** Generates.
      *
      * @since 0.0.1
      * @author Dragonstb
+     * @param dto An object containing the data of the board.
      */
-    public GameBoard() {
-        // TODO: parametrize constructor with a data model
-        data = new BoardData();
+    public GameBoard(@NonNull BoardDataDTO dto) {
+        data = new BoardData(dto);
         node = new BoardNode(data);
     }
 
@@ -126,6 +122,5 @@ final class GameBoard implements Board {
         Future<Optional<List<Vector3f>>> future = executor.submit(finder);
         return future;
     }
-
 
 }

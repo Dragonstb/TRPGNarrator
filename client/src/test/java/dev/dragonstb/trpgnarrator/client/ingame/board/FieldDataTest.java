@@ -19,35 +19,25 @@
  */
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
-import dev.dragonstb.trpgnarrator.testslices.WithAssetManager;
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
-import java.util.ArrayList;
-import org.junit.jupiter.api.BeforeAll;
+import com.jme3.math.Vector3f;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldDataDTO;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  * @author Dragonstb
+ * @since 0.0.1
  */
-public class BoardFactoryTest {
-
-    @BeforeAll
-    public static void setUpClass() {
-        WithAssetManager.initAssetManager();
-    }
+public class FieldDataTest {
 
     @Test
-    public void testNoExceptions() {
-        BoardDataDTO dto = new BoardDataDTO(new ArrayList<>(), new ArrayList<>());
-        assertDoesNotThrow(()-> BoardFactory.makeBoard(dto));
-    }
-
-    @Test
-    public void testMakeBoard() {
-        BoardDataDTO dto = new BoardDataDTO(new ArrayList<>(), new ArrayList<>());
-        Board board = BoardFactory.makeBoard(dto);
-        assertNotNull(board);
+    public void testCreate_fromDTO() {
+        FieldDataDTO dto = new FieldDataDTO(0, new Vector3f(1, 2, 3));
+        FieldData field = new FieldData(dto);
+        assertEquals(dto.getId(), field.getId(), "wrong id");
+        assertEquals(dto.getLocationAsVector(), field.getLocation(), "wrong location");
+        assertTrue(field.getLinks().isEmpty(), "unexpected links");
     }
 
 }

@@ -28,9 +28,12 @@ import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.FigurineBuilder;
 import dev.dragonstb.trpgnarrator.testslices.WithAssetManager;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldLinkDTO;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,27 +45,26 @@ import org.junit.jupiter.api.Test;
  */
 public class GameBoardTest {
 
-    private GameBoard board;
+    private final FieldDataDTO fieldDto1 = new FieldDataDTO(0, 0, 0, 1);
+    private final FieldDataDTO fieldDto2 = new FieldDataDTO(1, 1, 0, 0);
+    private final FieldDataDTO fieldDto3 = new FieldDataDTO(2, -1, 0, 0);
+    private final FieldLinkDTO linkDto1 = new FieldLinkDTO(0, 1);
+    private final FieldLinkDTO linkDto2 = new FieldLinkDTO(1, 2);
+    private final FieldLinkDTO linkDto3 = new FieldLinkDTO(2, 0);
+    private final List<FieldDataDTO> fieldDtos = Arrays.asList(fieldDto1, fieldDto2, fieldDto3);
+    private final List<FieldLinkDTO> linkDtos = Arrays.asList(linkDto1, linkDto2, linkDto3);
+    private final BoardDataDTO boardDto = new BoardDataDTO(fieldDtos, linkDtos);
 
-    public GameBoardTest() {
-    }
+    private GameBoard board;
 
     @BeforeAll
     public static void setUpClass() {
         WithAssetManager.initAssetManager();
     }
 
-    @AfterAll
-    public static void tearDownClass() {
-    }
-
     @BeforeEach
     public void setUp() {
-        board = new GameBoard();
-    }
-
-    @AfterEach
-    public void tearDown() {
+        board = new GameBoard(boardDto);
     }
 
     @Test
@@ -74,24 +76,27 @@ public class GameBoardTest {
 
     @Test
     public void testPlaceFigurineOnField_Ok() {
+        FieldDataDTO field = fieldDto2;
+        int id = field.getId();
+
         Figurine fig = FigurineBuilder.ofId("doesntmatterhere").setColor(ColorRGBA.Blue).build();
         Node node = new Node();
         node.attachChild(fig.getNode()); // figurine assumes now to be part of the scene
-        Vector3f oldPos = new Vector3f(1, 2, 3);
+        Vector3f oldPos = new Vector3f(-1, -2, -3);
         fig.setLocalTranslation(oldPos);
-        int id = 15;
 
         board.placeFigurineOnField(fig, id);
         Vector3f newPos = fig.getNode().getLocalTranslation();
         float diff = oldPos.distance(newPos);
         assertTrue(diff > 1, "figurine has not been moved");
+        assertEquals(field.getLocationAsVector(), newPos, "wrong position");
         // TODO: check actual position once the game board is build based on model data rather than hardcoded in the init.
 
         Optional<Integer> opt = fig.getCurrentFieldId();
         assertEquals(id, opt.get(), "wrong value"); // if opt is empty or has a wrong value, then something could be wrong with the figurine
 
         // field with other id, just in case the figurine's current field id was initialized with the same value as 'id'
-        int newId = 17;
+        int newId = fieldDto3.getId();
         board.placeFigurineOnField(fig, newId);
         Optional<Integer> newOpt = fig.getCurrentFieldId();
         // if opt is empty or has a wrong value, then something could be wrong with the figurine

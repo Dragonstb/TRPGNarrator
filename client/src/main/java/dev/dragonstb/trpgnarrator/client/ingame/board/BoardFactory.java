@@ -20,6 +20,9 @@
 
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+import lombok.NonNull;
+
 /** Creates an implementation of {@link Board Board}.
  *
  * @author Dragonstb
@@ -31,11 +34,11 @@ public final class BoardFactory {
      *
      * @since 0.0.1
      * @author Dragonstb
+     * @param dto AN object containing the data of the field.
      * @return A board.
      */
-    public static Board makeBoard() {
-        // TODO: parametrize with data model of the board
-        Board board = new GameBoard();
+    public static Board makeBoard(@NonNull BoardDataDTO dto) {
+        Board board = new GameBoard(dto);
         return board;
     };
 }

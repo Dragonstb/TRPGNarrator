@@ -34,6 +34,7 @@ import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
 import dev.dragonstb.trpgnarrator.client.tweens.ActionTween;
 import dev.dragonstb.trpgnarrator.client.tweens.SequenceTween;
 import dev.dragonstb.trpgnarrator.client.tweens.ShiftTween;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -222,9 +223,10 @@ public final class IngameAppState extends AbstractAppState {
         }
 
         ingameRoot.detachAllChildren();
-        board = BoardFactory.makeBoard();
+        BoardDataDTO dto = connector.getBoardData();
+        board = BoardFactory.makeBoard(dto);
         ingameRoot.attachChild(board.getNode());
     }
 
-    // TODO: The attempt of enabling an improperly configured IngameAPppState shall throw an exception
+    // TODO: The attempt of enabling an improperly configured IngameAppState shall throw an exception
 }

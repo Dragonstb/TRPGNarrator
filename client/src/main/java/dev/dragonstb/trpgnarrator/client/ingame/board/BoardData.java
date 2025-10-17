@@ -22,11 +22,13 @@ package dev.dragonstb.trpgnarrator.client.ingame.board;
 
 import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.client.Globals;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 
 /** Collection of all {@link FieldData FieldData} and some stuff for dealing with them.
  *
@@ -38,8 +40,24 @@ final class BoardData {
     /** All fields of the board. */
     @Getter(AccessLevel.PACKAGE) private final Map<Integer, FieldData> fields = new HashMap<>();
 
-    BoardData() {
-        init();
+    /** Generates.
+     *
+     * @author Dragonstb
+     * @since 0.0.1
+     * @param dto An object describing the board.
+     */
+    BoardData(@NonNull BoardDataDTO dto) {
+        dto.getFields().forEach(fieldDTO -> {
+            FieldData field = new FieldData(fieldDTO);
+            fields.put(field.getId(), field);
+        });
+        dto.getLinks().forEach(linkDTO -> {
+            FieldData fieldA = fields.get(linkDTO.getIdFieldA());
+            FieldData fieldB = fields.get(linkDTO.getIdFieldB());
+            FieldLink link = new FieldLink(fieldA, fieldB);
+            fieldA.addLink(link);
+            fieldB.addLink(link);
+        });
     }
 
     /** A mocking method used in early development.

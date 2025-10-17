@@ -35,6 +35,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -80,7 +81,7 @@ public class IngameAppStateTest {
         Node boardNode = new Node();
 
         try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
-            boardFactory.when(BoardFactory::makeBoard).thenReturn(board);
+            when(BoardFactory.makeBoard(any())).thenReturn(board);
             when(board.getNode()).thenReturn(boardNode);
 
             IngameAppState appState = new IngameAppState();
@@ -111,7 +112,7 @@ public class IngameAppStateTest {
         int id = -15;
 
         try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
-            boardFactory.when(BoardFactory::makeBoard).thenReturn(board);
+            when(BoardFactory.makeBoard(any())).thenReturn(board);
             when(board.getNode()).thenReturn(boardNode);
 
             IngameAppState appState = new IngameAppState();
@@ -132,7 +133,7 @@ public class IngameAppStateTest {
         Node pivot = new Node();
 
         try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
-            boardFactory.when(BoardFactory::makeBoard).thenReturn(board);
+            when(BoardFactory.makeBoard(any())).thenReturn(board);
             when(board.getNode()).thenReturn(boardNode);
 
             IngameAppState appState = new IngameAppState();

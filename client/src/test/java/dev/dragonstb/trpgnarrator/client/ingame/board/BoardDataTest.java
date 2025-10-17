@@ -20,50 +20,48 @@
 package dev.dragonstb.trpgnarrator.client.ingame.board;
 
 import com.jme3.math.Vector3f;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldLinkDTO;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  * @author Dragonstb
+ * @since 0.0.1
  */
 public class BoardDataTest {
 
     private BoardData boardData;
 
-    public BoardDataTest() {
-    }
-
-    @BeforeAll
-    public static void setUpClass() {
-    }
-
-    @AfterAll
-    public static void tearDownClass() {
-    }
+    private final FieldDataDTO fieldDto1 = new FieldDataDTO(0, 0, 0, 1);
+    private final FieldDataDTO fieldDto2 = new FieldDataDTO(1, 1, 0, 0);
+    private final FieldDataDTO fieldDto3 = new FieldDataDTO(2, -1, 0, 0);
+    private final FieldLinkDTO linkDto1 = new FieldLinkDTO(0, 1);
+    private final FieldLinkDTO linkDto2 = new FieldLinkDTO(1, 2);
+    private final FieldLinkDTO linkDto3 = new FieldLinkDTO(2, 0);
+    private final List<FieldDataDTO> fieldDtos = Arrays.asList(fieldDto1, fieldDto2, fieldDto3);
+    private final List<FieldLinkDTO> linkDtos = Arrays.asList(linkDto1, linkDto2, linkDto3);
+    private final BoardDataDTO boardDto = new BoardDataDTO(fieldDtos, linkDtos);
 
     @BeforeEach
     public void setUp() {
-        boardData = new BoardData();
-    }
-
-    @AfterEach
-    public void tearDown() {
+        boardData = new BoardData(boardDto);
     }
 
     @Test
     public void testGetLocationOfField_Ok() {
-        int id = 15;
+        FieldDataDTO dto = fieldDto2;
+        int id = dto.getId();
 
         Optional<Vector3f> opt = boardData.getLocationOfField(id);
         assertTrue(opt.isPresent(), "Optional turned out to be empty.");
-
-        // TODO: assert that vector is correct once the board is constructed based on a data model rather than hardcoded during the init.
+        assertEquals(dto.getLocationAsVector(), opt.get(), "wrong location");
     }
 
     @Test

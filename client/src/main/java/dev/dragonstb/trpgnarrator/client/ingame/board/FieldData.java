@@ -22,6 +22,7 @@ package dev.dragonstb.trpgnarrator.client.ingame.board;
 
 import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldDataDTO;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -48,6 +49,16 @@ final class FieldData {
     FieldData(int id, @NonNull Vector3f location) {
         this.id = id;
         this.location = location;
+    }
+
+    /** Generates.
+     *
+     * @author Dragonstb
+     * @since 0.0.1;
+     * @param dto An object containing the data of the field except for the links.
+     */
+    FieldData(@NonNull FieldDataDTO dto) {
+        this(dto.getId(), dto.getLocationAsVector());
     }
 
     /** Adds the link to the list of links of this field.
