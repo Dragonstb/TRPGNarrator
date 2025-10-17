@@ -2,6 +2,7 @@ plugins {
     id 'java-common-conventions'
 }
 
+version = '0.0.2'
 description = 'TRPGNarrator Virtual Host'
 
 ext.jmeVersion = '3.8.1-stable'
