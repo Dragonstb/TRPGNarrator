@@ -33,7 +33,7 @@ final class LocalHostConnectorBuilder {
      * @since 0.0.1
      * @return A new local host connector.
      */
-    HostConnector build() {
+    AbstractHostConnector build() {
         return new LocalHostConnector();
     }
 

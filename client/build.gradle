@@ -19,4 +19,6 @@ dependencies {
     implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
     runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion
+
+    implementation project(':virtualhost')
 }

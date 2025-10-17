@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.HostType;
 import lombok.NonNull;
 
 /**
@@ -30,8 +31,8 @@ import lombok.NonNull;
 public final class HostConnectorBuilder {
 
     @NonNull
-    public HostConnector build(@NonNull HostType type) {
-        HostConnector connector = switch(type) {
+    public AbstractHostConnector build(@NonNull HostType type) {
+        AbstractHostConnector connector = switch(type) {
             case local: yield new LocalHostConnectorBuilder().build();
             case web: throw new UnsupportedOperationException("web host yet not supported");
             case lan: throw new UnsupportedOperationException("lan host yet not supported");

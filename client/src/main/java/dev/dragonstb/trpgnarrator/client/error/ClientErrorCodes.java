@@ -36,6 +36,7 @@ public final class ClientErrorCodes {
     public static final String C38587 = "C38587";
     public static final String C63749 = "C63749";
     public static final String C83663 = "C83663";
+    public static final String C97700 = "C97700";
 
     /** Assembles the given message and the code to a single message that includes the code.
      *

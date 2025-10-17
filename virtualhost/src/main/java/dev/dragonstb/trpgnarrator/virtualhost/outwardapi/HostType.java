@@ -17,27 +17,20 @@
  *
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
-
 package dev.dragonstb.trpgnarrator.virtualhost.outwardapi;
 
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
-import lombok.NonNull;
-
-/** In a local context, serialization is not necessary. So offer a broader interface with direct method calls.
+/** To specify the type of virtual host.
  *
  * @author Dragonstb
- * @since
+ * @since 0.0.1
  */
-public interface LocalVirtualHost extends VirtualHost {
+public enum HostType {
 
-    /** Gets the board data.
-     *
-     * TODO: When the board becomes large and split into patches, limit do certain patches chosen by the method caller.
-     * TODO: For multiplayer, an id of the client may become necessary.
-     *
-     * @since 0.0.1
-     * @return
-     */
-    @NonNull
-    public BoardDataDTO getBoardData();
+    /** A local virtual host for single player games. */
+    local,
+    /** A virtual host running on a web server. */
+    web,
+    /** A virtual host running locally on a machine that hosts a game, but also serves clients on other machines in a LAN. */
+    lan
+
 }

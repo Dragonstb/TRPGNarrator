@@ -20,7 +20,6 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.outwardapi;
 
-import dev.dragonstb.trpgnarrator.virtualhost.board.Board;
 import dev.dragonstb.trpgnarrator.virtualhost.board.BoardBuilder;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SyncBrokerFactory;
 import lombok.NoArgsConstructor;
@@ -28,7 +27,6 @@ import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnectorBuilder;
-import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostType;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -55,7 +53,7 @@ public final class VirtualHostBuilder {
         this.type = type;
     }
 
-    public VirtualHost build() throws NullPointerException, UnsupportedOperationException {
+    public VirtualHost build() throws NullPointerException, UnsupportedOperationException, ClassCastException {
         String errCode = VHostErrorCodes.V46199;
         if(type == null) {
             String msg = "The type of the virtual host must be specified, but it is not.";
@@ -75,8 +73,30 @@ public final class VirtualHostBuilder {
         SynchronousBroker broker = SyncBrokerFactory.createBroker(connector);
         connector.linkBroker(broker);
 
-        Board board = new BoardBuilder().setBroker(broker).build();
-        return null;
+        // the board registers itself to the broker
+        new BoardBuilder().setBroker(broker).build();
+
+        VirtualHost host = asVirtualHost(connector);
+        return host;
     }
 
+    /** Casts the connector as a virtual host. Currently, all classes implementing HostConnector also implement VirtualHost at the same time
+     * and vice versa.
+     *
+     * @since 0.0.1
+     * @author Dragonstb
+     * @param connector Connector to be casted.
+     * @return The instance casted.
+     * @throws ClassCastException The argument does not implements VirtualHost.
+     */
+    private VirtualHost asVirtualHost(@NonNull HostConnector connector) throws ClassCastException{
+        if(!(connector instanceof VirtualHost)) {
+            String errCode = VHostErrorCodes.V03107;
+            String msg = "Created a host connector which is not also a virtual host.";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new ClassCastException(use);
+        }
+
+        return (VirtualHost)connector;
+    }
 }

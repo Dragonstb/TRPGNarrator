@@ -17,20 +17,24 @@
  *
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
-package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
-/** To specify the type of virtual host.
+package dev.dragonstb.trpgnarrator.client.clientconnector;
+
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+
+/** The interface the client connector exposes towards the {@link dev.dragonstb.trpgnarrator.client.ingame.IngameAppState IngameAppState}.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-public enum HostType {
+public interface ClientForIngame {
 
-    /** A local virtual host for single player games. */
-    local,
-    /** A virtual host running on a web server. */
-    web,
-    /** A virtual host running locally on a machine that hosts a game, but also serves clients on other machines in a LAN. */
-    lan
-
+    /** Fetches the board data from the virtual host.
+     *
+     * TODO: Once the board becomes split into patches we likely have to specify the requested patches some how.
+     *
+     * @since 0.0.1
+     * @return The board data.
+     */
+    public BoardDataDTO getBoardData();
 }

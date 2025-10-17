@@ -27,6 +27,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.LocalVirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import java.util.List;
 import java.util.Optional;
+import lombok.NonNull;
 
 /** Host connector that runs on the same machine as the client, with this client being the only client connected to.
  *
@@ -35,6 +36,7 @@ import java.util.Optional;
  */
 final class LocalHostConnector extends AbstractHostConnector implements LocalVirtualHost {
 
+    @NonNull
     @Override
     public BoardDataDTO getBoardData() {
         String errCode = VHostErrorCodes.V16231;

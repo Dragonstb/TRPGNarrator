@@ -18,26 +18,33 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.outwardapi;
+package dev.dragonstb.trpgnarrator.client.clientconnector;
 
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.LocalVirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import lombok.NonNull;
 
-/** In a local context, serialization is not necessary. So offer a broader interface with direct method calls.
+/** A client connector for use in local single player. In local mode, the serialization/deserialization is not necessary.
  *
  * @author Dragonstb
- * @since
+ * @since 0.0.1
  */
-public interface LocalVirtualHost extends VirtualHost {
+final class LocalClientConnector implements LocalClientForApp {
 
-    /** Gets the board data.
-     *
-     * TODO: When the board becomes large and split into patches, limit do certain patches chosen by the method caller.
-     * TODO: For multiplayer, an id of the client may become necessary.
-     *
-     * @since 0.0.1
-     * @return
-     */
-    @NonNull
-    public BoardDataDTO getBoardData();
+    private LocalVirtualHost host = null;
+
+    @Override
+    public BoardDataDTO getBoardData() throws RuntimeException, NullPointerException{
+        BoardDataDTO dto = host.getBoardData();
+        return dto;
+    }
+
+    @Override
+    public void connectToVirtualHost(@NonNull LocalVirtualHost host) {
+        if(this.host == null) {
+            this.host = host;
+            // TODO: register client connector to host connector as sink for host-to-client data flow
+        }
+    }
+
 }

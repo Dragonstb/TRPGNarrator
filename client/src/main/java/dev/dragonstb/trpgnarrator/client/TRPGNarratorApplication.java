@@ -35,11 +35,18 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import dev.dragonstb.trpgnarrator.client.clientconnector.ClientConnectorBuilder;
+import dev.dragonstb.trpgnarrator.client.clientconnector.LocalClientForApp;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameAppState;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameCamControl;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.FigurineBuilder;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.HostType;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.LocalVirtualHost;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHostBuilder;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -47,6 +54,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  * @since 0.0.1
  */
 public class TRPGNarratorApplication extends SimpleApplication implements RawInputListener{
+
+    private static final Logger LOGGER = Logger.getLogger(TRPGNarratorApplication.class.getName());
 
     private IngameAppState ingameAppState;
     private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4); // TODO: configurable pool size
@@ -79,6 +88,18 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
         // TODO: just one raw input listener that delegates inputs to the currently active targets
         inputManager.addRawInputListener(camControl);
         inputManager.addRawInputListener(this);
+
+        // TODO: inject client connecor to the ingame app state
+        HostType hostType = HostType.local;
+        LocalVirtualHost host;
+        LocalClientForApp client;
+        try {
+            host = (LocalVirtualHost)(new VirtualHostBuilder(hostType).build());
+            client = (LocalClientForApp)(new ClientConnectorBuilder(hostType).build());
+            client.connectToVirtualHost(host);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Caugth {0}: {1}", new Object[]{e.getClass().getSimpleName(), e.getMessage()});
+        }
 
     }
 
