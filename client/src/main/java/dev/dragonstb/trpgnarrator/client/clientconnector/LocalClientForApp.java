@@ -20,7 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.client.clientconnector;
 
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.LocalVirtualHost;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
 import lombok.NonNull;
 
 /**
@@ -35,5 +35,5 @@ public interface LocalClientForApp extends ClientForIngame {
      * @since 0.0.1
      * @param host Virtual host.
      */
-    public void connectToVirtualHost(@NonNull LocalVirtualHost host);
+    public void connectToVirtualHost(@NonNull VirtualHost host);
 }

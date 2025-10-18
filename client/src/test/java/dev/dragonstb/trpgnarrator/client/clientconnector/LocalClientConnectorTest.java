@@ -21,7 +21,7 @@ package dev.dragonstb.trpgnarrator.client.clientconnector;
 
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.error.HostConnectionNotReadyException;
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.LocalVirtualHost;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class LocalClientConnectorTest {
 
     @Mock
-    private LocalVirtualHost host;
+    private VirtualHost host;
 
     private LocalClientConnector client;
 
@@ -50,12 +50,12 @@ public class LocalClientConnectorTest {
     }
 
     @Test
-    public void testGetBoardData() {
+    public void testGetBoardData_ok() {
         BoardDataDTO dto = mock(BoardDataDTO.class);
-        when(host.getBoardData()).thenReturn(dto);
+        when(host.dealRequest(any())).thenReturn(dto);
         BoardDataDTO res = client.getBoardData();
         assertEquals(dto, res, "wrong instance");
-        verify(host, times(1)).getBoardData();
+        verify(host, times(1)).dealRequest(any());
     }
 
     @Test
@@ -67,11 +67,23 @@ public class LocalClientConnectorTest {
     }
 
     @Test
+    public void testGetBoardData_nullFromHost() {
+        when(host.dealRequest(any())).thenReturn(null);
+        NullPointerException exc = assertThrows(NullPointerException.class, () -> client.getBoardData()
+                , "no exception");
+        assertTrue(exc.getMessage().contains(ClientErrorCodes.C30737), "missing or unexpected error code");
+        assertTrue(exc.getMessage().contains("response from host is null"), "missing text");
+    }
+
+    @Test
     public void testConnectToVirtualHost_twice() {
-        LocalVirtualHost host2 = mock(LocalVirtualHost.class);
+        BoardDataDTO dto = mock(BoardDataDTO.class);
+        when(host.dealRequest(any())).thenReturn(dto);
+        VirtualHost host2 = mock(VirtualHost.class);
+
         client.getBoardData();
-        verify(host, times(1)).getBoardData();
-        verify(host2, never()).getBoardData();
+        verify(host, times(1)).dealRequest(any());
+        verify(host2, never()).dealRequest(any());
     }
 
 }

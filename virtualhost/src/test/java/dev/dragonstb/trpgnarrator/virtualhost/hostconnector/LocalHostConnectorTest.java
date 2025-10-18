@@ -21,6 +21,8 @@ package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,4 +113,18 @@ public class LocalHostConnectorTest {
         assertTrue(msg.contains("Expected a BoardDataDTO, but got an instance of String instead."), "Missing text, got: "+msg);
     }
 
+    @Test
+    public void getBoardData_directVirtualHostInterface() {
+        List<Optional<Object>> list = new ArrayList<>();
+        list.add(Optional.of(dto));
+        when(broker.request(any(), any(), anyBoolean())).thenReturn(list);
+
+        VHCommand command = new VHCommand(VHCommands.fetchBoard, null);
+        Object obj = connector.dealRequest(command);
+        assertNotNull(obj, "result is null");
+        assertTrue(obj instanceof BoardDataDTO, "wrong class");
+
+        BoardDataDTO res = (BoardDataDTO)obj;
+        assertEquals(dto, res, "no the expected DTO");
+    }
 }

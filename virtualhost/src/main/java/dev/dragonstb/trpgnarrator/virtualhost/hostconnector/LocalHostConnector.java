@@ -20,13 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
-import dev.dragonstb.trpgnarrator.virtualhost.broker.ChannelNames;
-import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
-import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.LocalVirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
-import java.util.List;
-import java.util.Optional;
 import lombok.NonNull;
 
 /** Host connector that runs on the same machine as the client, with this client being the only client connected to.
@@ -34,39 +28,12 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since 0.0.1
  */
-final class LocalHostConnector extends AbstractHostConnector implements LocalVirtualHost {
+final class LocalHostConnector extends AbstractHostConnector {
 
     @NonNull
     @Override
     public BoardDataDTO getBoardData() {
-        String errCode = VHostErrorCodes.V16231;
-        String channelName = ChannelNames.GET_BOARD_DATA;
-        String fetchCode = FetchCodes.BOARD_DATA;
-        List<Optional<Object>> list = request(channelName, fetchCode, true);
-        if(list.isEmpty()) {
-            String msg = "BoardDataDTO output validation failed: No board data elements.";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
-            throw new RuntimeException(use);
-        }
-
-        Optional<Object> opt = list.getFirst();
-        if(opt.isEmpty()) {
-            String msg = "BoardDataDTO output validation failed: Missing board data.";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
-            throw new RuntimeException(use);
-        }
-
-        Object obj = opt.get();
-        if(!(obj instanceof BoardDataDTO)) {
-            String msg = "BoardDataDTO output validation failed: Expected a BoardDataDTO, but got an instance of "
-                    + (obj == null ? "null" : obj.getClass().getSimpleName())
-                    + " instead.";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
-            throw new RuntimeException(use);
-        }
-
-        return (BoardDataDTO)obj;
+        return super.doGetBoardData();
     }
-
 
 }

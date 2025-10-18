@@ -22,7 +22,9 @@ package dev.dragonstb.trpgnarrator.client.clientconnector;
 
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.error.HostConnectionNotReadyException;
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.LocalVirtualHost;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import lombok.NonNull;
 
@@ -34,22 +36,59 @@ import lombok.NonNull;
 final class LocalClientConnector implements LocalClientForApp {
 
     /** The connected virtual host. */
-    private LocalVirtualHost host = null;
+    private VirtualHost host = null;
 
-    @Override
-    public BoardDataDTO getBoardData() throws RuntimeException, NullPointerException, HostConnectionNotReadyException{
+    /** Sends the command to the virtual host.
+     *
+     * @since 0.0.2
+     * @param command Command sent.
+     * @return Response. Can be {@code null}.
+     */
+    private Object sendCommand(@NonNull VHCommand command) {
+        return host.dealRequest(command);
+    }
+
+    /** This method just throws an exception when the connection to the host is not ready and does nothing elsewise.
+     *
+     * @since 0.0.2
+     * @author Dragonstb.
+     * @param msg Message for the exception
+     * @param code Error code to be used.
+     * @throws HostConnectionNotReadyException When the connection has not been established yet.
+     */
+    private void checkConnectionReadiness(@NonNull String msg, @NonNull String code) throws HostConnectionNotReadyException {
         if(host == null) {
-            String msg = "Cannot fetch board data: client connection has yet not been established.";
-            String code = ClientErrorCodes.C30737;
             String use = ClientErrorCodes.assembleCodedMsg(msg, code);
             throw new HostConnectionNotReadyException(use);
         }
-        BoardDataDTO dto = host.getBoardData();
+    }
+
+
+    @Override
+    public BoardDataDTO getBoardData() throws RuntimeException, NullPointerException, HostConnectionNotReadyException{
+        String code = ClientErrorCodes.C30737;
+        checkConnectionReadiness("Cannot fetch board data: client connection has yet not been established.", code);
+
+        VHCommand command = new VHCommand(VHCommands.fetchBoard, null);
+        Object obj = sendCommand(command);
+        if(obj == null) {
+            String msg = "Cannot fetch board data: response from host is null.";
+            String use = ClientErrorCodes.assembleCodedMsg(msg, code);
+            throw new NullPointerException(use);
+        }
+
+        if(!(obj instanceof BoardDataDTO)) {
+            String msg = "Cannot fetch board data: response from host is null.";
+            String use = ClientErrorCodes.assembleCodedMsg(msg, code);
+            throw new ClassCastException(use);
+        }
+
+        BoardDataDTO dto = (BoardDataDTO)obj;
         return dto;
     }
 
     @Override
-    public void connectToVirtualHost(@NonNull LocalVirtualHost host) {
+    public void connectToVirtualHost(@NonNull VirtualHost host) {
         if(this.host == null) {
             this.host = host;
             // TODO: register client connector to host connector as sink for host-to-client data flow

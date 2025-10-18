@@ -17,24 +17,15 @@
  *
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
-
 package dev.dragonstb.trpgnarrator.virtualhost.outwardapi;
 
-import lombok.NonNull;
-
-/** Where the server or the client connect to the virtual host.
+/** Commands from a client to a {@link VirtualHost virtual host}.
  *
+ * @since 0.0.2
  * @author Dragonstb
- * @since 0.0.1
  */
-public interface VirtualHost {
+public enum VHCommands {
 
-    /** Makes a request to the virtual host.
-     *
-     * @since 0.0.2
-     * @param command An object that parametrizes the request. The VHCommand is just a dumb parcel that does not care about the content.
-     * The implementation if the virtual host knows how to deal with it.
-     * @return An object or not. Can be {@code null}.
-     */
-    public Object dealRequest(@NonNull VHCommand command);
+    /** Fetch the board from the host. */
+    fetchBoard
 }

@@ -20,24 +20,39 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.outwardapi;
 
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+import lombok.Getter;
 import lombok.NonNull;
 
-/** In a local context, serialization is not necessary. So offer a broader interface with direct method calls.
+/** A command from a client to a {@link VirtualHost virtual host}.
  *
  * @author Dragonstb
- * @since
+ * @since 0.0.2
  */
-public interface LocalVirtualHost extends VirtualHost {
+@Getter
+public final class VHCommand {
 
-    /** Gets the board data.
+    @NonNull private final VHCommands command;
+    private final Object parms;
+
+    /** Generates.
      *
-     * TODO: When the board becomes large and split into patches, limit do certain patches chosen by the method caller.
-     * TODO: For multiplayer, an id of the client may become necessary.
-     *
-     * @since 0.0.1
-     * @return
+     * @since 0.0.2
+     * @param command The type of command.
+     * @param parms The parameters of the command. For example, when a figurine wants to move from one field to another, these parameters
+     * would be the figurine id and the id of the field of destination. Can be {@code null}.
      */
-    @NonNull
-    public BoardDataDTO getBoardData();
+    public VHCommand(@NonNull VHCommands command, Object parms) {
+        this.command = command;
+        this.parms = parms;
+    }
+
+    /** Generates with no parameters.
+     *
+     * @since 0.0.2
+     * @param command The type of command.
+     */
+    public VHCommand(@NonNull VHCommands command) {
+        this(command, null);
+    }
+
 }

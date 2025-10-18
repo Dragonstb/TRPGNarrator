@@ -42,10 +42,9 @@ import dev.dragonstb.trpgnarrator.client.ingame.IngameCamControl;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.FigurineBuilder;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.HostType;
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.LocalVirtualHost;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHostBuilder;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -78,7 +77,7 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
 
         // virtual host and connection to client (may throw exceptions when something is wrong)
         HostType hostType = HostType.local;
-        LocalVirtualHost host = (LocalVirtualHost)(new VirtualHostBuilder(hostType).build());
+        VirtualHost host = new VirtualHostBuilder(hostType).build();
         LocalClientForApp client = (LocalClientForApp)(new ClientConnectorBuilder(hostType).build());
         client.connectToVirtualHost(host);
         ingameAppState.setConnector(client);
