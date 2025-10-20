@@ -25,6 +25,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.broker.SyncBrokerFactory;
 import lombok.NoArgsConstructor;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.figurine.FigurinesBuilder;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnectorBuilder;
 import lombok.NonNull;
@@ -75,6 +76,9 @@ public final class VirtualHostBuilder {
 
         // the board registers itself to the broker
         new BoardBuilder().setBroker(broker).build();
+
+        // the figurine controller registers itself to the cbroker
+        new FigurinesBuilder().setBroker(broker).build();
 
         VirtualHost host = asVirtualHost(connector);
         return host;

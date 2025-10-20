@@ -17,17 +17,34 @@
  *
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
-package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
-/** Names of some default channels for the {@link SynchonousBroker synchronous broker}.
+package dev.dragonstb.trpgnarrator.virtualhost.figurine;
+
+import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
+import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+/**
  *
  * @author Dragonstb
- * @since 0.0.1
+ * @since
  */
-public final class ChannelNames {
+@Setter
+@Accessors(chain = true)
+public final class FigurinesBuilder {
 
-    /** Channel for components that provide board data. */
-    public static final String GET_BOARD_DATA = "get board data";
-    /** Channel for components that provide figurine data. */
-    public static final String GET_FIGURINE_DATA = "get figurine data";
+    private SynchronousBroker broker = null;
+
+    public Figurines build() {
+        String errCode = VHostErrorCodes.V14985;
+        if(broker == null) {
+            String msg = "Broker must be defined, but is null.";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new NullPointerException(use);
+        }
+
+        FigurineController controller = new FigurineController(broker);
+        return controller;
+    }
 }

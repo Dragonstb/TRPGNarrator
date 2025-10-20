@@ -17,17 +17,14 @@
  *
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
-package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
-/** Names of some default channels for the {@link SynchonousBroker synchronous broker}.
+package dev.dragonstb.trpgnarrator.virtualhost.figurine;
+
+/**
  *
  * @author Dragonstb
- * @since 0.0.1
+ * @since 0.0.2
  */
-public final class ChannelNames {
+public interface Figurines {
 
-    /** Channel for components that provide board data. */
-    public static final String GET_BOARD_DATA = "get board data";
-    /** Channel for components that provide figurine data. */
-    public static final String GET_FIGURINE_DATA = "get figurine data";
 }

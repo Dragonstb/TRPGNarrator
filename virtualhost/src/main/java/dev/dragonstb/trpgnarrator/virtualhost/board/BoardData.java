@@ -100,11 +100,6 @@ final class BoardData implements Board, Receiver {
 
     }
 
-    @Override
-    public void receive(Object obj) {
-
-    }
-
     /** Creates a new, immutable representation of the board model data.
      *
      * @since 0.0.1
@@ -162,6 +157,11 @@ final class BoardData implements Board, Receiver {
         };
 
         return opt;
+    }
+
+    @Override
+    public void receive(Object obj) {
+
     }
 
 }

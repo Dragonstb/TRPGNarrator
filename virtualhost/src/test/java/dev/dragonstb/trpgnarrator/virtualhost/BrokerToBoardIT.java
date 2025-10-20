@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost;
 
+import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.virtualhost.board.Board;
 import dev.dragonstb.trpgnarrator.virtualhost.board.BoardBuilder;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.ChannelNames;
@@ -69,6 +70,21 @@ public class BrokerToBoardIT {
         Optional<Object> opt = list.getFirst();
         assertTrue(opt.isPresent(), "no data around");
         assertTrue(opt.get() instanceof BoardDataDTO, "wrong class of data");
+    }
+
+    @Test
+    public void testGetFieldLocation() {
+        String channelName = ChannelNames.GET_BOARD_DATA;
+        int fieldId = 0;
+        FetchCommand fetch = new FetchCommand(FetchCodes.BOARD_FIELD_LOCATION, fieldId);
+        List<Optional<Object>> list = broker.request(channelName, fetch, true);
+
+        assertEquals(1, list.size(), "wrong size of list");
+        Optional<Object> opt = list.getFirst();
+        assertTrue(opt.isPresent(), "no data around");
+        assertTrue(opt.get() instanceof Vector3f, "wrong class of data");
+
+        // TODO: once the board data is built from a data model rather than hard coded, check if we got the correct location here
     }
 
     @Test

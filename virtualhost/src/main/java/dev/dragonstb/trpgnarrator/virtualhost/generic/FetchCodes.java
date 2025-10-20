@@ -27,5 +27,9 @@ package dev.dragonstb.trpgnarrator.virtualhost.generic;
  */
 public final class FetchCodes {
 
+    /** Get the board data. */
     public static final String BOARD_DATA = "board data";
+    /** get he location of a field of the board. */
+    public static final String BOARD_FIELD_LOCATION = "board field location";
+
 }
