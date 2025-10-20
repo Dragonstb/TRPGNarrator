@@ -22,6 +22,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.figurine;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -63,4 +64,8 @@ final class Figurine {
         this(id, diffuseColor, diffuseColor.mult(.25f), diffuseColor.mult(1.2f));
     }
 
+    FigurineDTO asDTO() {
+        FigurineDTO dto = new FigurineDTO(id, diffuseColor, ambientColor, specularColor, location);
+        return dto;
+    }
 }
