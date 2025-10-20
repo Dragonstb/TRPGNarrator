@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +81,7 @@ final class BrokerChannel {
      * @param skipEmpties Shall empty optionals be excluded ({@code true}) or included ({@code false}) into the resulting list?
      * @return List with whatever we got.
      */
-    List<Optional<Object>> request(@NonNull String fetch, boolean skipEmpties) {
+    List<Optional<Object>> request(@NonNull FetchCommand fetch, boolean skipEmpties) {
         List<Optional<Object>> list = new ArrayList<>();
         receivers.forEach( receiver -> {
             Optional<Object> opt = receiver.request(fetch);

@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import java.util.List;
 import java.util.Optional;
 import lombok.NonNull;
@@ -66,6 +67,6 @@ public interface SynchronousBroker {
      * @return A list with whatever the registered receivers send back. Might be empty.
      */
     @NonNull
-    public List<Optional<Object>> request(@NonNull String channelName, @NonNull String fetch, boolean skipEmpties);
+    public List<Optional<Object>> request(@NonNull String channelName, @NonNull FetchCommand fetch, boolean skipEmpties);
 
 }

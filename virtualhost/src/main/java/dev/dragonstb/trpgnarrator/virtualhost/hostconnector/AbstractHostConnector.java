@@ -24,6 +24,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.broker.ChannelNames;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
@@ -54,12 +55,12 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
      * @since 0.0.1
      * @author Dragonstb
      * @param channelName Broker channel the request is sent to.
-     * @param fetch A fetch code. Who ever receives the request has to know what it means.
+     * @param fetch A fetch command. Who ever receives the request has to know what it means.
      * @param skipEmpties If true, empty optionals from receivers of the request are ignored not not included into the result.
      * @return List with the answers from the receivers of the request. May be empty.
      */
     @NonNull
-    List<Optional<Object>> request(@NonNull String channelName, @NonNull String fetch, boolean skipEmpties) {
+    List<Optional<Object>> request(@NonNull String channelName, @NonNull FetchCommand fetch, boolean skipEmpties) {
         return broker.request(channelName, fetch, skipEmpties);
     }
 
@@ -100,8 +101,8 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
     BoardDataDTO doGetBoardData() {
         String errCode = VHostErrorCodes.V16231;
         String channelName = ChannelNames.GET_BOARD_DATA;
-        String fetchCode = FetchCodes.BOARD_DATA;
-        List<Optional<Object>> list = request(channelName, fetchCode, true);
+        FetchCommand fetchCommand = new FetchCommand(FetchCodes.BOARD_DATA, null);
+        List<Optional<Object>> list = request(channelName, fetchCommand, true);
         if(list.isEmpty()) {
             String msg = "BoardDataDTO output validation failed: No board data elements.";
             String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);

@@ -26,6 +26,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.broker.ChannelNames;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SyncBrokerFactory;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Globals;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
@@ -61,7 +62,7 @@ public class BrokerToBoardIT {
     @Test
     public void testGetBoardData() {
         String channelName = ChannelNames.GET_BOARD_DATA;
-        String fetch = FetchCodes.BOARD_DATA;
+        FetchCommand fetch = new FetchCommand(FetchCodes.BOARD_DATA, null);
         List<Optional<Object>> list = broker.request(channelName, fetch, true);
 
         assertEquals(1, list.size(), "wrong size of list");
@@ -73,7 +74,7 @@ public class BrokerToBoardIT {
     @Test
     public void testGetNothing() {
         String channelName = ChannelNames.GET_BOARD_DATA;
-        String fetch = Globals.EMPTY_STRING;
+        FetchCommand fetch = new FetchCommand(Globals.EMPTY_STRING, null);
         List<Optional<Object>> list = broker.request(channelName, fetch, true); // sksip the expected empty optional
 
         assertTrue(list.isEmpty());

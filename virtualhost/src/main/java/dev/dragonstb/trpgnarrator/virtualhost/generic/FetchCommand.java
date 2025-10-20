@@ -18,31 +18,24 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.broker;
+package dev.dragonstb.trpgnarrator.virtualhost.generic;
 
-import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
-import java.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 
-/** Can receive messages from the {@link SynchonousBroker broker}.
+/** A command sent over the fetch pipeline of the {@link dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker internal broker}.
  *
  * @author Dragonstb
- * @since 0.0.1
+ * @since 0.0.2
  */
-public interface Receiver {
+@Getter
+@AllArgsConstructor
+public final class FetchCommand {
 
-    /** Delivers the object to the receiver. The receiver has to care about validation and interpretation of what it got. The broker is just
-     * a dump pipe.
-     *
-     * @since 0.0.1
-     * @param obj Object delivered. Might be {@code null}.
-     */
-    public void receive(Object obj);
+    /** Specifies the actual command. */
+    @NonNull private final String command;
+    /** A parametrization of the command. */
+    private final Object parms;
 
-    /** The origin of the requests fetches an object from the receiver.
-     *
-     * @param fetch A command object that specifies the requested object. The receiver must now how to interpret this.
-     * @return Requested object.
-     */
-    public Optional<Object> request(@NonNull FetchCommand fetch);
 }

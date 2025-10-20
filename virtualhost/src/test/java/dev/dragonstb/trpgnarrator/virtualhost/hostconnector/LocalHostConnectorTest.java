@@ -21,6 +21,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
@@ -59,9 +60,9 @@ public class LocalHostConnectorTest {
     }
 
     @Test
-    public void testLinBroker_twice() {
+    public void testLinkBroker_twice() {
         connector.linkBroker(broker2);
-        connector.request("a", "b", true);
+        connector.request("a", new FetchCommand("b", null), true);
 
         verify(broker, times(1)).request(any(), any(), anyBoolean());
         verify(broker2, never()).request(any(), any(), anyBoolean());

@@ -28,7 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.NonNull;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
+import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldLinkDTO;
@@ -121,13 +123,40 @@ final class BoardData implements Board, Receiver {
         return dto;
     }
 
-    @Override
-    public Optional<Object> request(@NonNull String fetch) {
+    /** Fetches the location of a board field.
+     *
+     * @author Dragonstb
+     * @since 0.0.1
+     * @param fieldId Id of the field of interest.
+     * @return An optional containing the location of the field of interest. The optional is empty if no field has the given id.
+     */
+    private Vector3f getLocationOfField(int fieldId) {
+        FieldData field = fields.get(fieldId);
+        return field != null ? field.getLocation() : null;
+    }
 
-        Optional<Object> opt = switch(fetch) {
+    @Override
+    public Optional<Object> request(@NonNull FetchCommand fetch) {
+
+        Optional<Object> opt = switch(fetch.getCommand()) {
             case FetchCodes.BOARD_DATA -> {
                 BoardDataDTO dto = asDTO();
                 yield Optional.of(dto);
+            }
+            case FetchCodes.BOARD_FIELD_LOCATION -> {
+                Object parm = fetch.getParms();
+                int id;
+                try {
+                    id = (Integer)parm;
+                }
+                catch (Exception e) {
+                    String code = VHostErrorCodes.V78642;
+                    String msg = "Expected id of field to be an integer, but got instance of class "
+                            + (parm != null ? parm.getClass().getSimpleName() : "null") + " instead";
+                    String use = VHostErrorCodes.assembleCodedMsg(msg, code);
+                    throw new ClassCastException(use);
+                }
+                yield Optional.ofNullable(getLocationOfField(id));
             }
             default -> {yield Optional.empty();}
         };

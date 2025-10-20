@@ -19,6 +19,7 @@
  */
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import java.util.List;
 import java.util.Optional;
@@ -97,7 +98,7 @@ public class SyncBrokerImpAndBrokerChannelIT {
 
     @Test
     public void testRequest() {
-        String fetch = "hello";
+        FetchCommand fetch = new FetchCommand("hello", null);
         String ret = "World";
         when(receiverA.request(fetch)).thenReturn(Optional.of(ret));
         broker.registerToChannel(receiverA, channel1);
@@ -115,7 +116,7 @@ public class SyncBrokerImpAndBrokerChannelIT {
 
     @Test
     public void testRequest_skipEmpties() {
-        String fetch = "hello";
+        FetchCommand fetch = new FetchCommand("hello", null);
         String ret = "World";
         when(receiverA.request(any())).thenReturn(Optional.of(ret));
         when(receiverB.request(any())).thenReturn(Optional.empty());
@@ -132,7 +133,7 @@ public class SyncBrokerImpAndBrokerChannelIT {
 
     @Test
     public void testRequest_includeEmpties() {
-        String fetch = "hello";
+        FetchCommand fetch = new FetchCommand("hello", null);
         String ret = "World";
         when(receiverA.request(any())).thenReturn(Optional.of(ret));
         when(receiverB.request(any())).thenReturn(Optional.empty());

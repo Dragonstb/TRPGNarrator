@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +79,7 @@ final class SyncBrokerImp implements SynchronousBroker {
     }
 
     @Override
-    public List<Optional<Object>> request(@NonNull String channelName, @NonNull String fetch, boolean skipEmpties) {
+    public List<Optional<Object>> request(@NonNull String channelName, @NonNull FetchCommand fetch, boolean skipEmpties) {
         BrokerChannel channel = channels.get(channelName);
         return channel!=null ? channel.request(fetch, skipEmpties) : new ArrayList<>();
     }
