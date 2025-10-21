@@ -27,5 +27,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.outwardapi;
 public enum VHCommands {
 
     /** Fetch the board from the host. */
-    fetchBoard
+    fetchBoard,
+    /** Fetch all figurines. */
+    fetchFigurines
 }

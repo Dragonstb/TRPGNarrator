@@ -40,6 +40,9 @@ final class Figurine {
     private final ColorRGBA ambientColor;
     private final ColorRGBA specularColor;
     @Getter @Setter private Vector3f location = new Vector3f();
+    /** When on board, this field holds the id of the board field the figurine currently stand on. When off board, this field is
+     * meaningless. */
+    @Getter @Setter private int fieldId;
 
     /** Generates.
      *
@@ -65,7 +68,7 @@ final class Figurine {
     }
 
     FigurineDTO asDTO() {
-        FigurineDTO dto = new FigurineDTO(id, diffuseColor, ambientColor, specularColor, location);
+        FigurineDTO dto = new FigurineDTO(id, diffuseColor, ambientColor, specularColor, location, fieldId);
         return dto;
     }
 }

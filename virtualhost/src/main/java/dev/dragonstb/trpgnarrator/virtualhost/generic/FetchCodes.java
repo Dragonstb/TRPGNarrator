@@ -32,4 +32,7 @@ public final class FetchCodes {
     /** get he location of a field of the board. */
     public static final String BOARD_FIELD_LOCATION = "board field location";
 
+    /** Get the full list of figurines. */
+    public static final String FIGURINE_FULL_LIST = "figurine full list";
+
 }

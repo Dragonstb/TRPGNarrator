@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.generic;
 
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -37,5 +38,28 @@ public final class FetchCommand {
     @NonNull private final String command;
     /** A parametrization of the command. */
     private final Object parms;
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || !(obj instanceof FetchCommand)) {
+            return false;
+        }
+        else if(this == obj) {
+            return true;
+        }
+
+        FetchCommand other = (FetchCommand)obj;
+        boolean parmsEqual = (parms != null && other.parms != null && parms.equals(other.getParms()))
+                || (parms == null && other.getParms() == null);
+        return command.equals(other.getCommand()) && parmsEqual;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 43 * hash + Objects.hashCode(this.command);
+        hash = 43 * hash + Objects.hashCode(this.parms);
+        return hash;
+    }
 
 }

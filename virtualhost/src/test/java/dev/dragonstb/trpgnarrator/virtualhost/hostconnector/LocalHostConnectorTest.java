@@ -19,12 +19,15 @@
  */
 package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
+import dev.dragonstb.trpgnarrator.virtualhost.broker.ChannelNames;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -127,5 +130,20 @@ public class LocalHostConnectorTest {
 
         BoardDataDTO res = (BoardDataDTO)obj;
         assertEquals(dto, res, "no the expected DTO");
+    }
+
+    @Test
+    public void testGetFigurineData_ok() {
+        List<FigurineDTO> figs = new ArrayList<>();
+        List<Optional<Object>> list = new ArrayList<>();
+        list.add(Optional.of(figs));
+
+        FetchCommand command = new FetchCommand(FetchCodes.FIGURINE_FULL_LIST, null);
+        String channelName = ChannelNames.GET_FIGURINE_DATA;
+        when(broker.request(channelName, command, true)).thenReturn(list);
+
+        List<FigurineDTO> res = connector.getFigurineList();
+        assertNotNull(res, "result is null");
+        assertEquals(figs, res, "no the expected List");
     }
 }

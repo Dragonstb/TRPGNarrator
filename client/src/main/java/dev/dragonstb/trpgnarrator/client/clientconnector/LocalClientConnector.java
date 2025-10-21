@@ -26,6 +26,8 @@ import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import java.util.List;
 import lombok.NonNull;
 
 /** A client connector for use in local single player. In local mode, the serialization/deserialization is not necessary.
@@ -63,13 +65,12 @@ final class LocalClientConnector implements LocalClientForApp {
         }
     }
 
-
     @Override
     public BoardDataDTO getBoardData() throws RuntimeException, NullPointerException, HostConnectionNotReadyException{
         String code = ClientErrorCodes.C30737;
         checkConnectionReadiness("Cannot fetch board data: client connection has yet not been established.", code);
 
-        VHCommand command = new VHCommand(VHCommands.fetchBoard, null);
+        VHCommand command = new VHCommand(VHCommands.fetchBoard);
         Object obj = sendCommand(command);
         if(obj == null) {
             String msg = "Cannot fetch board data: response from host is null.";
@@ -78,7 +79,7 @@ final class LocalClientConnector implements LocalClientForApp {
         }
 
         if(!(obj instanceof BoardDataDTO)) {
-            String msg = "Cannot fetch board data: response from host is null.";
+            String msg = "Cannot fetch board data: response from host is invalid.";
             String use = ClientErrorCodes.assembleCodedMsg(msg, code);
             throw new ClassCastException(use);
         }
@@ -86,6 +87,31 @@ final class LocalClientConnector implements LocalClientForApp {
         BoardDataDTO dto = (BoardDataDTO)obj;
         return dto;
     }
+
+    @Override
+    public List<FigurineDTO> getFigurinesList() {
+        String code = ClientErrorCodes.C05317;
+        checkConnectionReadiness("Cannot fetch figurines list: connection has yet not been established.", code);
+
+        VHCommand command = new VHCommand(VHCommands.fetchFigurines);
+        Object obj = sendCommand(command);
+        // TODO: the following kind of check happens often here. Write a piece of code for this task that can beshared.
+        if(obj == null) {
+            String msg = "Cannot fetch figurine list: response from host is null.";
+            String use = ClientErrorCodes.assembleCodedMsg(msg, code);
+            throw new NullPointerException(use);
+        }
+
+        if(!(obj instanceof List<?>)) {
+            String msg = "Cannot fetch figurine list: response from host is invalid.";
+            String use = ClientErrorCodes.assembleCodedMsg(msg, code);
+            throw new ClassCastException(use);
+        }
+
+        List<FigurineDTO> list = (List<FigurineDTO>)obj;
+        return list;
+    }
+
 
     @Override
     public void connectToVirtualHost(@NonNull VirtualHost host) {

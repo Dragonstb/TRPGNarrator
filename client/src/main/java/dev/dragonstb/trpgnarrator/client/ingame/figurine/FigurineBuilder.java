@@ -22,6 +22,7 @@ package dev.dragonstb.trpgnarrator.client.ingame.figurine;
 
 import com.jme3.math.ColorRGBA;
 import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
@@ -52,6 +53,19 @@ public final class FigurineBuilder {
     public static FigurineBuilder ofId(@NonNull String id) {
         FigurineBuilder builder = new FigurineBuilder();
         builder.setId(id);
+        return builder;
+    }
+
+    /**
+     * @since 0.0.2
+     * @author Dragonstb
+     * @param dto Data transfer object with the data of the figurine.
+     * @return
+     */
+    public static FigurineBuilder ofDto(FigurineDTO dto) {
+        FigurineBuilder builder = new FigurineBuilder()
+                .setId(String.valueOf(dto.getId()))
+                .setColor(dto.getDiffuseAsColor());
         return builder;
     }
 

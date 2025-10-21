@@ -81,11 +81,7 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
         LocalClientForApp client = (LocalClientForApp)(new ClientConnectorBuilder(hostType).build());
         client.connectToVirtualHost(host);
         ingameAppState.setConnector(client);
-        ingameAppState.load();
-
-        // a figurine
-        fig = FigurineBuilder.ofId("Figurine").setColor(ColorRGBA.Blue.mult(.33f)).build();
-        ingameAppState.addFigurine(fig, 35);
+        fig = ingameAppState.load();
 
         // controls
         IngameCamControl camControl = new IngameCamControl(cam);

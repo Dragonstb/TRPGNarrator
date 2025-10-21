@@ -21,6 +21,8 @@
 package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import java.util.List;
 import lombok.NonNull;
 
 /** Host connector that runs on the same machine as the client, with this client being the only client connected to.
@@ -35,5 +37,12 @@ final class LocalHostConnector extends AbstractHostConnector {
     public BoardDataDTO getBoardData() {
         return super.doGetBoardData();
     }
+
+    @NonNull
+    @Override
+    List<FigurineDTO> getFigurineList() {
+        return super.doGetFigurineList();
+    }
+
 
 }

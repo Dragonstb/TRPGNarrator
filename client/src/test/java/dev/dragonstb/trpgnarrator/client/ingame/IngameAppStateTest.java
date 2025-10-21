@@ -27,6 +27,8 @@ import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
 import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
@@ -78,25 +80,9 @@ public class IngameAppStateTest {
 
     @Test
     public void testGetIngameRoot() {
-        Node boardNode = new Node();
-
-        try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
-            when(BoardFactory.makeBoard(any())).thenReturn(board);
-            when(board.getNode()).thenReturn(boardNode);
-
-            IngameAppState appState = new IngameAppState();
-            appState.setConnector(connector);
-            appState.load();
-
-            Node ingameRoot = appState.getIngameRoot();
-            assertNotNull(ingameRoot);
-            assertEquals(Globals.INGAME_ROOTNODE_NAME, ingameRoot.getName());
-
-            List<Spatial> children = ingameRoot.getChildren();
-            assertEquals(1, children.size());
-
-            assertEquals(boardNode, children.get(0));
-        }
+        IngameAppState appState = new IngameAppState();
+        Node ingameRoot = appState.getIngameRoot();
+        assertEquals(Globals.INGAME_ROOTNODE_NAME, ingameRoot.getName());
     }
 
 //    @Test
@@ -114,6 +100,7 @@ public class IngameAppStateTest {
         try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
             when(BoardFactory.makeBoard(any())).thenReturn(board);
             when(board.getNode()).thenReturn(boardNode);
+            when(connector.getFigurinesList()).thenReturn(new ArrayList<>());
 
             IngameAppState appState = new IngameAppState();
             appState.setConnector(connector);
@@ -135,6 +122,7 @@ public class IngameAppStateTest {
         try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
             when(BoardFactory.makeBoard(any())).thenReturn(board);
             when(board.getNode()).thenReturn(boardNode);
+            when(connector.getFigurinesList()).thenReturn(new ArrayList<>());
 
             IngameAppState appState = new IngameAppState();
             appState.setConnector(connector);

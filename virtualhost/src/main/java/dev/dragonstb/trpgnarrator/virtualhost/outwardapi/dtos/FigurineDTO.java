@@ -42,6 +42,7 @@ public final class FigurineDTO {
     @NonNull private final Vector3DTO ambient;
     @NonNull private final Vector3DTO specular;
     private final Vector3DTO location;
+    private final int fieldId;
 
     /**
      * @since 0.0.2
@@ -51,12 +52,14 @@ public final class FigurineDTO {
      * @param specular Specular colour. Must not be {@code null}.
      * @param location Location in the world. Can be {@code null}, which usually means that the figurine is currently not on the board.
      */
-    public FigurineDTO(int id, @NonNull ColorRGBA diffuse, @NonNull ColorRGBA ambient, @NonNull ColorRGBA specular, Vector3f location) {
+    public FigurineDTO(int id, @NonNull ColorRGBA diffuse, @NonNull ColorRGBA ambient, @NonNull ColorRGBA specular, Vector3f location,
+            int fieldId) {
         this.id = id;
         this.diffuse = new Vector3DTO(diffuse.r, diffuse.g, diffuse.b);
         this.ambient = new Vector3DTO(ambient.r, ambient.g, ambient.b);
         this.specular = new Vector3DTO(specular.r, specular.g, specular.b);
         this.location = location != null ? new Vector3DTO(location) : null;
+        this.fieldId = fieldId;
     }
 
     /**
@@ -103,11 +106,14 @@ public final class FigurineDTO {
         }
 
         FigurineDTO other = (FigurineDTO)obj;
+        boolean locEquals = (location != null && other.getLocation() != null && location.equals(other.getLocation()) )
+                || (location == null && other.location == null);
         return id == other.getId()
                 && diffuse.equals(other.getDiffuse())
                 && ambient.equals(other.getAmbient())
                 && specular.equals(other.getSpecular())
-                && location.equals(other.getLocation());
+                && locEquals
+                && fieldId == other.getFieldId();
     }
 
     @Override
@@ -118,6 +124,7 @@ public final class FigurineDTO {
         hash = 73 * hash + Objects.hashCode(this.ambient);
         hash = 73 * hash + Objects.hashCode(this.specular);
         hash = 73 * hash + Objects.hashCode(this.location);
+        hash = 73 * hash + this.fieldId;
         return hash;
     }
 

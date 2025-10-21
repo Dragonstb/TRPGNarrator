@@ -31,10 +31,12 @@ import dev.dragonstb.trpgnarrator.client.error.ClientErrorCodes;
 import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
 import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
+import dev.dragonstb.trpgnarrator.client.ingame.figurine.FigurineBuilder;
 import dev.dragonstb.trpgnarrator.client.tweens.ActionTween;
 import dev.dragonstb.trpgnarrator.client.tweens.SequenceTween;
 import dev.dragonstb.trpgnarrator.client.tweens.ShiftTween;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -213,8 +215,9 @@ public final class IngameAppState extends AbstractAppState {
 
     /**
      * @since 0.0.1
+     * @return Temporary, the controlled figurine/ But just for now.
      */
-    public void load() {
+    public Figurine load() {
         if(connector == null) {
             String code = ClientErrorCodes.C58856;
             String msg = "No client connector available.";
@@ -226,6 +229,18 @@ public final class IngameAppState extends AbstractAppState {
         BoardDataDTO dto = connector.getBoardData();
         board = BoardFactory.makeBoard(dto);
         ingameRoot.attachChild(board.getNode());
+
+        Figurine figurine = null;
+        List<FigurineDTO> list = connector.getFigurinesList();
+        if(!list.isEmpty()) {
+            FigurineDTO figDTO = list.getFirst(); // just for now
+            figurine = FigurineBuilder.ofDto(figDTO).build();
+            addFigurine(figurine, figDTO.getFieldId());
+        }
+
+        // TODO: just for now, we return the figurine so we gain control over it. Once the clientsided player representations are
+        // implemented, they will take care of referencing the player controlled figurines.
+        return figurine;
     }
 
     // TODO: The attempt of enabling an improperly configured IngameAppState shall throw an exception

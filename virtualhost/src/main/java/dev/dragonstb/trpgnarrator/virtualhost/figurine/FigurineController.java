@@ -28,10 +28,12 @@ import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 
 /** The puppeteer.
@@ -57,7 +59,8 @@ final class FigurineController implements Figurines, Receiver {
         Figurine fig = new Figurine(id, ColorRGBA.Blue.mult(.33f));
         figurines.put(fig.getId(), fig);
 
-        FetchCommand fetch = new FetchCommand(FetchCodes.BOARD_FIELD_LOCATION, 15);
+        int fieldId = 15;
+        FetchCommand fetch = new FetchCommand(FetchCodes.BOARD_FIELD_LOCATION, fieldId);
         List<Optional<Object>> list = broker.request(ChannelNames.GET_BOARD_DATA, fetch, true);
 
         // TODO: this reduction from List<Optional<Object>> to one instance of <T extends Object> happens fairly often. Write a centrally
@@ -82,6 +85,7 @@ final class FigurineController implements Figurines, Receiver {
 
         Vector3f location = (Vector3f)opt.get();
         fig.setLocation(location);
+        fig.setFieldId(fieldId);
     }
 
     @Override
@@ -91,7 +95,16 @@ final class FigurineController implements Figurines, Receiver {
 
     @Override
     public Optional<Object> request(FetchCommand fetch) {
-        return Optional.empty();
+        Optional<Object> opt = switch(fetch.getCommand()) {
+            case FetchCodes.FIGURINE_FULL_LIST -> { yield Optional.ofNullable(getFigurinesDTOs()); }
+            default -> {yield Optional.empty();}
+        };
+        return opt;
+    }
+
+    private List<FigurineDTO> getFigurinesDTOs() {
+        List<FigurineDTO> dtos = figurines.values().stream().map(fig -> fig.asDTO()).collect(Collectors.toList());
+        return dtos;
     }
 
 }

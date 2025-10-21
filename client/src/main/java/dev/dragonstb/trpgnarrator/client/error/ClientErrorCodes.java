@@ -31,6 +31,7 @@ package dev.dragonstb.trpgnarrator.client.error;
 public final class ClientErrorCodes {
 
     public static final String C04278 = "C04278";
+    public static final String C05317 = "C05317";
     public static final String C17679 = "C17679";
     public static final String C28331 = "C28331";
     public static final String C30737 = "C30737";

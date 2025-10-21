@@ -22,10 +22,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,12 +37,13 @@ public class FigurineDTOTest {
     private final ColorRGBA ambient = new ColorRGBA(.4f, .5f, .6f, 1);
     private final ColorRGBA specular = new ColorRGBA(.7f, .8f, .9f, 1);
     private final Vector3f loc = new Vector3f(-1, -2, -3);
+    private final int fieldId = 20;
 
     private FigurineDTO dto;
 
     @BeforeEach
     public void setUp() {
-        dto = new FigurineDTO(id, diffuse, ambient, specular, loc);
+        dto = new FigurineDTO(id, diffuse, ambient, specular, loc, fieldId);
     }
 
     @Test
@@ -81,7 +79,7 @@ public class FigurineDTOTest {
 
     @Test
     public void testGetLocationAsVector_noLoc() {
-        dto = new FigurineDTO(id, diffuse, ambient, specular, null);
+        dto = new FigurineDTO(id, diffuse, ambient, specular, null, fieldId);
         Optional<Vector3f> opt = dto.getLocationAsVector();
         assertNotNull(opt, "no optional");
         assertTrue(opt.isEmpty(), "A value in optional");
@@ -125,29 +123,34 @@ public class FigurineDTOTest {
     }
 
     @Test
+    public void testGetFieldId() {
+        assertEquals(fieldId, dto.getFieldId());
+    }
+
+    @Test
     public void testIllegalArgs_diffuse() {
-        assertThrows(NullPointerException.class, () -> new FigurineDTO(id, null, ambient, specular, loc));
+        assertThrows(NullPointerException.class, () -> new FigurineDTO(id, null, ambient, specular, loc, fieldId));
     }
 
     @Test
     public void testIllegalArgs_ambient() {
-        assertThrows(NullPointerException.class, () -> new FigurineDTO(id, diffuse, null, specular, loc));
+        assertThrows(NullPointerException.class, () -> new FigurineDTO(id, diffuse, null, specular, loc, fieldId));
     }
 
     @Test
     public void testIllegalArgs_specular() {
-        assertThrows(NullPointerException.class, () -> new FigurineDTO(id, diffuse, ambient, null, loc));
+        assertThrows(NullPointerException.class, () -> new FigurineDTO(id, diffuse, ambient, null, loc, fieldId));
     }
 
     @Test
     public void testEquals_otherEqual() {
-        FigurineDTO other = new FigurineDTO(id, diffuse, ambient, specular, loc);
+        FigurineDTO other = new FigurineDTO(id, diffuse, ambient, specular, loc, fieldId);
         assertTrue(dto.equals(other));
     }
 
     @Test
     public void testEquals_otherNonEqual() {
-        FigurineDTO other = new FigurineDTO(id+1, ambient, specular, diffuse, loc);
+        FigurineDTO other = new FigurineDTO(id+1, ambient, specular, diffuse, loc, fieldId+1);
         assertFalse(dto.equals(other));
     }
 
