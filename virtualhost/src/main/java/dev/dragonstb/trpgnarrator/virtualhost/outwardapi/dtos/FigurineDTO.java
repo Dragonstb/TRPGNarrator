@@ -22,6 +22,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
@@ -37,9 +38,9 @@ import lombok.NonNull;
 public final class FigurineDTO {
 
     private final int id;
-    private final Vector3DTO diffuse;
-    private final Vector3DTO ambient;
-    private final Vector3DTO specular;
+    @NonNull private final Vector3DTO diffuse;
+    @NonNull private final Vector3DTO ambient;
+    @NonNull private final Vector3DTO specular;
     private final Vector3DTO location;
 
     /**
@@ -89,7 +90,35 @@ public final class FigurineDTO {
      * @return The location as vector, which might be {@code null}, putted into an optional.
      */
     public Optional<Vector3f> getLocationAsVector() {
-        return Optional.ofNullable(location.getAsVector());
+        return location != null ? Optional.of(location.getAsVector()) : Optional.empty();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(obj == null || !(obj instanceof FigurineDTO)) {
+            return false;
+        }
+
+        FigurineDTO other = (FigurineDTO)obj;
+        return id == other.getId()
+                && diffuse.equals(other.getDiffuse())
+                && ambient.equals(other.getAmbient())
+                && specular.equals(other.getSpecular())
+                && location.equals(other.getLocation());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 73 * hash + this.id;
+        hash = 73 * hash + Objects.hashCode(this.diffuse);
+        hash = 73 * hash + Objects.hashCode(this.ambient);
+        hash = 73 * hash + Objects.hashCode(this.specular);
+        hash = 73 * hash + Objects.hashCode(this.location);
+        return hash;
     }
 
     /** Returns a vector3 as colour. X becomes red, y becomes green, z becomes blue, and alpha is set to unity.
@@ -99,7 +128,7 @@ public final class FigurineDTO {
      * @param vec three-dimensional vector.
      * @return Colour.
      */
-    private ColorRGBA asColor(Vector3DTO vec) {
+    private static ColorRGBA asColor(Vector3DTO vec) {
         return new ColorRGBA(vec.getAsVector());
     }
 

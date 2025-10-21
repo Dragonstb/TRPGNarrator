@@ -21,7 +21,6 @@
 package dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos;
 
 import com.jme3.math.Vector3f;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -66,6 +65,29 @@ public final class Vector3DTO {
      */
     public Vector3f getAsVector() {
         return new Vector3f(x, y, z);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+
+        if(obj == null || !(obj instanceof Vector3DTO)) {
+            return false;
+        }
+
+        Vector3DTO other = (Vector3DTO)obj;
+        return x == other.getX() && y == other.getY() && z == other.getZ();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Float.floatToIntBits(this.x);
+        hash = 97 * hash + Float.floatToIntBits(this.y);
+        hash = 97 * hash + Float.floatToIntBits(this.z);
+        return hash;
     }
 
 }
