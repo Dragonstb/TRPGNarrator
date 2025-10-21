@@ -28,6 +28,7 @@ import dev.dragonstb.trpgnarrator.client.ingame.board.Board;
 import dev.dragonstb.trpgnarrator.client.ingame.board.BoardFactory;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -91,6 +92,7 @@ public class IngameAppStateTest {
 
     @Test
     public void testAddFigurine() {
+        FigurinesListDTO figs = new FigurinesListDTO(new ArrayList<>());
         Node boardNode = new Node();
         Node figNode = new Node();
         Figurine fig = mock(Figurine.class);
@@ -100,7 +102,7 @@ public class IngameAppStateTest {
         try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
             when(BoardFactory.makeBoard(any())).thenReturn(board);
             when(board.getNode()).thenReturn(boardNode);
-            when(connector.getFigurinesList()).thenReturn(new ArrayList<>());
+            when(connector.getFigurinesList()).thenReturn(figs);
 
             IngameAppState appState = new IngameAppState();
             appState.setConnector(connector);
@@ -116,13 +118,14 @@ public class IngameAppStateTest {
 
     @Test
     public void testLoad_ok() {
+        FigurinesListDTO figs = new FigurinesListDTO(new ArrayList<>());
         Node boardNode = new Node();
         Node pivot = new Node();
 
         try(MockedStatic<BoardFactory> boardFactory = Mockito.mockStatic(BoardFactory.class)) {
             when(BoardFactory.makeBoard(any())).thenReturn(board);
             when(board.getNode()).thenReturn(boardNode);
-            when(connector.getFigurinesList()).thenReturn(new ArrayList<>());
+            when(connector.getFigurinesList()).thenReturn(figs);
 
             IngameAppState appState = new IngameAppState();
             appState.setConnector(connector);

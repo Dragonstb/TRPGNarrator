@@ -28,6 +28,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -135,15 +136,16 @@ public class LocalHostConnectorTest {
     @Test
     public void testGetFigurineData_ok() {
         List<FigurineDTO> figs = new ArrayList<>();
+        FigurinesListDTO expect = new FigurinesListDTO(figs);
         List<Optional<Object>> list = new ArrayList<>();
-        list.add(Optional.of(figs));
+        list.add(Optional.of(expect));
 
         FetchCommand command = new FetchCommand(FetchCodes.FIGURINE_FULL_LIST, null);
         String channelName = ChannelNames.GET_FIGURINE_DATA;
         when(broker.request(channelName, command, true)).thenReturn(list);
 
-        List<FigurineDTO> res = connector.getFigurineList();
+        FigurinesListDTO res = connector.getFigurineList();
         assertNotNull(res, "result is null");
-        assertEquals(figs, res, "no the expected List");
+        assertEquals(expect, res, "no the expected List");
     }
 }

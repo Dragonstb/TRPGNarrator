@@ -29,6 +29,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,15 +97,16 @@ final class FigurineController implements Figurines, Receiver {
     @Override
     public Optional<Object> request(FetchCommand fetch) {
         Optional<Object> opt = switch(fetch.getCommand()) {
-            case FetchCodes.FIGURINE_FULL_LIST -> { yield Optional.ofNullable(getFigurinesDTOs()); }
+            case FetchCodes.FIGURINE_FULL_LIST -> { yield Optional.of(getFigurinesDTOs()); }
             default -> {yield Optional.empty();}
         };
         return opt;
     }
 
-    private List<FigurineDTO> getFigurinesDTOs() {
+    private FigurinesListDTO getFigurinesDTOs() {
         List<FigurineDTO> dtos = figurines.values().stream().map(fig -> fig.asDTO()).collect(Collectors.toList());
-        return dtos;
+        FigurinesListDTO list = new FigurinesListDTO(dtos);
+        return list;
     }
 
 }

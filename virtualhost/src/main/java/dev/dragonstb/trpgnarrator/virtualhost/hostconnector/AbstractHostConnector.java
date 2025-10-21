@@ -29,7 +29,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 import java.util.List;
 import java.util.Optional;
 import lombok.NonNull;
@@ -90,7 +90,7 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
     abstract BoardDataDTO getBoardData();
 
     @NonNull
-    abstract List<FigurineDTO> getFigurineList();
+    abstract FigurinesListDTO getFigurineList();
 
     // ____________________  code shared among all types of virtual hosts  ____________________
 
@@ -108,61 +108,29 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
         String channelName = ChannelNames.GET_BOARD_DATA;
         FetchCommand fetchCommand = new FetchCommand(FetchCodes.BOARD_DATA, null);
         List<Optional<Object>> list = request(channelName, fetchCommand, true);
-        if(list.isEmpty()) {
-            String msg = "BoardDataDTO output validation failed: No board data elements.";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
-            throw new RuntimeException(use);
-        }
 
-        Optional<Object> opt = list.getFirst();
-        if(opt.isEmpty()) {
-            String msg = "BoardDataDTO output validation failed: Missing board data.";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
-            throw new RuntimeException(use);
-        }
+        BoardDataDTO dto = new ExtractorOfFirst(errCode)
+                .setEmptyListMsg("BoardDataDTO output validation failed: No board data elements.")
+                .setEmptyOptionalMsg("BoardDataDTO output validation failed: Missing board data.")
+                .setWrongTypeMsg("BoardDataDTO output validation failed: Expected a {1}, but got an instance of {0} instead.")
+                .extractFirst(list, BoardDataDTO.class);
 
-        Object obj = opt.get();
-        if(!(obj instanceof BoardDataDTO)) {
-            String msg = "BoardDataDTO output validation failed: Expected a BoardDataDTO, but got an instance of "
-                    + (obj != null ? obj.getClass().getSimpleName() : "null")
-                    + " instead.";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
-            throw new RuntimeException(use);
-        }
-
-        return (BoardDataDTO)obj;
+        return dto;
     }
 
 
     @NonNull
-    List<FigurineDTO> doGetFigurineList() {
+    FigurinesListDTO doGetFigurineList() {
         String errCode = VHostErrorCodes.V45601;
         String channelName = ChannelNames.GET_FIGURINE_DATA;
         FetchCommand fetchCommand = new FetchCommand(FetchCodes.FIGURINE_FULL_LIST, null);
         List<Optional<Object>> list = request(channelName, fetchCommand, true);
-        if(list.isEmpty()) {
-            String msg = "Figurine List output validation failed: No board data elements.";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
-            throw new RuntimeException(use);
-        }
 
-        Optional<Object> opt = list.getFirst();
-        if(opt.isEmpty()) {
-            String msg = "Figurine List output validation failed: Missing board data.";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
-            throw new RuntimeException(use);
-        }
-
-        Object obj = opt.get();
-        if(!(obj instanceof List<?>)) {
-            String msg = "Figurine List output validation failed: Expected a List<FigurineDTO>, but got an instance of "
-                    + (obj != null ? obj.getClass().getSimpleName() : "null")
-                    + " instead.";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
-            throw new RuntimeException(use);
-        }
-
-        List<FigurineDTO> result = (List<FigurineDTO>)obj;
+        FigurinesListDTO result = new ExtractorOfFirst(errCode)
+                .setEmptyListMsg("Figurine List output validation failed: No figurines.")
+                .setEmptyOptionalMsg("Figurine List output validation failed: Missing figurine data.")
+                .setWrongTypeMsg("Figurine List output validation failed: Expected a {1}, but got an instance of {0} instead.")
+                .extractFirst(list, FigurinesListDTO.class);
         return result;
     }
 }

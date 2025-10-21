@@ -231,7 +231,7 @@ public final class IngameAppState extends AbstractAppState {
         ingameRoot.attachChild(board.getNode());
 
         Figurine figurine = null;
-        List<FigurineDTO> list = connector.getFigurinesList();
+        List<FigurineDTO> list = connector.getFigurinesList().getFigurines();
         if(!list.isEmpty()) {
             FigurineDTO figDTO = list.getFirst(); // just for now
             figurine = FigurineBuilder.ofDto(figDTO).build();

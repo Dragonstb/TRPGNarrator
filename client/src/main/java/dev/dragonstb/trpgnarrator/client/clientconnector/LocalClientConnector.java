@@ -27,6 +27,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 import java.util.List;
 import lombok.NonNull;
 
@@ -89,7 +90,7 @@ final class LocalClientConnector implements LocalClientForApp {
     }
 
     @Override
-    public List<FigurineDTO> getFigurinesList() {
+    public FigurinesListDTO getFigurinesList() {
         String code = ClientErrorCodes.C05317;
         checkConnectionReadiness("Cannot fetch figurines list: connection has yet not been established.", code);
 
@@ -102,16 +103,15 @@ final class LocalClientConnector implements LocalClientForApp {
             throw new NullPointerException(use);
         }
 
-        if(!(obj instanceof List<?>)) {
+        if(!(obj instanceof FigurinesListDTO)) {
             String msg = "Cannot fetch figurine list: response from host is invalid.";
             String use = ClientErrorCodes.assembleCodedMsg(msg, code);
             throw new ClassCastException(use);
         }
 
-        List<FigurineDTO> list = (List<FigurineDTO>)obj;
+        FigurinesListDTO list = (FigurinesListDTO)obj;
         return list;
     }
-
 
     @Override
     public void connectToVirtualHost(@NonNull VirtualHost host) {

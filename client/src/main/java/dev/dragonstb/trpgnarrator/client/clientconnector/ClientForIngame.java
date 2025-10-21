@@ -21,8 +21,7 @@
 package dev.dragonstb.trpgnarrator.client.clientconnector;
 
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
-import java.util.List;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 
 /** The interface the client connector exposes towards the {@link dev.dragonstb.trpgnarrator.client.ingame.IngameAppState IngameAppState}.
  *
@@ -45,5 +44,5 @@ public interface ClientForIngame {
      * @since 0.0.2
      * @return List of all figurines.
      */
-    public List<FigurineDTO> getFigurinesList();
+    public FigurinesListDTO getFigurinesList();
 }
