@@ -55,7 +55,7 @@ public final class FigurineDTO {
         this.diffuse = new Vector3DTO(diffuse.r, diffuse.g, diffuse.b);
         this.ambient = new Vector3DTO(ambient.r, ambient.g, ambient.b);
         this.specular = new Vector3DTO(specular.r, specular.g, specular.b);
-        this.location = new Vector3DTO(location);
+        this.location = location != null ? new Vector3DTO(location) : null;
     }
 
     /**
