@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class FigurineDTOTest {
 
-    private final int id = 12345;
+    private final String id = "12345";
     private final ColorRGBA diffuse = new ColorRGBA(.1f, .2f, .3f, 1);
     private final ColorRGBA ambient = new ColorRGBA(.4f, .5f, .6f, 1);
     private final ColorRGBA specular = new ColorRGBA(.7f, .8f, .9f, 1);
@@ -150,7 +150,7 @@ public class FigurineDTOTest {
 
     @Test
     public void testEquals_otherNonEqual() {
-        FigurineDTO other = new FigurineDTO(id+1, ambient, specular, diffuse, loc, fieldId+1);
+        FigurineDTO other = new FigurineDTO(id+"1", ambient, specular, diffuse, loc, fieldId+1);
         assertFalse(dto.equals(other));
     }
 

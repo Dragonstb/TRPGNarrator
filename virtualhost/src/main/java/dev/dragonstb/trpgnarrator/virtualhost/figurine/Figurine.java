@@ -35,7 +35,7 @@ import lombok.Setter;
 final class Figurine {
 
     /** An id that must be unique among all figurines in a game. */
-    @Getter private final int id;
+    @Getter private final String id;
     private final ColorRGBA diffuseColor;
     private final ColorRGBA ambientColor;
     private final ColorRGBA specularColor;
@@ -51,7 +51,7 @@ final class Figurine {
      * @param ambientColor
      * @param specularColor
      */
-    Figurine(int id, @NonNull ColorRGBA diffuseColor, @NonNull ColorRGBA ambientColor, @NonNull ColorRGBA specularColor) {
+    Figurine(@NonNull String id, @NonNull ColorRGBA diffuseColor, @NonNull ColorRGBA ambientColor, @NonNull ColorRGBA specularColor) {
         this.id = id;
         this.diffuseColor = diffuseColor;
         this.ambientColor = ambientColor;
@@ -63,7 +63,7 @@ final class Figurine {
      * @since 0.0.2
      * @param diffuseColor
      */
-    Figurine(int id, @NonNull ColorRGBA diffuseColor) {
+    Figurine(@NonNull String id, @NonNull ColorRGBA diffuseColor) {
         this(id, diffuseColor, diffuseColor.mult(.25f), diffuseColor.mult(1.2f));
     }
 

@@ -45,7 +45,7 @@ import lombok.NonNull;
 final class FigurineController implements Figurines, Receiver {
 
     private final SynchronousBroker broker;
-    private final Map<Integer, Figurine> figurines = new HashMap<>();
+    private final Map<String, Figurine> figurines = new HashMap<>();
 
     FigurineController(@NonNull SynchronousBroker broker) {
         this.broker = broker;
@@ -56,8 +56,8 @@ final class FigurineController implements Figurines, Receiver {
         broker.registerToChannel(this, ChannelNames.GET_FIGURINE_DATA);
 
         // TODO: don't use hard coded content, but derive figurines from some data object
-        int id = 0;
-        Figurine fig = new Figurine(id, ColorRGBA.Blue.mult(.33f));
+        int idNumber = 0;
+        Figurine fig = new Figurine(String.valueOf(idNumber), ColorRGBA.Blue.mult(.33f));
         figurines.put(fig.getId(), fig);
 
         int fieldId = 15;

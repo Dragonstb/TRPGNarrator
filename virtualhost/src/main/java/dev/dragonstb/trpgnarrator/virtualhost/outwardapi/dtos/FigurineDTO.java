@@ -37,7 +37,7 @@ import lombok.NonNull;
 @Getter
 public final class FigurineDTO {
 
-    private final int id;
+    @NonNull private final String id;
     @NonNull private final Vector3DTO diffuse;
     @NonNull private final Vector3DTO ambient;
     @NonNull private final Vector3DTO specular;
@@ -52,7 +52,7 @@ public final class FigurineDTO {
      * @param specular Specular colour. Must not be {@code null}.
      * @param location Location in the world. Can be {@code null}, which usually means that the figurine is currently not on the board.
      */
-    public FigurineDTO(int id, @NonNull ColorRGBA diffuse, @NonNull ColorRGBA ambient, @NonNull ColorRGBA specular, Vector3f location,
+    public FigurineDTO(@NonNull String id, @NonNull ColorRGBA diffuse, @NonNull ColorRGBA ambient, @NonNull ColorRGBA specular, Vector3f location,
             int fieldId) {
         this.id = id;
         this.diffuse = new Vector3DTO(diffuse.r, diffuse.g, diffuse.b);
@@ -70,7 +70,6 @@ public final class FigurineDTO {
         return asColor(diffuse);
     }
 
-
     /**
      * @since 0.0.2
      * @return The ambient colour.
@@ -78,7 +77,6 @@ public final class FigurineDTO {
     public ColorRGBA getAmbientAsColor() {
         return asColor(ambient);
     }
-
 
     /**
      * @since 0.0.2
@@ -119,7 +117,7 @@ public final class FigurineDTO {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + this.id;
+        hash = 73 * hash + Objects.hashCode(id);
         hash = 73 * hash + Objects.hashCode(this.diffuse);
         hash = 73 * hash + Objects.hashCode(this.ambient);
         hash = 73 * hash + Objects.hashCode(this.specular);

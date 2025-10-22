@@ -64,7 +64,7 @@ public final class FigurineBuilder {
      */
     public static FigurineBuilder ofDto(FigurineDTO dto) {
         FigurineBuilder builder = new FigurineBuilder()
-                .setId(String.valueOf(dto.getId()))
+                .setId(dto.getId())
                 .setColor(dto.getDiffuseAsColor());
         return builder;
     }
