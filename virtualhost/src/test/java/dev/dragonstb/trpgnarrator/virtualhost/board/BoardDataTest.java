@@ -19,7 +19,6 @@
  */
 package dev.dragonstb.trpgnarrator.virtualhost.board;
 
-import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldLinkDTO;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -39,13 +37,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class BoardDataTest {
 
-    @Mock
-    private SynchronousBroker broker;
-
     @Test
     public void testAsDto() {
         // TODO: create a simple board here once the board is created from data rather than hardcoded in the init()
-        BoardData data = new BoardData(broker);
+        BoardData data = new BoardData();
         BoardDataDTO dto = data.asDTO();
 
         // the init() creates 110 fields with ids from 0 to 109

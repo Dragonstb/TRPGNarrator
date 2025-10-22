@@ -48,8 +48,9 @@ public final class BoardBuilder {
             throw new NullPointerException(use);
         }
 
-        BoardData board = new BoardData(broker);
-        return board;
+        BoardData data = new BoardData();
+        BoardController controller = new BoardController(broker, data); // registers itself to broker
+        return controller;
     }
 
 }

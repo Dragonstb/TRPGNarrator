@@ -38,21 +38,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /** Collection of all {@link FieldData FieldData} and some stuff for dealing with them.
  *
  * @author Dragonstb
  * @since 0.0.1
  */
-final class BoardData implements Board, Receiver {
+final class BoardData {
 
     /** All fields of the board. */
-    private final Map<Integer, FieldData> fields = new HashMap<>();
-    /** The broker this instance connects to. */
-    private final SynchronousBroker broker;
+    @Getter(AccessLevel.PACKAGE) private final Map<Integer, FieldData> fields = new HashMap<>();
 
-    BoardData(@NonNull SynchronousBroker broker) {
-        this.broker = broker;
+    BoardData() {
         init();
     }
 
@@ -60,7 +59,6 @@ final class BoardData implements Board, Receiver {
      * @since 0.0.1
      */
     private void init() {
-        broker.registerToChannel(this, ChannelNames.GET_BOARD_DATA);
         // TODO: stop using this simple, stupid initialization and derive the objects from some sort of data
         float d = Globals.FIELD_RADIUS;
         float dx = d * (float)Math.sqrt(3); // this is also the distance between the centers of two adjacent fields
@@ -125,43 +123,9 @@ final class BoardData implements Board, Receiver {
      * @param fieldId Id of the field of interest.
      * @return An optional containing the location of the field of interest. The optional is empty if no field has the given id.
      */
-    private Vector3f getLocationOfField(int fieldId) {
+    Vector3f getLocationOfField(int fieldId) {
         FieldData field = fields.get(fieldId);
         return field != null ? field.getLocation() : null;
-    }
-
-    @Override
-    public Optional<Object> request(@NonNull FetchCommand fetch) {
-
-        Optional<Object> opt = switch(fetch.getCommand()) {
-            case FetchCodes.BOARD_DATA -> {
-                BoardDataDTO dto = asDTO();
-                yield Optional.of(dto);
-            }
-            case FetchCodes.BOARD_FIELD_LOCATION -> {
-                Object parm = fetch.getParms();
-                int id;
-                try {
-                    id = (Integer)parm;
-                }
-                catch (Exception e) {
-                    String code = VHostErrorCodes.V78642;
-                    String msg = "Expected id of field to be an integer, but got instance of class "
-                            + (parm != null ? parm.getClass().getSimpleName() : "null") + " instead";
-                    String use = VHostErrorCodes.assembleCodedMsg(msg, code);
-                    throw new ClassCastException(use);
-                }
-                yield Optional.ofNullable(getLocationOfField(id));
-            }
-            default -> {yield Optional.empty();}
-        };
-
-        return opt;
-    }
-
-    @Override
-    public void receive(Object obj) {
-
     }
 
 }
