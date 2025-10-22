@@ -24,14 +24,18 @@ import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.ChannelNames;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.Receiver;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
+import dev.dragonstb.trpgnarrator.virtualhost.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.fetchparms.PathfindingConfig;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
-import static java.lang.Thread.yield;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.function.Function;
 import lombok.NonNull;
 
@@ -74,11 +78,26 @@ final class BoardController implements Board, Receiver {
 
     // ____________________  answering requests  ____________________
 
+    /** Returns the board data as immutable data transfer object.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     * @param parm is ignored, just required due to the structure of the code.
+     * @return The boar data.
+     */
     private Optional<Object> getBoardData(Object parm) {
         BoardDataDTO dto = data.asDTO();
         return Optional.of(dto);
     }
 
+    /** Gets the location of a field.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     * @param parm An Integer with the Id of the field.
+     * @return Location of the field. Might be empty if no field has the provided id
+     * @throws ClassCastException When the argument is null or of another class than integer.
+     */
     private Optional<Object> getBoardFieldLocation(Object parm) {
         int id;
         try {
@@ -94,6 +113,47 @@ final class BoardController implements Board, Receiver {
 
         Vector3f loc = data.getLocationOfField(id);
         return Optional.ofNullable(loc);
+    }
+
+    /** Submits a {@link Pathfinder Pathfinder} to an thread pool executor.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     * @param parm An object of class {@link dev.dragonstb.trpgnarrator.virtualhost.generic.fetchparms.PathfindingConfig {athfinderConfig}.
+     * @return The future that follows from submitting the pathfinder to the executor. Be careful: the return type is spiky!
+     */
+    private Optional<Future<Optional<List<Vector3f>>>> findPath(Object parm) {
+        String errCode = VHostErrorCodes.V11349;
+        PathfindingConfig conf ;
+        try {
+            conf = (PathfindingConfig)parm;
+        }
+        catch (Exception e) {
+            String code = VHostErrorCodes.V78642;
+            String msg = "Expected parameter to be a PathfindingConfig, but got an instance of class "
+                    + (parm != null ? parm.getClass().getSimpleName() : "null") + " instead";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, code);
+            throw new ClassCastException(use);
+        }
+
+        int fromField = conf.getFromField();
+        int toField = conf.getToField();
+        ScheduledThreadPoolExecutor executor = conf.getExecutor();
+
+        if(!data.getFields().containsKey(fromField)) {
+            String msg = "Possible starting field with id "+fromField+" does not exists.";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new BoardFieldNotFoundException(use);
+        }
+        if(!data.getFields().containsKey(toField)) {
+            String msg = "Possible goal field with id "+toField+" does not exists.";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new BoardFieldNotFoundException(use);
+        }
+
+        Pathfinder finder = new Pathfinder(fromField, toField, data);
+        Future<Optional<List<Vector3f>>> future = executor.submit(finder);
+        return Optional.of(future);
     }
 
 }
