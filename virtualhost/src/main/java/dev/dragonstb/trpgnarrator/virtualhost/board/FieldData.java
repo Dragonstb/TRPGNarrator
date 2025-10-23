@@ -23,7 +23,6 @@ package dev.dragonstb.trpgnarrator.virtualhost.board;
 import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldDataDTO;
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FieldLinkDTO;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;

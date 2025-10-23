@@ -20,10 +20,8 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.generic.fetchparms;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NonNull;
 
 /** Configuration parameters for a pathfinding.
  *
@@ -38,7 +36,5 @@ public final class PathfindingConfig {
     private final int fromField;
     /** Id of the field where the pass should end. */
     private final int toField;
-    /** The executor of the callable. */
-    @NonNull private final ScheduledThreadPoolExecutor executor;
 
 }

@@ -31,11 +31,9 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.fetchparms.PathfindingConfig;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import lombok.NonNull;
 
@@ -115,14 +113,14 @@ final class BoardController implements Board, Receiver {
         return Optional.ofNullable(loc);
     }
 
-    /** Submits a {@link Pathfinder Pathfinder} to an thread pool executor.
+    /** Gets a {@link Pathfinder Pathfinder} that can be submitted thread pool executor.
      *
      * @since 0.0.2
      * @author Dragonstb
      * @param parm An object of class {@link dev.dragonstb.trpgnarrator.virtualhost.generic.fetchparms.PathfindingConfig {athfinderConfig}.
-     * @return The future that follows from submitting the pathfinder to the executor. Be careful: the return type is spiky!
+     * @return Optional with a callable.
      */
-    private Optional<Future<Optional<List<Vector3f>>>> findPath(Object parm) {
+    private Optional<Object> getPathfinder(Object parm) {
         String errCode = VHostErrorCodes.V11349;
         PathfindingConfig conf ;
         try {
@@ -138,7 +136,6 @@ final class BoardController implements Board, Receiver {
 
         int fromField = conf.getFromField();
         int toField = conf.getToField();
-        ScheduledThreadPoolExecutor executor = conf.getExecutor();
 
         if(!data.getFields().containsKey(fromField)) {
             String msg = "Possible starting field with id "+fromField+" does not exists.";
@@ -152,8 +149,7 @@ final class BoardController implements Board, Receiver {
         }
 
         Pathfinder finder = new Pathfinder(fromField, toField, data);
-        Future<Optional<List<Vector3f>>> future = executor.submit(finder);
-        return Optional.of(future);
+        return Optional.of(finder);
     }
 
 }
