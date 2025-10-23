@@ -40,7 +40,7 @@ import dev.dragonstb.trpgnarrator.client.clientconnector.LocalClientForApp;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameAppState;
 import dev.dragonstb.trpgnarrator.client.ingame.IngameCamControl;
 import dev.dragonstb.trpgnarrator.client.ingame.figurine.Figurine;
-import dev.dragonstb.trpgnarrator.client.ingame.figurine.FigurineBuilder;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.Configuration;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.HostType;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHostBuilder;
@@ -75,9 +75,14 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
         ingameRoot.addLight(new AmbientLight(ColorRGBA.DarkGray));
         rootNode.attachChild(ingameRoot);
 
+        // configuring virtual host
+        Configuration conf = new Configuration();
+        ClientClock clock = new ClientClock();
+        conf.setClock(clock);
+
         // virtual host and connection to client (may throw exceptions when something is wrong)
         HostType hostType = HostType.local;
-        VirtualHost host = new VirtualHostBuilder(hostType).build();
+        VirtualHost host = new VirtualHostBuilder(hostType).build(conf);
         LocalClientForApp client = (LocalClientForApp)(new ClientConnectorBuilder(hostType).build());
         client.connectToVirtualHost(host);
         ingameAppState.setConnector(client);
@@ -89,6 +94,9 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
 
         stateManager.attach(ingameAppState);
         ingameAppState.setEnabled(true);
+
+        stateManager.attach(clock);
+        clock.setPaused(false);
 
         // TODO: just one raw input listener that delegates inputs to the currently active targets
         inputManager.addRawInputListener(camControl);

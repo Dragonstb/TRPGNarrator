@@ -84,4 +84,8 @@ final class SyncBrokerImp implements SynchronousBroker {
         return channel!=null ? channel.request(fetch, skipEmpties) : new ArrayList<>();
     }
 
+    @Override
+    public void update(float tpf) {
+    }
+
 }

@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
 import java.util.List;
 import java.util.Optional;
 import lombok.NonNull;
@@ -30,7 +31,7 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since 0.0.1
  */
-public interface SynchronousBroker {
+public interface SynchronousBroker extends ClockReceiver {
 
     /** Registers the receiver to the channel. As a consequence, the receiver will receive all messages sent to the channel from now on
      * until the receiver deregisters again. This method is idempotent.

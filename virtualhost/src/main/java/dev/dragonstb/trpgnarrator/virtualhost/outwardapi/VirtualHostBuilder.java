@@ -28,6 +28,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.figurine.FigurinesBuilder;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnectorBuilder;
+import java.util.Optional;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -54,7 +55,7 @@ public final class VirtualHostBuilder {
         this.type = type;
     }
 
-    public VirtualHost build() throws NullPointerException, UnsupportedOperationException, ClassCastException {
+    public VirtualHost build(Configuration conf) throws NullPointerException, UnsupportedOperationException, ClassCastException {
         String errCode = VHostErrorCodes.V46199;
         if(type == null) {
             String msg = "The type of the virtual host must be specified, but it is not.";
@@ -73,6 +74,17 @@ public final class VirtualHostBuilder {
 
         SynchronousBroker broker = SyncBrokerFactory.createBroker(connector);
         connector.linkBroker(broker);
+
+        // setup clockwork
+        Clock clock;
+        if(conf != null) {
+            Optional<Clock> clockOpt = conf.getClock();
+            if(clockOpt.isPresent()) {
+                clock = clockOpt.get();
+                clock.setReceiver(broker); // this line will end up outside the ifs once internal clocks are used if no external is given
+            }
+        }
+        // TODO: setup internal clock and link broker to it
 
         // the board registers itself to the broker
         new BoardBuilder().setBroker(broker).build();
