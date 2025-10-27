@@ -18,11 +18,10 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
+package dev.dragonstb.trpgnarrator.virtualhost.generic.converter;
 
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Globals;
-import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -40,7 +39,7 @@ import lombok.experimental.Accessors;
 @Setter
 @NoArgsConstructor
 @Accessors(chain = true)
-final class ExtractorOfFirst {
+public final class ExtractorOfFirst {
 
     private String errCode = Globals.EMPTY_STRING;
     private String emptyListMsg = "List is empty";
@@ -49,11 +48,11 @@ final class ExtractorOfFirst {
      * becomes automatically filled with the class of the object in the optional, and a {1} for the expected class. */
     private String wrongTypeMsg = "Wrong type, got {0}";
 
-    ExtractorOfFirst(String errCode) {
+    public ExtractorOfFirst(String errCode) {
         this.errCode = errCode;
     }
 
-    <T extends Object> T extractFirst(List<Optional<Object>> list, @NonNull Class<T> type) throws NoSuchElementException {
+    public <T extends Object> T extractFirst(List<Optional<Object>> list, @NonNull Class<T> type) throws NoSuchElementException {
         if(errCode == null) {
             errCode = "undefined";
         }

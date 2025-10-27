@@ -22,6 +22,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,10 +72,10 @@ final class SyncBrokerImp implements SynchronousBroker {
     }
 
     @Override
-    public void send(@NonNull Object obj, @NonNull String channelName) {
+    public void send(@NonNull Message msg, @NonNull String channelName) {
         BrokerChannel channel = channels.get(channelName);
         if(channel != null) {
-            channel.send(obj);
+            channel.send(msg);
         }
     }
 

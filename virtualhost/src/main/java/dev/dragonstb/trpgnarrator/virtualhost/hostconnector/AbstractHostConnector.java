@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
+import dev.dragonstb.trpgnarrator.virtualhost.generic.converter.ExtractorOfFirst;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.ChannelNames;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;

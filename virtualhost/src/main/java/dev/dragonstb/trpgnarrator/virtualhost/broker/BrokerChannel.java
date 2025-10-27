@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,10 +69,10 @@ final class BrokerChannel {
     /** Sends the object to all receivers listed in this channel.
      *
      * @since 0.0.1;
-     * @param obj Object to be sent.
+     * @param msg Object to be sent.
      */
-    void send(Object obj) {
-        receivers.forEach( receiver -> receiver.receive(obj) );
+    void send(Message msg) {
+        receivers.forEach( receiver -> receiver.receive(msg) );
     }
 
     /** Fetches objects requested from the receivers of this channel.

@@ -28,12 +28,12 @@ import dev.dragonstb.trpgnarrator.virtualhost.error.BoardFieldNotFoundException;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.fetchparms.PathfindingConfig;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.Callable;
 import java.util.function.Function;
 import lombok.NonNull;
 
@@ -60,7 +60,7 @@ final class BoardController implements Board, Receiver {
     }
 
     @Override
-    public void receive(Object obj) {
+    public void receive(Message msg) {
 
     }
 

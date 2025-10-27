@@ -30,4 +30,6 @@ public final class ChannelNames {
     public static final String GET_BOARD_DATA = "get board data";
     /** Channel for components that provide figurine data. */
     public static final String GET_FIGURINE_DATA = "get figurine data";
+    /** The management of concurrent events. */
+    public static final String CONCURRENT_MANAGEMENT = "concurrent management";
 }

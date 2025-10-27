@@ -20,21 +20,22 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.generic;
 
-/** Some strings used in the receivers fetch-method as argument. This list mainly exists for preventing misspelling.
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+
+/** A message sent via the broker.
  *
  * @author Dragonstb
- * @since 0.0.1
+ * @since 0.0.2
  */
-public final class FetchCodes {
+@AllArgsConstructor
+@Getter
+public final class Message {
 
-    /** Get the board data. */
-    public static final String BOARD_DATA = "board data";
-    /** get he location of a field of the board. */
-    public static final String BOARD_FIELD_LOCATION = "board field location";
-    /** Get a pathfinder from the board. */
-    public static final String BOARD_PATHFINDER = "board pathfinder";
-
-    /** Get the full list of figurines. */
-    public static final String FIGURINE_FULL_LIST = "figurine full list";
+    /** A headline that describes the message. */
+    @NonNull private final String headline;
+    /** Content of the message. Might be {@code null}. */
+    private final Object content;
 
 }

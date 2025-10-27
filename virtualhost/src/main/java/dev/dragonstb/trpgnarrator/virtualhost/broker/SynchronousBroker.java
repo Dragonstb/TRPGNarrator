@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
 import java.util.List;
 import java.util.Optional;
@@ -52,10 +53,10 @@ public interface SynchronousBroker extends ClockReceiver {
     /** Send the object to all receivers registered to the channel. This means that the sender receives its own message if it is registered
      * to the channel.
      *
-     * @param obj Object send. Might be {@code null}
+     * @param msg Object send. Might be {@code null}
      * @param channelName Channel the object is send to. Must <i>not</i> be {@code null}.
      */
-    public void send(Object obj, @NonNull String channelName);
+    public void send(Message msg, @NonNull String channelName);
 
     /** Request an object from the receivers of a channel.
      *

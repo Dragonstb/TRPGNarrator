@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import java.util.Optional;
 import lombok.NonNull;
 
@@ -35,9 +36,9 @@ public interface Receiver {
      * a dump pipe.
      *
      * @since 0.0.1
-     * @param obj Object delivered. Might be {@code null}.
+     * @param msg Object delivered. Might be {@code null}.
      */
-    public void receive(Object obj);
+    public void receive(Message msg);
 
     /** The origin of the requests fetches an object from the receiver.
      *

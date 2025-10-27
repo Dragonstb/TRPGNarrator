@@ -33,13 +33,18 @@ public final class VHostErrorCodes {
     public static final String V11349 = "V11349";
     public static final String V14985 = "V14985";
     public static final String V16231 = "V16231";
+    public static final String V31251 = "V31251";
+
     public static final String V43108 = "V43108";
+    public static final String V42664 = "V42664";
     public static final String V45601 = "V45601";
     public static final String V46199 = "V46199";
     public static final String V48135 = "V48135";
+
     /** This code V62000 is used in a temporary, prototype-like part of the code and prone to be unused. */
     public static final String V62000 = "V62000-deprecated";
     public static final String V78642 = "V78642";
+    public static final String V97498 = "V97498";
 
     /** Assembles the given message and the code to a single message that includes the code.
      *

@@ -17,8 +17,9 @@
  *
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
-package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
+package dev.dragonstb.trpgnarrator.virtualhost.generic.converter;
 
+import dev.dragonstb.trpgnarrator.virtualhost.generic.converter.ExtractorOfFirst;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;

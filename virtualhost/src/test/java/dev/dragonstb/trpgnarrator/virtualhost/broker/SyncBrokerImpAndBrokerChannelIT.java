@@ -20,6 +20,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +61,7 @@ public class SyncBrokerImpAndBrokerChannelIT {
 
     @Test
     public void testRegisterToChannel_sendToSameChannel() {
-        String msg = "hellocfng78fhgj7n7803d7fcyf8ihcguyc73cc9u8";
+        Message msg = new Message("hellocfng78fhgj7n7803d7fcyf8ihcguyc73cc9u8", null);
         broker.registerToChannel(receiverA, channel1);
         broker.send(msg, channel1);
         verify(receiverA).receive(msg);
@@ -69,7 +70,7 @@ public class SyncBrokerImpAndBrokerChannelIT {
 
     @Test
     public void testRegisterToChannelTwice_sendToSameChannel() {
-        String msg = "hellocfng78fhgj7n7803d7fcyf8ihcguyc73cc9u8";
+        Message msg = new Message("hellocfng78fhgj7n7803d7fcyf8ihcguyc73cc9u8", null);
         broker.registerToChannel(receiverA, channel1);
         broker.registerToChannel(receiverA, channel1);
         broker.send(msg, channel1);
@@ -79,7 +80,7 @@ public class SyncBrokerImpAndBrokerChannelIT {
 
     @Test
     public void testRegisterToChannel_sendToOtherChannel() {
-        String msg = "hellocfng78fhgj7n7803d7fcyf8ihcguyc73cc9u8";
+        Message msg = new Message("hellocfng78fhgj7n7803d7fcyf8ihcguyc73cc9u8", null);
         broker.registerToChannel(receiverA, channel1);
         broker.send(msg, channel2);
         verify(receiverA, never()).receive(any());
@@ -88,7 +89,7 @@ public class SyncBrokerImpAndBrokerChannelIT {
 
     @Test
     public void testDeregisterFromChannel() {
-        String msg = "hellocfng78fhgj7n7803d7fcyf8ihcguyc73cc9u8";
+        Message msg = new Message("hellocfng78fhgj7n7803d7fcyf8ihcguyc73cc9u8", null);
         broker.registerToChannel(receiverA, channel1);
         broker.deregisterFromChannel(receiverA, channel1);
         broker.send(msg, channel1);
