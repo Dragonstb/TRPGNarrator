@@ -37,4 +37,22 @@ public final class PathfindingConfig {
     /** Id of the field where the pass should end. */
     private final int toField;
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || !(obj instanceof PathfindingConfig)) {
+            return false;
+        }
+
+        PathfindingConfig other = (PathfindingConfig)obj;
+        return fromField == other.getFromField() && toField == other.getToField();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + this.fromField;
+        hash = 89 * hash + this.toField;
+        return hash;
+    }
+
 }
