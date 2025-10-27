@@ -53,7 +53,7 @@ final class CEManagement implements ConcurrentEventManager, Receiver, ClockRecei
 
     private final Clock clock;
     private final SynchronousBroker broker;
-    private final ScheduledThreadPoolExecutor executor;
+    private final ScheduledThreadPoolExecutor executor; // TODO: add a smart shutdown
     /** The functions called when receiving events/messages via the broker. */
     private final Map<String, Consumer<Object>> receiveMap = new HashMap<>();
     /** The functions called when receiving requests via the broker. */

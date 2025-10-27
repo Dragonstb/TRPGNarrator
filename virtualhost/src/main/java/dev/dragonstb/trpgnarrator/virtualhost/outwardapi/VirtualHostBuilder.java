@@ -24,11 +24,14 @@ import dev.dragonstb.trpgnarrator.virtualhost.board.BoardBuilder;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SyncBrokerFactory;
 import lombok.NoArgsConstructor;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
+import dev.dragonstb.trpgnarrator.virtualhost.concurrentevents.CEMBuilder;
+import dev.dragonstb.trpgnarrator.virtualhost.concurrentevents.ConcurrentEventManager;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.figurine.FigurinesBuilder;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnectorBuilder;
 import java.util.Optional;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -76,15 +79,35 @@ public final class VirtualHostBuilder {
         connector.linkBroker(broker);
 
         // setup clockwork
-        Clock clock;
+        Clock clock = null;
         if(conf != null) {
             Optional<Clock> clockOpt = conf.getClock();
             if(clockOpt.isPresent()) {
                 clock = clockOpt.get();
-                clock.setReceiver(broker); // this line will end up outside the ifs once internal clocks are used if no external is given
             }
         }
-        // TODO: setup internal clock and link broker to it
+        if(clock == null) {
+            // TODO: setup internal clock and link broker to it
+        }
+
+        // setup executor
+        ScheduledThreadPoolExecutor executor = null;
+        if(conf != null) {
+            Optional<ScheduledThreadPoolExecutor> opt = conf.getExecutor();
+            if(opt.isPresent()) {
+                executor = opt.get();
+            }
+        }
+        if(executor == null) {
+            // TODO: setup internal executor
+        }
+
+        // setup concurrent event management, which registers itself to the broker
+        new CEMBuilder()
+                .setBroker(broker)
+                .setClock(clock)
+                .setExecutor(executor)
+                .build();
 
         // the board registers itself to the broker
         new BoardBuilder().setBroker(broker).build();

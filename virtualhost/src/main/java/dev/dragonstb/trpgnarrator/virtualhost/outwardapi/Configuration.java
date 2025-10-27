@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.outwardapi;
 
 import java.util.Optional;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import lombok.Setter;
 
 /** Configuration for the virtual host.
@@ -33,6 +34,8 @@ public final class Configuration {
 
     private Clock clock;
 
+    private ScheduledThreadPoolExecutor executor;
+
     /** Gets the clock.
      *
      * @since 0.0.2
@@ -42,4 +45,15 @@ public final class Configuration {
     public Optional<Clock> getClock() {
         return Optional.ofNullable(clock);
     }
+
+    /** Gets the executor.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     * @return The executor if present.
+     */
+    public Optional<ScheduledThreadPoolExecutor> getExecutor() {
+        return Optional.ofNullable(executor);
+    }
+
 }

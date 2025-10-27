@@ -79,6 +79,7 @@ public class TRPGNarratorApplication extends SimpleApplication implements RawInp
         Configuration conf = new Configuration();
         ClientClock clock = new ClientClock();
         conf.setClock(clock);
+        conf.setExecutor(executor);
 
         // virtual host and connection to client (may throw exceptions when something is wrong)
         HostType hostType = HostType.local;
