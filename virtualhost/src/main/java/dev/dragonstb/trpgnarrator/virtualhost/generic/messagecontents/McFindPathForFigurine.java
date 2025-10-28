@@ -18,17 +18,21 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.generic;
+package dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  *
  * @author Dragonstb
  * @since
  */
-public interface MessageHeadlines {
+@AllArgsConstructor
+@Getter
+public final class McFindPathForFigurine {
 
-    /** Find the path. */
-    public static final String PLEASE_FIND_PATH = "please find path";
-    /** Found path. */
-    public static final String FOUND_PATH = "found path";
+    private final String figurineId;
+    private final int fromFieldId;
+    private final int toFieldId;
 }

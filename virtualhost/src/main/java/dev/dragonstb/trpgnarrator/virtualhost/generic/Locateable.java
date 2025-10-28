@@ -20,15 +20,18 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.generic;
 
-/**
+import com.jme3.math.Vector3f;
+
+/** Implemented by objects that have a physical position and orientation in the world.
  *
  * @author Dragonstb
- * @since
+ * @since 0.0.2
  */
-public interface MessageHeadlines {
+public interface Locateable {
 
-    /** Find the path. */
-    public static final String PLEASE_FIND_PATH = "please find path";
-    /** Found path. */
-    public static final String FOUND_PATH = "found path";
+    /**
+     * @since 0.0.2
+     * @param location Location in WU.
+     */
+    public void setLocation(Vector3f location);
 }

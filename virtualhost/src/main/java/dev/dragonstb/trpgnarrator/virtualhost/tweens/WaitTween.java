@@ -18,17 +18,20 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.generic;
+package dev.dragonstb.trpgnarrator.virtualhost.tweens;
 
-/**
+/** This tween does nothing but expiring.
  *
+ * @since 0.0.1
  * @author Dragonstb
- * @since
  */
-public interface MessageHeadlines {
+public final class WaitTween extends ActionTween{
 
-    /** Find the path. */
-    public static final String PLEASE_FIND_PATH = "please find path";
-    /** Found path. */
-    public static final String FOUND_PATH = "found path";
+    public WaitTween(float length) {
+        super(length);
+    }
+
+    @Override
+    public void internalAction(float dt) {}
+
 }

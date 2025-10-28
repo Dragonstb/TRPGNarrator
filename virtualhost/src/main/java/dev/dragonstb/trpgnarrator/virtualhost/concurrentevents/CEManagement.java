@@ -20,6 +20,7 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.concurrentevents;
 
+import com.jme3.math.Vector3f;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.ChannelNames;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.Receiver;
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
@@ -30,6 +31,8 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.converter.ExtractorOfFirst;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.fetchparms.PathfindingConfig;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McFindPathForFigurine;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McPathForFigurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.Clock;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
 import java.util.ArrayList;
@@ -58,8 +61,8 @@ final class CEManagement implements ConcurrentEventManager, Receiver, ClockRecei
     private final Map<String, Consumer<Object>> receiveMap = new HashMap<>();
     /** The functions called when receiving requests via the broker. */
     private final Map<String, Function<Object, Optional<Object>>> requestMap = new HashMap<>();
-
-    private final List<Future> pathfinders = new ArrayList<>();
+    /** Maps the id of a figurine to a pathfinder that is computing a path for that figurine. */
+    private final Map<String, Future<Optional<List<Vector3f>>>> pathfinders = new HashMap<>();
 
     /** Generates.
      *
@@ -106,7 +109,9 @@ final class CEManagement implements ConcurrentEventManager, Receiver, ClockRecei
 
     // ____________________  reacting on messages  ____________________
 
-    /** Gets a pathfinder from the board and submits it.
+    /** Gets a pathfinder from the board and submits it to the executor.
+     * <br><br>
+     * <b>HINT:</b> This method locks the map of {@code this.pathfinders} for some time.
      *
      * @since 0.0.2
      * @author Dragonstb
@@ -116,31 +121,26 @@ final class CEManagement implements ConcurrentEventManager, Receiver, ClockRecei
     private void findPath(Object parm) {
         // step 1: assemble a request
         String code = VHostErrorCodes.V42664;
-        List<Integer> conf;
+        McFindPathForFigurine conf;
         try {
-            conf = (List<Integer>)parm;
+            conf = (McFindPathForFigurine)parm;
         }
         catch (Exception e) {
-            String msg = "Expected content to be a List<Integer>, but got an instance of class "
+            String msg = "Expected content to be a FindPathForFigurine, but got an instance of class "
                     + (parm != null ? parm.getClass().getSimpleName() : "null") + " instead";
             String use = VHostErrorCodes.assembleCodedMsg(msg, code);
             throw new ClassCastException(use);
         }
 
-        if(conf.size() != 2) {
-            String msg = "Expected content to be a List<Integer> of size 2, but got a list with "+conf.size()+" entries instead";
-            String use = VHostErrorCodes.assembleCodedMsg(msg, code);
-            throw new IllegalArgumentException(use);
-        }
+        int fromField = conf.getFromFieldId();
+        int toField = conf.getToFieldId();
+        String figId = conf.getFigurineId();
 
-        int fromField = conf.get(0);
-        int toField = conf.get(1);
-
-        PathfindingConfig pfCOnf = new PathfindingConfig(fromField, toField);
-        FetchCommand cmd = new FetchCommand(FetchCodes.BOARD_PATHFINDER, pfCOnf);
 
         // step 2: deal with reply
         code = VHostErrorCodes.V97498;
+        PathfindingConfig pfConf = new PathfindingConfig(fromField, toField);
+        FetchCommand cmd = new FetchCommand(FetchCodes.BOARD_PATHFINDER, pfConf);
 
         List<Optional<Object>> opt = broker.request(ChannelNames.GET_BOARD_DATA, cmd, true);
         ExtractorOfFirst extractor = new ExtractorOfFirst(code);
@@ -149,7 +149,11 @@ final class CEManagement implements ConcurrentEventManager, Receiver, ClockRecei
 
         // this method may be called at any time, and the list of pathfinders is also accessed from a different thread at each clock signal.
         synchronized (pathfinders) {
-            pathfinders.add(future);
+            Future oldFuture = pathfinders.get(figId);
+            if(oldFuture != null) {
+                oldFuture.cancel(true);
+            }
+            pathfinders.put(figId, future);
         }
     }
 
@@ -164,7 +168,43 @@ final class CEManagement implements ConcurrentEventManager, Receiver, ClockRecei
 
     @Override
     public void update(float tpf) {
-        // TODO: check pathfinders if completed
+        checkAndCleanPathfinders();
+    }
+
+    /** Checks the pathfinders and notifies the figurine controller about found paths. Removes pathfinders that have become done since the
+     * last check.
+     * <br><br>
+     * <b>HINT:</b> This method locks the map of {@code this.pathfinders} for some time.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     */
+    private void checkAndCleanPathfinders() {
+        List<McPathForFigurine> pathes = new ArrayList<>();
+        synchronized (pathfinders) {
+            pathfinders.keySet().stream().filter(key -> pathfinders.get(key).isDone()).forEach(key -> {
+                var pathfinder = pathfinders.get(key);
+                try {
+                    Optional<List<Vector3f>> opt = pathfinder.get();
+                    if(opt.isPresent()) {
+                        List<Vector3f> list = opt.get();
+                        // TODO: know which figurine this path is meant for
+                        McPathForFigurine path = new McPathForFigurine(key, list);
+                        pathes.add(path);
+                    }
+                } catch (Exception e) {
+                    // TODO: log and go on
+                } finally {
+                    pathfinders.remove(key);
+                }
+            });
+        }
+
+        pathes.forEach(path -> {
+            // TODO: all pathes in one message?
+            Message msg = new Message(MessageHeadlines.FOUND_PATH, path);
+            broker.send(msg, ChannelNames.GET_FIGURINE_DATA);
+        });
     }
 
 

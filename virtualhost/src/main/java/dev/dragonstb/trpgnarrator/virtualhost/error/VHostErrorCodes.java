@@ -44,6 +44,7 @@ public final class VHostErrorCodes {
     /** This code V62000 is used in a temporary, prototype-like part of the code and prone to be unused. */
     public static final String V62000 = "V62000-deprecated";
     public static final String V78642 = "V78642";
+    public static final String V94039 = "V94039";
     public static final String V97498 = "V97498";
 
     /** Assembles the given message and the code to a single message that includes the code.

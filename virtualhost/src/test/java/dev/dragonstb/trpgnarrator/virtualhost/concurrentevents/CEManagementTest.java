@@ -28,6 +28,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.fetchparms.PathfindingConfig;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McFindPathForFigurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.Clock;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +70,9 @@ public class CEManagementTest {
     public void testReceive_findPath_ok() {
         int fromField = 0;
         int toField = 10;
-        List<Integer> list = new ArrayList<>();
-        list.add(fromField);
-        list.add(toField);
-        Message msg = new Message(MessageHeadlines.PLEASE_FIND_PATH, list);
+        String figId = "figurine";
+        McFindPathForFigurine fpff = new McFindPathForFigurine(figId, fromField, toField);
+        Message msg = new Message(MessageHeadlines.PLEASE_FIND_PATH, fpff);
 
         PathfindingConfig pfConf = new PathfindingConfig(fromField, toField);
         FetchCommand cmd = new FetchCommand(FetchCodes.BOARD_PATHFINDER, pfConf);
@@ -94,22 +94,8 @@ public class CEManagementTest {
 
         ClassCastException exc = assertThrows(ClassCastException.class, () -> cem.receive(msg), "no exception thrown");
         String errMsg = exc.getMessage();
-        assertTrue(errMsg.contains("Expected content to be a List<Integer>, but got an instance of class "
+        assertTrue(errMsg.contains("Expected content to be a FindPathForFigurine, but got an instance of class "
                     + problem.getClass().getSimpleName() + " instead"), "Expected message missing");
-        assertTrue(errMsg.contains(VHostErrorCodes.V42664), "Expected error code missing");
-    }
-
-    @Test
-    public void testReceive_findPath_wrongSize() {
-        int fromField = 0;
-        List<Integer> list = new ArrayList<>();
-        list.add(fromField);
-        Message msg = new Message(MessageHeadlines.PLEASE_FIND_PATH, list);
-
-        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> cem.receive(msg), "no exception thrown");
-        String errMsg = exc.getMessage();
-        assertTrue(errMsg.contains("Expected content to be a List<Integer> of size 2, but got a list with "
-                +list.size()+" entries instead"), "Expected message missing");
         assertTrue(errMsg.contains(VHostErrorCodes.V42664), "Expected error code missing");
     }
 

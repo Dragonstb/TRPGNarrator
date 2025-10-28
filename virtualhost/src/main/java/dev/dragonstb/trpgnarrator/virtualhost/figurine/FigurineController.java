@@ -29,12 +29,15 @@ import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McPathForFigurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 
@@ -48,8 +51,12 @@ final class FigurineController implements Figurines, Receiver {
     private final SynchronousBroker broker;
     private final Map<String, Figurine> figurines = new HashMap<>();
 
+    /** The functions called when receiving events/messages via the broker. */
+    private final Map<String, Consumer<Object>> receiveMap = new HashMap<>();
+
     FigurineController(@NonNull SynchronousBroker broker) {
         this.broker = broker;
+        receiveMap.put(MessageHeadlines.FOUND_PATH, this::setPathOfFigurine);
         init();
     }
 
@@ -92,7 +99,40 @@ final class FigurineController implements Figurines, Receiver {
 
     @Override
     public void receive(Message msg) {
+        String headline = msg.getHeadline();
+        Object content = msg.getContent();
 
+        var function = receiveMap.get(headline);
+        if(function != null) {
+            function.accept(content);
+        }
+    }
+
+    /**
+     * @since 0.0.2
+     * @author Dragonstb
+     * @param parm An instance of {@link dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McPathForFigurine PathForFigurine}.
+     */
+    private void setPathOfFigurine(Object parm) {
+        String code = VHostErrorCodes.V94039;
+        McPathForFigurine conf;
+        try {
+            conf = (McPathForFigurine)parm;
+        }
+        catch (Exception e) {
+            String msg = "Expected content to be a PathForFigurine, but got an instance of class "
+                    + (parm != null ? parm.getClass().getSimpleName() : "null") + " instead";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, code);
+            throw new ClassCastException(use);
+        }
+
+        String id = conf.getId();
+        List<Vector3f> waypoints = conf.getWaypoints();
+
+        Figurine fig = figurines.get(id);
+        if(fig != null) {
+            fig.setPath(waypoints);
+        }
     }
 
     @Override
