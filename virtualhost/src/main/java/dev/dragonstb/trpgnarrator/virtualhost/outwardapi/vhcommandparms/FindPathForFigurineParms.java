@@ -18,26 +18,23 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.generic;
+package dev.dragonstb.trpgnarrator.virtualhost.outwardapi.vhcommandparms;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 
-/** A message sent via the broker.
+/** Parameters for a command to the virtual host of finding a path for a figurine.
  *
  * @author Dragonstb
  * @since 0.0.2
  */
-@AllArgsConstructor
 @Getter
-@EqualsAndHashCode
-public final class Message {
+@AllArgsConstructor
+public final class FindPathForFigurineParms {
 
-    /** A headline that describes the message. */
-    @NonNull private final String headline;
-    /** Content of the message. Might be {@code null}. */
-    private final Object content;
-
+    /** Id of the figurine the path is for. */
+    @NonNull private final String figurineId;
+    /** Is of the field the path shall end. */
+    private final int toField;
 }

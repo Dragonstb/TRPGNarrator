@@ -29,5 +29,8 @@ public enum VHCommands {
     /** Fetch the board from the host. */
     fetchBoard,
     /** Fetch all figurines. */
-    fetchFigurines
+    fetchFigurines,
+
+    /** Set the path of a figurine to a given field. The figurine will follow that path then. */
+    setPathForFigurine
 }

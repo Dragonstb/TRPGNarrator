@@ -24,11 +24,14 @@ import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.vhcommandparms.FindPathForFigurineParms;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -147,5 +150,22 @@ public class LocalHostConnectorTest {
         FigurinesListDTO res = connector.getFigurineList();
         assertNotNull(res, "result is null");
         assertEquals(expect, res, "no the expected List");
+    }
+
+    @Test
+    public void testSendFindPathForFigurine_ok() {
+        String figId = "hello";
+        int toField = 19;
+        FindPathForFigurineParms parms = new FindPathForFigurineParms(figId, toField);
+        VHCommand cmd = new VHCommand(VHCommands.setPathForFigurine, parms);
+
+        Object obj = connector.dealRequest(cmd);
+
+        Message msg = new Message(MessageHeadlines.PLEASE_FIND_PATH, parms);
+        verify(broker, times(1)).send(msg, ChannelNames.GET_FIGURINE_DATA);
+
+        assertNotNull(obj, "No return");
+        assertTrue(obj instanceof Boolean, "No a Boolean");
+        assertTrue((Boolean)obj, "Unexpected false");
     }
 }

@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -30,6 +31,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public final class McFindPathForFigurine {
 
     private final String figurineId;

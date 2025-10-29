@@ -26,11 +26,14 @@ import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
 import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
+import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.vhcommandparms.FindPathForFigurineParms;
 import java.util.List;
 import java.util.Optional;
 import lombok.NonNull;
@@ -72,6 +75,7 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
         Object obj = switch(com) {
             case fetchBoard -> {yield getBoardData();}
             case fetchFigurines -> {yield getFigurineList();}
+            case setPathForFigurine -> {sendFindPathForFigurine(command.getParms()); yield true;}
         };
 
         return obj;
@@ -92,6 +96,8 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
 
     @NonNull
     abstract FigurinesListDTO getFigurineList();
+
+    abstract void sendFindPathForFigurine(Object parms);
 
     // ____________________  code shared among all types of virtual hosts  ____________________
 
@@ -119,7 +125,6 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
         return dto;
     }
 
-
     @NonNull
     FigurinesListDTO doGetFigurineList() {
         String errCode = VHostErrorCodes.V45601;
@@ -134,4 +139,21 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
                 .extractFirst(list, FigurinesListDTO.class);
         return result;
     }
+
+    /** Sends the parameter object of finding a path for a figurine to the correct channel.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     * @param parms Parameters of the request.
+     */
+    void doSendFindPathForFigurine(@NonNull FindPathForFigurineParms parms) {
+        String errCode = VHostErrorCodes.V29882;
+
+        // parms.figurineId is @NonNull => no check needed TODO: think of limiting the length of ids of figurines.
+        // parms.toFieldId is an int anyway => no check needed
+
+        Message msg = new Message(MessageHeadlines.PLEASE_FIND_PATH, parms);
+        broker.send(msg, ChannelNames.GET_FIGURINE_DATA);
+    }
+
 }

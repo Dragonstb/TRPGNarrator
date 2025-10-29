@@ -30,9 +30,13 @@ import java.text.MessageFormat;
 public final class VHostErrorCodes {
 
     public static final String V03107 = "V03107";
+
     public static final String V11349 = "V11349";
     public static final String V14985 = "V14985";
     public static final String V16231 = "V16231";
+
+    public static final String V29882 = "V29882";
+
     public static final String V31251 = "V31251";
 
     public static final String V43108 = "V43108";
@@ -44,8 +48,12 @@ public final class VHostErrorCodes {
     /** This code V62000 is used in a temporary, prototype-like part of the code and prone to be unused. */
     public static final String V62000 = "V62000-deprecated";
     public static final String V78642 = "V78642";
+
+    public static final String V85159 = "V85159";
+
     public static final String V94039 = "V94039";
     public static final String V97498 = "V97498";
+    public static final String V98915 = "V98915";
 
     /** Assembles the given message and the code to a single message that includes the code.
      *

@@ -20,8 +20,10 @@
 
 package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
+import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.vhcommandparms.FindPathForFigurineParms;
 import lombok.NonNull;
 
 /** Host connector that runs on the same machine as the client, with this client being the only client connected to.
@@ -42,5 +44,27 @@ final class LocalHostConnector extends AbstractHostConnector {
     FigurinesListDTO getFigurineList() {
         return super.doGetFigurineList();
     }
+
+    @Override
+    void sendFindPathForFigurine(Object parms) {
+        String errCode = VHostErrorCodes.V85159;
+
+        if(parms == null) {
+            String msg = "No parameters in request for finding a path.";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new NullPointerException(use);
+        }
+
+        if(!(parms instanceof FindPathForFigurineParms)) {
+            String msg = "Expected parameter to be of class FindPathForFigurineParms, but got an instance of "
+                    +parms.getClass().getSimpleName()+" instead.";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new NullPointerException(use);
+        }
+
+        FindPathForFigurineParms arg = (FindPathForFigurineParms)parms;
+        super.doSendFindPathForFigurine(arg);
+    }
+
 
 }

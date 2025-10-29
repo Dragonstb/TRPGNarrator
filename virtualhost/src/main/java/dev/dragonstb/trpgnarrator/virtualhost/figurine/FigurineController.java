@@ -33,6 +33,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McPathForFigurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.vhcommandparms.FindPathForFigurineParms;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,8 @@ final class FigurineController implements Figurines, Receiver {
     FigurineController(@NonNull SynchronousBroker broker) {
         this.broker = broker;
         receiveMap.put(MessageHeadlines.FOUND_PATH, this::setPathOfFigurine);
+        receiveMap.put(MessageHeadlines.PLEASE_FIND_PATH, this::requestPathForFigurine);
+
         init();
     }
 
@@ -106,6 +109,42 @@ final class FigurineController implements Figurines, Receiver {
         if(function != null) {
             function.accept(content);
         }
+    }
+
+    /** Derives a new message for finding a path for the given figurine from the argument and sends this new message to the
+     * {@link dev.dragonstb.trpgnarrator.virtualhost.concurrentevents.ConcurrentEventManager concurrent event manager}.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     * @param parm Expected to be of type FindPathForFigurineParms.
+     */
+    private void requestPathForFigurine(Object parm) {
+        String code = VHostErrorCodes.V98915;
+        FindPathForFigurineParms conf;
+        try {
+            conf = (FindPathForFigurineParms)parm;
+        } catch (Exception e) {
+            // TODO: log! You should not end up here. Only the host connector may cause this method to be invoked, but the host connector
+            // must also guarantee that is is called with a valid FindPathForFigurineParms as arg. So being in this catch means a serious
+            // problem somewhere
+            String msg = "Expected content to be a PathForFigurine, but got an instance of class "
+                    + (parm != null ? parm.getClass().getSimpleName() : "null") + " instead";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, code);
+            throw new ClassCastException(use);
+        }
+
+        String figId = conf.getFigurineId();
+        int toField = conf.getToField();
+
+        Figurine figurine = figurines.get(figId);
+        if(figurine == null) {
+            // TODO: think about if notifying the client now or if dropping the request for a nonexisting figurine is accepted as normal
+            // behaviour. For now it is the latter one.
+            return;
+        }
+
+        Message msg = figurine.getFindPathToFieldMessage(toField);
+        broker.send(msg, ChannelNames.CONCURRENT_MANAGEMENT);
     }
 
     /**
