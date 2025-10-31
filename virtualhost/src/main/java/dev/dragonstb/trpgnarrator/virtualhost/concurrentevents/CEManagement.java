@@ -169,6 +169,16 @@ final class CEManagement implements ConcurrentEventManager, Receiver, ClockRecei
     @Override
     public void update(float tpf) {
         checkAndCleanPathfinders();
+
+        // iterate internal state
+        try {
+            broker.update(tpf);
+        } catch (Exception e) {
+            // TODO: log
+            // TODO: analyze problem and see if more than just logging can/has to be done.
+        }
+
+        // stream new internal state to clients
     }
 
     /** Checks the pathfinders and notifies the figurine controller about found paths. Removes pathfinders that have become done since the

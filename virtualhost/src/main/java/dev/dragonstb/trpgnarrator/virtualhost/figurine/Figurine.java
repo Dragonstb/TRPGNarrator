@@ -30,7 +30,6 @@ import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.tweens.ActionTween;
 import dev.dragonstb.trpgnarrator.virtualhost.tweens.SequenceTween;
 import dev.dragonstb.trpgnarrator.virtualhost.tweens.ShiftObjectTween;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -82,8 +81,13 @@ final class Figurine implements Locateable {
         this(id, diffuseColor, diffuseColor.mult(.25f), diffuseColor.mult(1.2f));
     }
 
+    /** Iterates the figurine one time step further.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     * @param tpf Time per frame in seconds.
+     */
     void update(float tpf) {
-        // WARNING! Currently, the currentTween is accessed only within the CEManagement.update(), so no syncing has become required YET.
         synchronized (currentTweenLock) {
             if(currentTween != null) {
                 currentTween.internalAction(tpf);

@@ -21,9 +21,11 @@
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
 
+import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,7 @@ final class SyncBrokerImp implements SynchronousBroker {
     /** Connector to the outside world. */
     private final HostConnector connector;
     private final Map<String, BrokerChannel> channels = new TreeMap<>();
+    private final TimingChannel timingChannel = new TimingChannel();
 
     SyncBrokerImp(@NonNull HostConnector connector) {
         this.connector = connector;
@@ -87,6 +90,24 @@ final class SyncBrokerImp implements SynchronousBroker {
 
     @Override
     public void update(float tpf) {
+        String errCode = VHostErrorCodes.V50700;
+        if(!Float.isFinite(tpf) || tpf < 0) {
+            String msg = "Time step must be a non-negative number of seconds, but got "+tpf;
+            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new IllegalArgumentException(use);
+        }
+
+        timingChannel.update(tpf);
+    }
+
+    @Override
+    public void registerToTiming(@NonNull ClockReceiver receiver) {
+        timingChannel.addReceiver(receiver);
+    }
+
+    @Override
+    public void deregisterFromTiming(@NonNull ClockReceiver receiver) {
+        timingChannel.removeReceiver(receiver);
     }
 
 }

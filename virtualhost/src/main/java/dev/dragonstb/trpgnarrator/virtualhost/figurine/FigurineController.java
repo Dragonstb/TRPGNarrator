@@ -31,6 +31,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McPathForFigurine;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.vhcommandparms.FindPathForFigurineParms;
@@ -47,7 +48,7 @@ import lombok.NonNull;
  * @author Dragonstb
  * @since 0.0.2
  */
-final class FigurineController implements Figurines, Receiver {
+final class FigurineController implements Figurines, Receiver, ClockReceiver {
 
     private final SynchronousBroker broker;
     private final Map<String, Figurine> figurines = new HashMap<>();
@@ -65,6 +66,7 @@ final class FigurineController implements Figurines, Receiver {
 
     private void init() {
         broker.registerToChannel(this, ChannelNames.GET_FIGURINE_DATA);
+        broker.registerToTiming(this);
 
         // TODO: don't use hard coded content, but derive figurines from some data object
         int idNumber = 0;
@@ -187,6 +189,16 @@ final class FigurineController implements Figurines, Receiver {
         List<FigurineDTO> dtos = figurines.values().stream().map(fig -> fig.asDTO()).collect(Collectors.toList());
         FigurinesListDTO list = new FigurinesListDTO(dtos);
         return list;
+    }
+
+    // ____________________  clock receiver  ____________________
+
+    @Override
+    public void update(float tpf) {
+        synchronized (figurines) {
+            // WARNING: The fig.update(float) locks on a field of the fig. So make sure you do not absentmindly deadlock yourself
+            figurines.values().forEach( fig -> fig.update(tpf) );
+        }
     }
 
 }

@@ -71,4 +71,25 @@ public interface SynchronousBroker extends ClockReceiver {
     @NonNull
     public List<Optional<Object>> request(@NonNull String channelName, @NonNull FetchCommand fetch, boolean skipEmpties);
 
+    /** Registers a clock receiver to the special channel for propagating the timing signal.
+     *
+     * @since 0.0.2
+     * @param receiver Something that wants to update. Must be  {@code non-null}.
+     */
+    public void registerToTiming(@NonNull ClockReceiver receiver);
+
+    /** Deregisters a clock receiver to the special channel for propagating the timing signal.
+     *
+     * @since 0.0.2
+     * @param receiver Something that does not want to update anymore. Must be  {@code non-null}.
+     */
+    public void deregisterFromTiming(@NonNull ClockReceiver receiver);
+
+    /** Propagates the timing signal.
+     *
+     * @since 0.0.2
+     * @param tpf Time per frame, in seconds. A non-negative and finite number.
+     * @throws When {@code tpf} is not finite or negative.
+     */
+    public void update(float tpf) throws IllegalArgumentException;
 }

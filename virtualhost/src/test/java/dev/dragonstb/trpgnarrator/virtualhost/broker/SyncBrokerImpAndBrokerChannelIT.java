@@ -19,9 +19,11 @@
  */
 package dev.dragonstb.trpgnarrator.virtualhost.broker;
 
+import dev.dragonstb.trpgnarrator.virtualhost.error.VHostErrorCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,6 +53,8 @@ public class SyncBrokerImpAndBrokerChannelIT {
     private Receiver receiverA;
     @Mock
     private Receiver receiverB;
+    @Mock
+    private ClockReceiver clockReceiver;
 
     private SyncBrokerImp broker;
 
@@ -150,6 +154,57 @@ public class SyncBrokerImpAndBrokerChannelIT {
         assertTrue(list.getLast().isEmpty() || list.getFirst().isEmpty(), "no empty optional");
         assertTrue(list.getLast().isPresent() || list.getFirst().isPresent(), "no present optional");
         assertTrue(list.getLast().isPresent() != list.getFirst().isPresent(), "not one present optional and one empty optional");
+    }
+
+    @Test
+    public void testRegisterToTiming() {
+        float tpf = 4.2f;
+        broker.registerToTiming(clockReceiver);
+        broker.update(tpf);
+        verify(clockReceiver, times(1)).update(tpf);
+    }
+
+    @Test
+    public void testDeregisterFromTiming() {
+        float tpf = 4.2f;
+        broker.registerToTiming(clockReceiver);
+        broker.deregisterFromTiming(clockReceiver);
+        broker.update(tpf);
+        verify(clockReceiver, never()).update(tpf);
+    }
+
+    @Test
+    public void testUpdate_posInfinity() {
+        float tpf = Float.POSITIVE_INFINITY;
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> broker.update(tpf), "No exception");
+        assertTrue(exc.getMessage().contains(VHostErrorCodes.V50700), "The expected error code is missing");
+    }
+
+    @Test
+    public void testUpdate_negInfinity() {
+        float tpf = Float.NEGATIVE_INFINITY;
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> broker.update(tpf), "No exception");
+        assertTrue(exc.getMessage().contains(VHostErrorCodes.V50700), "The expected error code is missing");
+    }
+
+    @Test
+    public void testUpdate_nan() {
+        float tpf = Float.NaN;
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> broker.update(tpf), "No exception");
+        assertTrue(exc.getMessage().contains(VHostErrorCodes.V50700), "The expected error code is missing");
+    }
+
+    @Test
+    public void testUpdate_negative() {
+        float tpf = -3;
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> broker.update(tpf), "No exception");
+        assertTrue(exc.getMessage().contains(VHostErrorCodes.V50700), "The expected error code is missing");
+    }
+
+    @Test
+    public void testUpdate_zero() {
+        float tpf = 0;
+        assertDoesNotThrow(() -> broker.update(tpf), "No exception");
     }
 
 }
