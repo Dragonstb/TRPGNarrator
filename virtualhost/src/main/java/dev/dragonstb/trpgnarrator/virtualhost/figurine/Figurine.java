@@ -27,6 +27,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McFindPathForFigurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineTelemetryDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.tweens.ActionTween;
 import dev.dragonstb.trpgnarrator.virtualhost.tweens.SequenceTween;
 import dev.dragonstb.trpgnarrator.virtualhost.tweens.ShiftObjectTween;
@@ -54,6 +55,8 @@ final class Figurine implements Locateable {
     /** When on board, this field holds the id of the board field the figurine currently stand on. When off board, this field is
      * meaningless. */
     @Getter @Setter private int fieldId;
+    /** Has the telemetry changed since it was read the last time? */
+    @Getter @Setter private boolean telemetryChanged = true;
 
     /** The current action tween that controls the figurine. */
     private ActionTween currentTween = null;
@@ -91,6 +94,7 @@ final class Figurine implements Locateable {
         synchronized (currentTweenLock) {
             if(currentTween != null) {
                 currentTween.internalAction(tpf);
+                telemetryChanged = true;
                 if(currentTween.isDone()) {
                     currentTween = null;
                 }
@@ -143,6 +147,16 @@ final class Figurine implements Locateable {
             pfRequest = new McFindPathForFigurine(id, fieldId, toFieldId);
         }
         return new Message(MessageHeadlines.PLEASE_FIND_PATH, pfRequest);
+    }
+
+    /** Gets the telemetry of this figurine and sets the telemetryChanged flag to false.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     * @return Telemetry data that can be streamed to the clients.
+     */
+    FigurineTelemetryDTO getTelemetry() {
+        return new FigurineTelemetryDTO(id, location, fieldId);
     }
 
     FigurineDTO asDTO() {

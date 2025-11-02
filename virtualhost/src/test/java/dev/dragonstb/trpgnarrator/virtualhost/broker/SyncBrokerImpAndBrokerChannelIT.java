@@ -24,6 +24,8 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamTypes;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamed;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
@@ -207,4 +209,10 @@ public class SyncBrokerImpAndBrokerChannelIT {
         assertDoesNotThrow(() -> broker.update(tpf), "No exception");
     }
 
+    @Test
+    public void testSendOutbound() {
+        VHStreamed obj = new VHStreamed(VHStreamTypes.telemetry, "Hello");
+        connector.sendOutbound(obj);
+        verify(connector, times(1)).sendOutbound(obj);
+    }
 }

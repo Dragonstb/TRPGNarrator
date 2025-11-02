@@ -18,25 +18,27 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.generic;
+package dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos;
 
-/** Some strings used in the receivers fetch-method as argument. This list mainly exists for preventing misspelling.
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.NonNull;
+
+/**
  *
  * @author Dragonstb
- * @since 0.0.1
+ * @since
  */
-public final class FetchCodes {
+@Getter
+public final class TelemetryDTO {
 
-    /** Get the board data. */
-    public static final String BOARD_DATA = "board data";
-    /** get he location of a field of the board. */
-    public static final String BOARD_FIELD_LOCATION = "board field location";
-    /** Get a pathfinder from the board. */
-    public static final String BOARD_PATHFINDER = "board pathfinder";
+    /** List of telemetry data from the figurines. */
+    private final List<FigurineTelemetryDTO> figurineTelemetries;
 
-    /** Get the full list of figurines. */
-    public static final String FIGURINE_FULL_LIST = "figurine full list";
-    /** Get figurine telemetry data. */
-    public static final String FIGURINE_TELEMETRY = "figurine telemetry";
+    public TelemetryDTO(@NonNull Collection<FigurineTelemetryDTO> figurineTelemetries) {
+        this.figurineTelemetries = figurineTelemetries.stream().collect(Collectors.toUnmodifiableList());
+    }
 
 }

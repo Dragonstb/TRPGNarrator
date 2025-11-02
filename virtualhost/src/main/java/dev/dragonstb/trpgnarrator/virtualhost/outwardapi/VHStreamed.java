@@ -18,25 +18,28 @@
  * See <http://www.gnu.org/licenses/gpl-2.0.html>
  */
 
-package dev.dragonstb.trpgnarrator.virtualhost.generic;
+package dev.dragonstb.trpgnarrator.virtualhost.outwardapi;
 
-/** Some strings used in the receivers fetch-method as argument. This list mainly exists for preventing misspelling.
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+
+/** An object that is sent from the host to the clients.
  *
  * @author Dragonstb
- * @since 0.0.1
+ * @since 0.0.2;
  */
-public final class FetchCodes {
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+public final class VHStreamed {
 
-    /** Get the board data. */
-    public static final String BOARD_DATA = "board data";
-    /** get he location of a field of the board. */
-    public static final String BOARD_FIELD_LOCATION = "board field location";
-    /** Get a pathfinder from the board. */
-    public static final String BOARD_PATHFINDER = "board pathfinder";
-
-    /** Get the full list of figurines. */
-    public static final String FIGURINE_FULL_LIST = "figurine full list";
-    /** Get figurine telemetry data. */
-    public static final String FIGURINE_TELEMETRY = "figurine telemetry";
+    /** The type of the data object. */
+    @NonNull private final VHStreamTypes type;
+    /** The content. */
+    private final Object content;
 
 }

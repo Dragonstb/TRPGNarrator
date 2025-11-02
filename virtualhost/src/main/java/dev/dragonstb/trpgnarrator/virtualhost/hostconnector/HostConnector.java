@@ -21,6 +21,7 @@
 package dev.dragonstb.trpgnarrator.virtualhost.hostconnector;
 
 import dev.dragonstb.trpgnarrator.virtualhost.broker.SynchronousBroker;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamed;
 import lombok.NonNull;
 
 /** Host connectors are responsible for serializing and deserializing the data that goes to the clients or come from the clients,
@@ -44,4 +45,12 @@ public interface HostConnector {
      * @param broker Broker to be linked. Must be non-null.
      */
     public void linkBroker(@NonNull SynchronousBroker broker);
+
+    /** Sends data to the clients.
+     *
+     * @since 0.0.2;
+     * @param object Data to be send.
+     */
+    public void sendOutbound(@NonNull VHStreamed object);
+
 }

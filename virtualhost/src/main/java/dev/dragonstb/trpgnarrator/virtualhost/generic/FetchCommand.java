@@ -39,6 +39,15 @@ public final class FetchCommand {
     /** A parametrization of the command. */
     private final Object parms;
 
+    /** Generates without parameters. Is is a short for {@code FetchCommand(command, null)}.
+     *
+     * @since 0.0.2
+     * @param command Specifies the actual command.
+     */
+    public FetchCommand(String command) {
+        this(command, null);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(obj == null || !(obj instanceof FetchCommand)) {

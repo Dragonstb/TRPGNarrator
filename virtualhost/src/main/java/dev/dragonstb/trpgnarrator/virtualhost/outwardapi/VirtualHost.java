@@ -37,4 +37,11 @@ public interface VirtualHost {
      * @return An object or not. Can be {@code null}.
      */
     public Object dealRequest(@NonNull VHCommand command);
+
+    /** Registers a stream receiver to the virtual host. This method does nothing in case of the given receiver being already registered.
+     *
+     * @since 0.0.2
+     * @param receiver Receiver.
+     */
+    public void addStreamReceiver(@NonNull StreamReceiver receiver);
 }

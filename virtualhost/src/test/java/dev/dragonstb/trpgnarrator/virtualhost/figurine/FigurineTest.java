@@ -25,6 +25,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McFindPathForFigurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineTelemetryDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,6 +66,20 @@ public class FigurineTest {
         assertEquals(figId, cnt.getFigurineId(), "Wrong figurine id");
         assertEquals(currentField, cnt.getFromFieldId(), "Wrong start field id");
         assertEquals(toField, cnt.getToFieldId(), "Wrong goal field id");
+    }
+
+    @Test
+    public void testGetTelemetry() {
+        int field = 10;
+        Vector3f loc = new Vector3f(4, 5, 6);
+        fig.setFieldId(field);
+        fig.setLocation(loc);
+
+        FigurineTelemetryDTO dto = fig.getTelemetry();
+        assertNotNull(dto, "No dto");
+        assertEquals(dto.getFigId(), figId, "Wrong id");
+        assertEquals(fig.getLocation(), dto.getLocationAsVector3f().orElse(null), "Wrong location");
+        assertEquals(dto.getFieldId(), field, "Wrong field");
     }
 
     @Test

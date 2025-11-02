@@ -27,19 +27,16 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McFindPathForFigurine;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineTelemetryDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.vhcommandparms.FindPathForFigurineParms;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -61,17 +58,6 @@ public class FigurineControllerTest {
 
     private FigurineController controller;
 
-    public FigurineControllerTest() {
-    }
-
-    @BeforeAll
-    public static void setUpClass() {
-    }
-
-    @AfterAll
-    public static void tearDownClass() {
-    }
-
     @BeforeEach
     public void setUp() {
         Optional<Object> opt = Optional.of(figLocation);
@@ -80,10 +66,6 @@ public class FigurineControllerTest {
         when(broker.request(ChannelNames.GET_BOARD_DATA, figInitLocationFetch, true)).thenReturn(list);
         // TODO: mock figurines for initializing the figurines once the figurines are not created in hard code anymore.
         controller = new FigurineController(broker);
-    }
-
-    @AfterEach
-    public void tearDown() {
     }
 
     @Test
@@ -111,4 +93,20 @@ public class FigurineControllerTest {
         verify(broker, never()).send(any(), anyString()); // TODO: for now called once in the hardcoded initialization of the controller
     }
 
+    @Test
+    public void testRequest_getTelemetries() {
+        FetchCommand cmd = new FetchCommand(FetchCodes.FIGURINE_TELEMETRY);
+        Optional<Object> opt = controller.request(cmd);
+
+        assertNotNull(opt, "No optional");
+        assertTrue(opt.isPresent(), "No data");
+
+        Object obj = opt.get();
+        assertTrue(obj instanceof List, "Not a list");
+
+        List list = (List)obj;
+        assertEquals(1, list.size(), "Wrong length");
+        assertTrue(list.getFirst() instanceof FigurineTelemetryDTO, "Wrong class");
+
+    }
 }

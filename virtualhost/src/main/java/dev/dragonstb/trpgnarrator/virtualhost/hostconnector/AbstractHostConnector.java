@@ -28,14 +28,19 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.StreamReceiver;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamTypes;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamed;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VirtualHost;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.vhcommandparms.FindPathForFigurineParms;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.NonNull;
 
 /**
@@ -47,6 +52,8 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
 
     /** The broker the connector speaks with. */
     private SynchronousBroker broker = null;
+    /** The receivers of data sent by this virtual host. */
+    private final Set<StreamReceiver> receivers = new HashSet();
 
     @Override
     public void linkBroker(@NonNull SynchronousBroker broker) {
@@ -154,6 +161,29 @@ abstract class AbstractHostConnector implements HostConnector, VirtualHost {
 
         Message msg = new Message(MessageHeadlines.PLEASE_FIND_PATH, parms);
         broker.send(msg, ChannelNames.GET_FIGURINE_DATA);
+    }
+
+    @Override
+    public void addStreamReceiver(@NonNull StreamReceiver receiver) {
+        synchronized (receivers) {
+            receivers.add(receiver);
+        }
+    }
+
+    @Override
+    public void sendOutbound(@NonNull VHStreamed object) {
+        String errCode = VHostErrorCodes.V53260;
+        if(object.getType() == VHStreamTypes.unknown) {
+            String msg = "Spurious stream type \"unknown\" set. Please specify type. Dropping message.";
+            String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+            throw new IllegalArgumentException(use);
+        }
+
+        // TODO: check that all data is formatted correctly
+
+        synchronized (receivers) {
+            receivers.forEach( rec -> rec.receiveStreamedDTO(object) );
+        }
     }
 
 }

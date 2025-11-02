@@ -66,5 +66,4 @@ final class LocalHostConnector extends AbstractHostConnector {
         super.doSendFindPathForFigurine(arg);
     }
 
-
 }

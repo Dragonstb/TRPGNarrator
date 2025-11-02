@@ -26,6 +26,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.hostconnector.HostConnector;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamed;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +109,11 @@ final class SyncBrokerImp implements SynchronousBroker {
     @Override
     public void deregisterFromTiming(@NonNull ClockReceiver receiver) {
         timingChannel.removeReceiver(receiver);
+    }
+
+    @Override
+    public void sendOutbound(VHStreamed object) {
+        connector.sendOutbound(object);
     }
 
 }

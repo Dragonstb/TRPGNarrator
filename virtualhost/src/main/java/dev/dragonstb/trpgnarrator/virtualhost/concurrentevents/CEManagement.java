@@ -35,6 +35,10 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McFindPath
 import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McPathForFigurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.Clock;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamTypes;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamed;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineTelemetryDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.TelemetryDTO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -178,7 +182,7 @@ final class CEManagement implements ConcurrentEventManager, Receiver, ClockRecei
             // TODO: analyze problem and see if more than just logging can/has to be done.
         }
 
-        // stream new internal state to clients
+        streamDataToClients();
     }
 
     /** Checks the pathfinders and notifies the figurine controller about found paths. Removes pathfinders that have become done since the
@@ -217,6 +221,33 @@ final class CEManagement implements ConcurrentEventManager, Receiver, ClockRecei
         });
     }
 
+    /** Send data to the clients.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     */
+    void streamDataToClients() {
+        String errCode = VHostErrorCodes.V91691;
+
+        FetchCommand cmd = new FetchCommand(FetchCodes.FIGURINE_TELEMETRY);
+        List<Optional<Object>> list = broker.request(ChannelNames.GET_FIGURINE_DATA, cmd, true);
+        List<FigurineTelemetryDTO> teles = new ExtractorOfFirst(errCode).extractFirst(list, List.class);
+
+        if(!teles.isEmpty()) {
+            if(!(teles.getFirst() instanceof FigurineTelemetryDTO)) {
+                Object obj = teles.getFirst();
+                String msg = "Expected List of FigurineTelemetrDTO, but got list of "+(
+                        obj != null ? obj.getClass().getSimpleName() : "null"
+                )+" instead.";
+                String use = VHostErrorCodes.assembleCodedMsg(msg, errCode);
+                throw new IllegalArgumentException(use);
+            }
+
+            TelemetryDTO dto = new TelemetryDTO(teles);
+            VHStreamed obj = new VHStreamed(VHStreamTypes.telemetry, dto);
+            broker.sendOutbound(obj);
+        }
+    }
 
 
 }

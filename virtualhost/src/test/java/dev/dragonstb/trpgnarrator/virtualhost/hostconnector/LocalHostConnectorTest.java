@@ -26,8 +26,11 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCodes;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.StreamReceiver;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHCommands;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamTypes;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamed;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.BoardDataDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
@@ -55,6 +58,9 @@ public class LocalHostConnectorTest {
 
     @Mock
     private SynchronousBroker broker2;
+
+    @Mock
+    private StreamReceiver client;
 
     private LocalHostConnector connector;
     private BoardDataDTO dto;
@@ -167,5 +173,38 @@ public class LocalHostConnectorTest {
         assertNotNull(obj, "No return");
         assertTrue(obj instanceof Boolean, "No a Boolean");
         assertTrue((Boolean)obj, "Unexpected false");
+    }
+
+    @Test
+    public void testAddStreamReceiver() {
+        VHStreamed obj = new VHStreamed(VHStreamTypes.telemetry, "hello");
+
+        connector.addStreamReceiver(client);
+        connector.sendOutbound(obj);
+
+        verify(client, times(1)).receiveStreamedDTO(obj);
+    }
+
+    @Test
+    public void testAddStreamReceiver_twice() {
+        VHStreamed obj = new VHStreamed(VHStreamTypes.telemetry, "hello");
+
+        connector.addStreamReceiver(client);
+        connector.addStreamReceiver(client);
+        connector.sendOutbound(obj);
+
+        verify(client, times(1)).receiveStreamedDTO(obj);
+    }
+
+    @Test
+    public void testSendOutbound_unknown() {
+        VHStreamed obj = new VHStreamed(VHStreamTypes.unknown, "hello");
+
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, ()->connector.sendOutbound(obj),
+                "Not the expected exception");
+        String msg = exc.getMessage();
+
+        assertTrue(msg.contains("Spurious stream type \"unknown\" set."), "Missing the expected text");
+        assertTrue(msg.contains(VHostErrorCodes.V53260), "Missing the expected code");
     }
 }

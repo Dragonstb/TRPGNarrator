@@ -33,8 +33,10 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McPathForFigurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineDTO;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineTelemetryDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurinesListDTO;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.vhcommandparms.FindPathForFigurineParms;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,6 +103,8 @@ final class FigurineController implements Figurines, Receiver, ClockReceiver {
         fig.setLocation(location);
         fig.setFieldId(fieldId);
     }
+
+    // ____________________  receive messages  ____________________
 
     @Override
     public void receive(Message msg) {
@@ -176,10 +180,13 @@ final class FigurineController implements Figurines, Receiver, ClockReceiver {
         }
     }
 
+    // ____________________  answer requests  ____________________
+
     @Override
     public Optional<Object> request(FetchCommand fetch) {
         Optional<Object> opt = switch(fetch.getCommand()) {
             case FetchCodes.FIGURINE_FULL_LIST -> { yield Optional.of(getFigurinesDTOs()); }
+            case FetchCodes.FIGURINE_TELEMETRY -> { yield Optional.of(getFigurineTelemetries()); }
             default -> {yield Optional.empty();}
         };
         return opt;
@@ -189,6 +196,25 @@ final class FigurineController implements Figurines, Receiver, ClockReceiver {
         List<FigurineDTO> dtos = figurines.values().stream().map(fig -> fig.asDTO()).collect(Collectors.toList());
         FigurinesListDTO list = new FigurinesListDTO(dtos);
         return list;
+    }
+
+    /** Gets the list of telemetry data.
+     *
+     * @since 0.0.2
+     * @author Dragonstb
+     * @return List of telemetry data.
+     */
+    private List<FigurineTelemetryDTO> getFigurineTelemetries() {
+        List<FigurineTelemetryDTO> teles = new ArrayList<>();
+
+        figurines.values().stream()
+                .filter( fig -> fig.isTelemetryChanged() )
+                .forEach( fig -> {
+                    teles.add(fig.getTelemetry());
+                    fig.setTelemetryChanged(false);
+                } );
+
+        return teles;
     }
 
     // ____________________  clock receiver  ____________________

@@ -23,6 +23,7 @@ package dev.dragonstb.trpgnarrator.virtualhost.broker;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.FetchCommand;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.Message;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.ClockReceiver;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.VHStreamed;
 import java.util.List;
 import java.util.Optional;
 import lombok.NonNull;
@@ -91,5 +92,14 @@ public interface SynchronousBroker extends ClockReceiver {
      * @param tpf Time per frame, in seconds. A non-negative and finite number.
      * @throws When {@code tpf} is not finite or negative.
      */
+    @Override
     public void update(float tpf) throws IllegalArgumentException;
+
+    /** Sends data to the clients.
+     *
+     * @since 0.0.2;
+     * @param object Data to be send.
+     */
+    public void sendOutbound(@NonNull VHStreamed object);
+
 }

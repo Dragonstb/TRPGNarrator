@@ -30,6 +30,7 @@ import dev.dragonstb.trpgnarrator.virtualhost.generic.MessageHeadlines;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.fetchparms.PathfindingConfig;
 import dev.dragonstb.trpgnarrator.virtualhost.generic.messagecontents.McFindPathForFigurine;
 import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.Clock;
+import dev.dragonstb.trpgnarrator.virtualhost.outwardapi.dtos.FigurineTelemetryDTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -97,6 +98,56 @@ public class CEManagementTest {
         assertTrue(errMsg.contains("Expected content to be a FindPathForFigurine, but got an instance of class "
                     + problem.getClass().getSimpleName() + " instead"), "Expected message missing");
         assertTrue(errMsg.contains(VHostErrorCodes.V42664), "Expected error code missing");
+    }
+
+    @Test
+    public void testStreamDataToClients_ok() {
+        FigurineTelemetryDTO dto = new FigurineTelemetryDTO("hello", new Vector3f(), 0);
+        List<FigurineTelemetryDTO> dtos = new ArrayList<>();
+        dtos.add(dto);
+        Optional<Object> opt = Optional.of(dtos);
+        List<Optional<Object>> list = new ArrayList<>();
+        list.add(opt);
+        FetchCommand cmd = new FetchCommand(FetchCodes.FIGURINE_TELEMETRY);
+        when(broker.request(ChannelNames.GET_FIGURINE_DATA, cmd, true)).thenReturn(list);
+
+        cem.streamDataToClients();
+
+        verify(broker, times(1)).sendOutbound(any());
+    }
+
+    @Test
+    public void testStreamDataToClients_wrong_content() {
+        FigurineTelemetryDTO dto = new FigurineTelemetryDTO("hello", new Vector3f(), 0);
+        List<String> dtos = new ArrayList<>();
+        dtos.add("Hello");
+        Optional<Object> opt = Optional.of(dtos);
+        List<Optional<Object>> list = new ArrayList<>();
+        list.add(opt);
+        FetchCommand cmd = new FetchCommand(FetchCodes.FIGURINE_TELEMETRY);
+        when(broker.request(ChannelNames.GET_FIGURINE_DATA, cmd, true)).thenReturn(list);
+
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, ()->cem.streamDataToClients(),
+                "Not the expected exception");
+        String msg = exc.getMessage();
+        assertTrue(msg.contains(VHostErrorCodes.V91691), "Expected code missing");
+        assertTrue(msg.contains("Expected List of FigurineTelemetrDTO"), "Expected message missing");
+
+        verify(broker, never()).sendOutbound(any());
+    }
+
+    @Test
+    public void testStreamDataToClients_no_data() {
+        List<FigurineTelemetryDTO> dtos = new ArrayList<>();
+        Optional<Object> opt = Optional.of(dtos);
+        List<Optional<Object>> list = new ArrayList<>();
+        list.add(opt);
+        FetchCommand cmd = new FetchCommand(FetchCodes.FIGURINE_TELEMETRY);
+        when(broker.request(ChannelNames.GET_FIGURINE_DATA, cmd, true)).thenReturn(list);
+
+        cem.streamDataToClients();
+
+        verify(broker, never()).sendOutbound(any());
     }
 
     @Test
